@@ -1,0 +1,52 @@
+#pragma once
+
+#include <sfml/graphics.hpp>
+#include <memory>
+#include <vector>
+
+
+
+enum EState {
+	STOP = 1,
+	RUNNING,
+	PAUSE
+};
+
+enum ESceneType {
+	MAINMENU = 1,
+	MAINGAME
+};
+
+class Scene;
+
+
+class Engine
+{
+public:
+	Engine();
+	~Engine();
+	void Run();
+	void ExitGame();
+	void LoadScene(ESceneType scene);
+	static Engine& getInstance();
+	sf::RenderWindow& getRenderWindow();
+	const EState& getGameState() const;
+
+
+
+private:
+	EState gameState = STOP;
+	sf::RenderWindow* m_renderWindow = nullptr;
+
+	float m_deltaTime = 0;
+	float getDeltaTime() const;
+
+	void HandleEvent();
+	void PollEvent();
+
+	ESceneType m_sceneToLoad = ESceneType::MAINMENU;
+	static Engine* m_instance;
+	Scene* m_currScene = nullptr;
+	sf::RenderWindow m_window;
+	sf::Clock m_deltaClock;
+};

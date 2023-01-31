@@ -1,8 +1,8 @@
 set(ENGINE_HEADERS
-        Scene.hpp)
+        Engine.h "Scene/Scene.hpp" "Scene/InGameScene.h" "Scene/MainMenuScene.h")
 
 set(ENGINE_SOURCES
-        Scene.cpp)
+        "Engine.cpp" "Scene/Scene.cpp" "Scene/InGameScene.cpp" "Scene/MainMenuScene.cpp" )
 
 find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
 

@@ -1,9 +1,9 @@
 set(GAME_HEADERS
         dragons.hpp
-)
+ "Game.h")
 
 set(GAME_SOURCES
-        main.cpp)
+        main.cpp "Game.cpp")
 
 add_executable(Game ${GAME_HEADERS} ${GAME_SOURCES})
 
