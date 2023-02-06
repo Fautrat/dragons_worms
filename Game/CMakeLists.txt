@@ -1,8 +1,13 @@
 set(GAME_HEADERS
-        dragons.hpp
+        Game.hpp
+        Dragons.hpp
+        InputHandler.hpp
 )
 
 set(GAME_SOURCES
+        Game.cpp
+        Dragons.cpp
+        InputHandler.cpp
         main.cpp)
 
 add_executable(Game ${GAME_HEADERS} ${GAME_SOURCES})
