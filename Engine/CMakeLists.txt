@@ -1,8 +1,8 @@
 set(ENGINE_HEADERS
-        Scene.hpp)
+        Engine.h "Scene/Scene.hpp" "Scene/MainMenuScene.hpp" "Scene/InGameScene.hpp" "UI/UI.hpp")
 
 set(ENGINE_SOURCES
-        Scene.cpp)
+        Engine.cpp "Scene/Scene.cpp" "Scene/MainMenuScene.cpp" "Scene/InGameScene.cpp" "UI/UI.cpp")
 
 find_package(SFML COMPONENTS system window graphics audio CONFIG REQUIRED)
 

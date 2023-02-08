@@ -8,7 +8,7 @@ class Game
 {
 public:
 
-    sf::RenderWindow window;
+    sf::RenderWindow* window;
     sf::Sprite videoSprite;
     sf::Text playButton;
     sf::Text optionsButton;

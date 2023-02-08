@@ -1,6 +1,6 @@
 #include "dragons.hpp"
 
-void Dragon::update(sf::RenderWindow& window)
+void Dragon::update(sf::RenderTarget* window)
 {
     /* max velocity at 50.f for debug */
     if (m_velocity.y < 20.f)
@@ -10,7 +10,7 @@ void Dragon::update(sf::RenderWindow& window)
 
     // keep the character within the window bounds
     auto size = m_shape.getSize();
-    auto windowSize = window.getSize();
+    auto windowSize = window->getSize();
 
     if (m_position.x < 0)
     {

@@ -2,13 +2,14 @@
 
 Game::Game()
 {
+    window = new sf::RenderWindow();
     // Create the main window
-    window.create(sf::VideoMode(), "Dragons", sf::Style::Fullscreen);
-    window.setFramerateLimit(60);
-    window.setVerticalSyncEnabled(true);
+    window->create(sf::VideoMode(1920,1080), "Dragons", sf::Style::Default);
+    window->setFramerateLimit(60);
+    window->setVerticalSyncEnabled(true);
 
-    window_width = window.getSize().x;
-    window_height = window.getSize().y;
+    window_width = window->getSize().x;
+    window_height = window->getSize().y;
 
     // Load the video
     if (!videoTexture.loadFromFile("../../../../assets/wallpaper.jpg"))
@@ -42,7 +43,7 @@ Game::Game()
     exitButton.setPosition(window_width / 3 - exitButton.getGlobalBounds().width / 2, window_height / 2);
 
     input = new InputHandler(window);
-    player = new Dragon(*input);
+    player = new Dragon(input);
 
     // define the sound
     if (!music.openFromFile("../../../../assets/sound/Dragon.ogg"))
@@ -63,13 +64,14 @@ Game::~Game()
 
 void Game::gameLoop()
 {   
+    std::cout << "Bonjour" << std::endl;
     music.play();
 
     // Start the main loop
-    while (window.isOpen())
+    while (window->isOpen())
     {
         // Check if the buttons are clicked
-        sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+        sf::Vector2i mousePos = sf::Mouse::getPosition(*window);
         if (playButton.getGlobalBounds().contains(mousePos.x, mousePos.y))
         {
             playButton.setFillColor(sf::Color::Red);
@@ -104,7 +106,7 @@ void Game::gameLoop()
             {
                 // Handle the "Exit" button click event
                 std::cout << "Exit button clicked" << std::endl;
-                window.close();
+                window->close();
             }
         }
         else
@@ -117,16 +119,16 @@ void Game::gameLoop()
         player->update(window);
 
         // Clear the window
-        window.clear();
+        window->clear();
 
         // Draw the buttons
-        window.draw(videoSprite);
-        window.draw(playButton);
-        window.draw(optionsButton);
-        window.draw(exitButton);
-        window.draw(player->getShape());
+        window->draw(videoSprite);
+        window->draw(playButton);
+        window->draw(optionsButton);
+        window->draw(exitButton);
+        window->draw(player->getShape());
 
         // Update the window
-        window.display();
+        window->display();
     }
 }
