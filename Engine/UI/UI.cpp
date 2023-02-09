@@ -1,13 +1,6 @@
 #include "UI.hpp"
+#include <iostream>
 
-UI::UI()
-{
-
-}
-
-UI::~UI()
-{
-}
 
 void UI::CreateText(std::string name, sf::Color colorText, std::string text, int characterSize, sf::Vector2f position, sf::Font& font)
 {
@@ -18,7 +11,7 @@ void UI::CreateText(std::string name, sf::Color colorText, std::string text, int
 	buttonModel.setOrigin(buttonModel.getGlobalBounds().width / 2, buttonModel.getGlobalBounds().height / 2);
 	buttonModel.setPosition(position);
 
-	button.push_back(buttonModel);
+	listButtons.push_back(buttonModel);
 	nameButton.emplace_back(name);
 }
 
@@ -30,25 +23,10 @@ sf::Text& UI::Text(const std::string& name)
 	{
 		if (nameButton[i] == name)
 		{
-			return button.at(i);
+			return listButtons.at(i);
 		}
 	}
 }
-
-sf::Text& UI::TextBox(const std::string& name)
-{
-	for (int i = 0; i < nameTextBox.size(); i++)
-	{
-		if (nameTextBox[i] == name)
-		{
-			return text.at(i);
-		}
-	}
-
-	//return sf::Text("UNDEFINED", );
-}
-
-
 
 sf::RectangleShape& UI::Zone(const std::string& name)
 {
@@ -61,41 +39,16 @@ sf::RectangleShape& UI::Zone(const std::string& name)
 	}
 }
 
-void UI::CreateTextBox(const std::string& name, sf::Font& font, int maxCharac, sf::Vector2f position, const std::string& textContent)
-{
-	zoneTextModel.setFillColor(sf::Color(100, 100, 100));
-	zoneTextModel.setSize(sf::Vector2f(((maxCharac + 1) * 30), 100));
-	zoneTextModel.setOrigin(zoneTextModel.getGlobalBounds().width / 2, zoneTextModel.getGlobalBounds().height / 2);
-	zoneTextModel.setPosition(position);
-
-	textModel.setFont(font);
-	textModel.setFillColor(sf::Color::Black);
-	textModel.setString(textContent);
-	textModel.setCharacterSize(76);
-	textModel.setOrigin(zoneTextModel.getGlobalBounds().width / 2, zoneTextModel.getGlobalBounds().height / 2);
-	textModel.setPosition(zoneTextModel.getPosition().x, zoneTextModel.getPosition().y);
-
-	zone.push_back(zoneTextModel);
-	text.push_back(textModel);
-	nameTextBox.push_back(name);
-
-
-}
-
-void UI::RenderTextBox(std::string name, sf::RenderTarget* renderTarget)
-{
-	renderTarget->draw(Zone(name));
-	renderTarget->draw(TextBox(name));
-}
-
-
-
-bool UI::InteractionButton(std::string name, sf::Vector2i mouseposition, bool _isclicked)
+bool UI::InteractionButton(std::string name, sf::Vector2i mouseposition)
 {
 	if (Text(name).getGlobalBounds().contains(mouseposition.x, mouseposition.y))
 	{
 		Text(name).setColor(sf::Color::Red);
-		if (_isclicked) return true;
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		{
+			std::cout << name << " activated" << std::endl;
+			return true;
+		}
 		else return false;
 	}
 	else
@@ -104,25 +57,4 @@ bool UI::InteractionButton(std::string name, sf::Vector2i mouseposition, bool _i
 		return false;
 	}
 
-}
-
-bool UI::InteractionTextBox(std::string name, sf::Vector2i mouseposition, bool _isclicked)
-{
-	if (Zone(name).getGlobalBounds().contains(mouseposition.x, mouseposition.y))
-	{
-		if (_isclicked)
-		{
-			Zone(name).setFillColor(sf::Color::White);
-			return true;
-		}
-		else return false;
-	}
-	else
-	{
-		if (_isclicked)
-		{
-			Zone(name).setFillColor(sf::Color(100, 100, 100));
-		}
-		return false;
-	}
 }

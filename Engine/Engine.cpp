@@ -34,8 +34,6 @@ Engine::~Engine()
 
 void Engine::Run()
 {
-    
-
     while (m_renderWindow->isOpen())
     {
         
@@ -61,9 +59,6 @@ void Engine::Run()
             
         }
     }
-
-
-
 }
 
 void Engine::ExitGame()

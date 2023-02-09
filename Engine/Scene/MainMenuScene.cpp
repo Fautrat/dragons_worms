@@ -51,10 +51,9 @@ void MainMenuScene::Start()
 void MainMenuScene::Update(const float& deltaTime)
 {
    
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))m_isclicked = true;
     sf::Vector2i mousepos = engine->getMousePos();
-    if (ui->InteractionButton("PlayButton", mousepos, m_isclicked)) Play();
-    if (ui->InteractionButton("QuitButton", mousepos, m_isclicked)) Quit();
+    if (ui->InteractionButton("PlayButton", mousepos)) Play();
+    if (ui->InteractionButton("QuitButton", mousepos)) Quit();
     
 }
 
