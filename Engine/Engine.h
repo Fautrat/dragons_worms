@@ -33,8 +33,9 @@ public:
 	static Engine& getInstance();
 	sf::RenderWindow& getRenderWindow();
 	const EState& getGameState() const;
-
-
+	InputHandler& getInputHandler();
+	sf::Vector2<int> getMousePos();
+	void setSceneToLoad(ESceneType scene);
 
 private:
 	EState gameState = STOP;
@@ -50,4 +51,5 @@ private:
 	Scene* m_currScene = nullptr;
 	sf::RenderWindow m_window;
 	sf::Clock m_deltaClock;
+	sf::Vector2<int> m_mousePosition;
 };

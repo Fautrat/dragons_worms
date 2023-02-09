@@ -11,13 +11,8 @@ class Engine;
 class MainMenuScene : public Scene
 {
 public:
-  
     sf::Sprite videoSprite;
-    sf::Text playButton;
-    sf::Text optionsButton;
-    sf::Text exitButton;
-    sf::Music music;
-
+    sf::Music* music;
     sf::Font font;
     sf::Texture videoTexture;
 
@@ -31,6 +26,8 @@ public:
 	void Update(const float& deltaTime) final;
 	void Render(sf::RenderTarget* renderTarget) final;
 
-    unsigned int window_width;
-    unsigned int window_height;
+private :
+    void Play();
+    void Quit();
+    bool m_isclicked = false;
 };

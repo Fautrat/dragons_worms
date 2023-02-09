@@ -29,6 +29,7 @@ Engine::Engine()
 Engine::~Engine()
 {
     delete m_currScene;
+    m_currScene = nullptr;
 }
 
 void Engine::Run()
@@ -37,25 +38,28 @@ void Engine::Run()
 
     while (m_renderWindow->isOpen())
     {
+        
         if (gameState == RUNNING)
         {
             sf::Time _deltaTime = m_deltaClock.restart();
             m_deltaTime = _deltaTime.asSeconds();
             //TODO INPUT MANAGER UPDATE
-            m_renderWindow->clear();
+           
+            HandleEvent();
+            
+            if (nullptr != m_currScene)
+            {
+                m_mousePosition = sf::Mouse::getPosition();
+                m_currScene->Update(getDeltaTime());
+                m_renderWindow->clear();
+                m_currScene->Render(m_renderWindow);
+                m_renderWindow->display();
+            }
+            
+            if (m_sceneToLoad != ESceneType::NONE)
+                LoadScene(m_sceneToLoad);
+            
         }
-
-        if (m_currScene)
-        {
-            m_currScene->Update(getDeltaTime());
-            m_currScene->Render(m_renderWindow);
-        }
-
-        
-        HandleEvent();
-        if (m_sceneToLoad != ESceneType::NONE)
-            LoadScene(m_sceneToLoad);
-        m_renderWindow->display();
     }
 
 
@@ -66,13 +70,9 @@ void Engine::ExitGame()
 {
     
     gameState = STOP;
-    delete m_currScene;
-    m_currScene = nullptr;
 
     if(m_renderWindow)
     m_renderWindow->close();
-
-
 }
 
 void Engine::LoadScene(ESceneType scene)
@@ -111,6 +111,21 @@ float Engine::getDeltaTime() const
 void Engine::HandleEvent()
 {
     m_input->handleInput();
+}
+
+InputHandler& Engine::getInputHandler()
+{
+    return *m_input;
+}
+
+sf::Vector2<int> Engine::getMousePos()
+{
+    return m_mousePosition;
+}
+
+void Engine::setSceneToLoad(ESceneType scene)
+{
+    m_sceneToLoad = scene;
 }
 
 

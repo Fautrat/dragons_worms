@@ -12,7 +12,6 @@ int main()
    
     Engine* engine = new Engine();
     engine->Run();
-    engine->LoadScene(MAINMENU);
     delete engine;
     engine = nullptr;
 

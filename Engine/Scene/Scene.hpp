@@ -1,13 +1,9 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-
+#include "../Engine.h"
 class Engine;
 
-struct SceneConfig
-{
-
-};
 
 class Scene
 {
