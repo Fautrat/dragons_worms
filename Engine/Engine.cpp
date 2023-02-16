@@ -18,12 +18,8 @@ Engine::Engine()
         "Dragons with engine",
         sf::Style::Fullscreen
     );
-
-
     m_renderWindow->setFramerateLimit(60);
     m_input = new InputHandler(m_renderWindow);
-    
-
 }
 
 Engine::~Engine()

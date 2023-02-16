@@ -2,12 +2,15 @@
 #include <vector>
 #include <memory>
 #include "Component.h"
+#include "Transform.h"
 
 class Entity
 {
 public:
-    Entity() {};
-    virtual ~Entity() {};
+    Entity() {
+        this->addComponent<Transform>(0, 0);
+    };
+    virtual ~Entity() = default;
 
     template<typename T, typename... Args>
     inline T& addComponent(Args&&... arguments) {
@@ -32,7 +35,37 @@ public:
         return *static_cast<T*>(ptr);
     }
 
+    template<typename T>
+    inline bool hasComponent() const
+    {
+        return compBitset[getComponentTypeId<T>()];
+    }
+
+    inline bool isActive() const {
+        return active;
+    }
+
+    inline void destroy() {
+        active = false;
+    }
+
+    inline void draw() {
+        for (auto& comp : components)
+        {
+            comp->draw();
+        }
+    }
+
+    inline void update() {
+        for (auto& comp : components)
+        {
+            comp->update();
+        }
+    }
+
+
 private:
+    bool active;
     ComponentArray compArray;
     ComponentBitset compBitset;
     std::vector<std::unique_ptr<Component>> components;

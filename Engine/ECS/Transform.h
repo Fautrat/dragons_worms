@@ -1,19 +1,34 @@
 #include "Component.h"
-#include "../Utils/Vect2D.h"
+#include "SFML/Graphics.hpp"
 
 class Transform : public Component
 {
 public:
-    Transform() {}
-    virtual ~Transform() {};
+    Transform() = default;
 
-    bool init() override final {
-        position.zero();
-        scale.ones();
-        rotation = 0.0f;
+    Transform(float x, float y) {
+        position.x = x;
+        position.y = y;
     }
 
-    Vect2F position;
-    Vect2F scale;
-    float rotation;
+    Transform(float x, float y, float scalex, float scaley) {
+        position.x = x;
+        position.y = y;
+        scale.x = scalex;
+        scale.y = scaley;
+    }
+
+    Transform(float x, float y, float scalex, float scaley, float rotation) {
+        position.x = x;
+        position.y = y;
+        scale.x = scalex;
+        scale.y = scaley;
+        this->rotation = rotation;
+    }
+    virtual ~Transform() = default;
+    
+    
+    sf::Vector2f position = sf::Vector2f();
+    sf::Vector2f scale = sf::Vector2f(1,1);
+    float rotation = 0.0f;
 };
