@@ -4,14 +4,16 @@
 #include "Component.h"
 #include "../AssetManagerTemp/AssetManagerTemp.h"
 
-class Sprite : public Component
+class SpriteRenderer : public Component
 {
 public:
-	Sprite() = default;
-	virtual ~Sprite() = default;
-	Sprite(std::string textureid) :textureID(textureid){}
+	SpriteRenderer() = default;
+	virtual ~SpriteRenderer() = default;
+	SpriteRenderer(std::string textureid) :textureID(textureid){}
 
 	bool init() override final{
+
+		if(nullptr != entity)
 		transform = &entity->getComponent<Transform>();
 		texture = AssetManagerTemp::get().getTexture(textureID);
 		

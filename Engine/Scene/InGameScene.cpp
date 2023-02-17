@@ -18,7 +18,7 @@ InGameScene::InGameScene(Engine& engine) :Scene(engine)
     m_manager = new EntityManager();
     Entity* entity = new Entity();
     entity->getComponent<Transform>().position = sf::Vector2f(100, 100);
-    entity->addComponent<Sprite>("Player");
+    entity->addComponent<SpriteRenderer>("Player");
     m_manager->addEntity(entity);
 }
 
