@@ -4,7 +4,10 @@
 
 #include "../Engine/Scene/MainMenuScene.hpp"
 #include "../Engine/Scene/InGameScene.hpp"
-#include <iostream>
+
+
+
+
 
 
 Engine* Engine::m_instance = nullptr;
@@ -16,10 +19,12 @@ Engine::Engine()
     m_renderWindow = new sf::RenderWindow(
         sf::VideoMode(1920, 1080),
         "Dragons with engine",
-        sf::Style::Fullscreen
+        sf::Style::Resize
     );
     m_renderWindow->setFramerateLimit(60);
     m_input = new InputHandler(m_renderWindow);
+
+
 }
 
 Engine::~Engine()
@@ -37,7 +42,6 @@ void Engine::Run()
         {
             sf::Time _deltaTime = m_deltaClock.restart();
             m_deltaTime = _deltaTime.asSeconds();
-            //TODO INPUT MANAGER UPDATE
            
             HandleEvent();
             
@@ -59,9 +63,8 @@ void Engine::Run()
 
 void Engine::ExitGame()
 {
-    
     gameState = STOP;
-
+    //AssetManagerTemp::get().clean();
     if(m_renderWindow)
     m_renderWindow->close();
 }
@@ -89,9 +92,6 @@ void Engine::LoadScene(ESceneType scene)
     m_sceneToLoad = ESceneType::NONE;
     gameState = RUNNING;
     m_currScene->Start();
-
-
-
 }
 
 float Engine::getDeltaTime() const

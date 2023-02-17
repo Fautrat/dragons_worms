@@ -1,5 +1,6 @@
 #include <vector>
 #include <memory>
+#include "SFML/Graphics.hpp"
 
 class Entity;
 
@@ -8,7 +9,7 @@ public:
 	EntityManager() = default;
 	~EntityManager() = default;
 
-	void draw();
+	void draw(sf::RenderTarget* renderwindow);
 	void update();
 	void refresh();
 

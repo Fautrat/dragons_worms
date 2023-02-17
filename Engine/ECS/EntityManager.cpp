@@ -1,9 +1,10 @@
 #include "EntityManager.h"
 #include "Entity.h"
 
-void EntityManager::draw(){
+
+void EntityManager::draw(sf::RenderTarget* renderwindow){
 	for (auto& entity : entities)
-		entity->draw();
+		entity->draw(renderwindow);
 }
 
 void EntityManager::update(){

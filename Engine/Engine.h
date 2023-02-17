@@ -52,4 +52,7 @@ private:
 	sf::RenderWindow m_window;
 	sf::Clock m_deltaClock;
 	sf::Vector2<int> m_mousePosition;
+
+
+
 };

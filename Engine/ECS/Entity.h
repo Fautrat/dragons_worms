@@ -1,8 +1,11 @@
+#pragma once
+
 #include "ECS.h"
 #include <vector>
 #include <memory>
 #include "Component.h"
 #include "Transform.h"
+#include "SFML/Graphics.hpp"
 
 class Entity
 {
@@ -14,7 +17,9 @@ public:
 
     template<typename T, typename... Args>
     inline T& addComponent(Args&&... arguments) {
+
         T* comp(new T(std::forward<Args>(arguments)...));
+
         //{comp} convertis comp en  unique ptr stockable
         std::unique_ptr<Component> uptr{ comp };
         components.emplace_back(std::move(uptr));
@@ -49,10 +54,10 @@ public:
         active = false;
     }
 
-    inline void draw() {
+    inline void draw(sf::RenderTarget* renderwindow) {
         for (auto& comp : components)
         {
-            comp->draw();
+            comp->draw(renderwindow);
         }
     }
 
@@ -65,7 +70,7 @@ public:
 
 
 private:
-    bool active;
+    bool active = false;
     ComponentArray compArray;
     ComponentBitset compBitset;
     std::vector<std::unique_ptr<Component>> components;
