@@ -3,6 +3,7 @@
 #include <sfml/graphics.hpp>
 #include <memory>
 #include <vector>
+#include <mutex>
 #include "../Game/InputHandler.hpp"
 
 
@@ -24,35 +25,44 @@ class Scene;
 
 class Engine
 {
-public:
+protected:
 	Engine();
 	~Engine();
+public:
+
 	void Run();
 	void ExitGame();
-	void LoadScene(ESceneType scene);
-	static Engine& getInstance();
-	sf::RenderWindow& getRenderWindow();
+	static Engine* getInstance();
 	const EState& getGameState() const;
-	InputHandler& getInputHandler();
-	sf::Vector2<int> getMousePos();
+	Engine(Engine& other) = delete;
+	void operator=(const Engine&) = delete;
+
+	//Scenes
+	void LoadScene(ESceneType scene);
 	void setSceneToLoad(ESceneType scene);
 
+	sf::RenderWindow& getRenderWindow();
+	sf::Vector2<int> getMousePos();
+	InputHandler& getInputHandler();
+	
 private:
+	static std::mutex m_mutex;
+	static Engine* m_instance;
+
 	EState gameState = STOP;
-	sf::RenderWindow* m_renderWindow = nullptr;
+	//Scenes
+	ESceneType m_sceneToLoad = ESceneType::MAINMENU;
+	Scene* m_currScene = nullptr;
+
 	InputHandler* m_input;
+	sf::RenderWindow* m_renderWindow = nullptr;
+
 	float m_deltaTime = 0;
 	float getDeltaTime() const;
-
 	void HandleEvent();
 
-	ESceneType m_sceneToLoad = ESceneType::MAINMENU;
-	static Engine* m_instance;
-	Scene* m_currScene = nullptr;
-	sf::RenderWindow m_window;
+	
 	sf::Clock m_deltaClock;
 	sf::Vector2<int> m_mousePosition;
-
-
 
 };

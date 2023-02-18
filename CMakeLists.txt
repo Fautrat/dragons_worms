@@ -8,4 +8,13 @@ set(CMAKE_CXX_STANDARD 20)
 add_subdirectory(Engine)
 add_subdirectory(Game)
 
-file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
+#file(COPY assets DESTINATION "${CMAKE_BINARY_DIR}")
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
+#add_custom_command(
+#	TARGET ${PROJECT_NAME}
+#	POST_BUILD
+#	COMMAND ${CMAKE_COMMAND} -E copy_directory
+#	assets
+#	$<TARGET_FILE_DIR:${PROJECT_NAME}>
+#)

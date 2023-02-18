@@ -29,5 +29,6 @@ public:
 private :
     void Play();
     void Quit();
+    void Options();
     bool m_isclicked = false;
 };

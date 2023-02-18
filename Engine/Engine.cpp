@@ -11,6 +11,7 @@
 
 
 Engine* Engine::m_instance = nullptr;
+std::mutex Engine::m_mutex;
 
 Engine::Engine()
 {
@@ -29,6 +30,10 @@ Engine::Engine()
 
 Engine::~Engine()
 {
+    delete m_input;
+    m_input = nullptr;
+    delete m_renderWindow;
+    m_renderWindow = nullptr;
     delete m_currScene;
     m_currScene = nullptr;
 }
@@ -64,14 +69,12 @@ void Engine::Run()
 void Engine::ExitGame()
 {
     gameState = STOP;
-    //AssetManagerTemp::get().clean();
     if(m_renderWindow)
     m_renderWindow->close();
 }
 
 void Engine::LoadScene(ESceneType scene)
 {
-    std::cout << "Loadscene" << std::endl;
     gameState = PAUSE;
     delete m_currScene;
 
@@ -120,13 +123,18 @@ void Engine::setSceneToLoad(ESceneType scene)
 }
 
 
-Engine& Engine::getInstance() {
-    return *m_instance;
+Engine* Engine::getInstance() {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    if (m_instance == nullptr)
+    {
+        m_instance = new Engine();
+    }
+    return m_instance;
 }
 
 sf::RenderWindow& Engine::getRenderWindow()
 {
-    // TODO: insérer une instruction return ici 
+    // TODO: insï¿½rer une instruction return ici 
     return *m_renderWindow;
 }
 

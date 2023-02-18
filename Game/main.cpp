@@ -6,10 +6,8 @@
 
 int main()
 {
-    Engine* engine = new Engine();
+    Engine* engine = Engine::getInstance();
     engine->Run();
-    delete engine;
-    engine = nullptr;
 
 
     return 0;
