@@ -1,6 +1,7 @@
 #pragma once
 #include "Component.h"
 #include "SFML/Graphics.hpp"
+#include <iostream>
 
 class Transform : public Component
 {
@@ -27,9 +28,13 @@ public:
         this->rotation = rotation;
     }
     virtual ~Transform() = default;
+
+    void translate(sf::Vector2f v) {
+        position += v;
+    }
     
     
     sf::Vector2f position = sf::Vector2f();
-    sf::Vector2f scale = sf::Vector2f(1,1);
+    sf::Vector2f scale = sf::Vector2f(1.0f,1.0f);
     float rotation = 0.0f;
 };

@@ -1,5 +1,6 @@
 #include <string>
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include "Entity.h"
 #include "Component.h"
 #include "../AssetManagerTemp/AssetManagerTemp.h"
@@ -16,20 +17,11 @@ public:
 		if(nullptr != entity)
 		transform = &entity->getComponent<Transform>();
 		texture = AssetManagerTemp::get().getTexture(textureID);
-		
-		dstRect.left = transform->position.x;
-		dstRect.top = transform->position.y;
-		dstRect.width = width * transform->scale.x;
-		dstRect.height = height * transform->scale.y;
-
-		srcRect.left = 0;
-		srcRect.top = 0;
-		srcRect.width = width;
-		srcRect.height = height;
 
 		sprite = new sf::Sprite();
 		sprite->setTexture(*texture);
-
+		sprite->setScale(transform->scale);
+		sprite->setPosition(transform->position);
 		return true;
 	}
 
@@ -39,17 +31,20 @@ public:
 	}
 
 	void update() override final {
-		dstRect.left = static_cast<int>(transform->position.x);
-		dstRect.top = static_cast<int>(transform->position.y);
-		dstRect.width = static_cast<int>(width*transform->scale.x);
-		dstRect.height = static_cast<int>(height*transform->scale.y);
+
+		sprite->setPosition(transform->position);
 	}
 
+	sf::Texture* getTexture()
+	{
+		return texture;
+	}
+
+	sf::Sprite* getSprite()
+	{
+		return sprite;
+	}
 private:
-	int width = 0;
-	int height = 0;
-	sf::Rect<int> srcRect = { 0,0,0,0 };
-	sf::Rect<int> dstRect = { 0,0,0,0 };
 
 	Transform* transform = nullptr;
 	sf::Sprite* sprite;

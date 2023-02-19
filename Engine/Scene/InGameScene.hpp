@@ -4,8 +4,12 @@
 #include "../../Game/dragons.hpp"
 #include "../ECS/EntityManager.h"
 #include "../ECS/Entity.h"
-#include "../ECS/Sprite.h"
+#include "../ECS/SpriteRenderer.h"
 #include "../ECS/ECS.h"
+#include "../ECS/RigidBody.h"
+#include "../ECS/BoxCollider2D.h"
+#include "../Physics/Collision.h"
+
 
 class Engine;
 
@@ -16,11 +20,10 @@ private:
 	sf::Texture backgroundTexture;
 	sf::Sprite backgroundSprite;
 	Dragon* player;
-#pragma region ECS
 	EntityManager* m_manager;
-
-#pragma endregion ECS
-
+	Entity* dragon = new Entity();
+	Entity* wall = new Entity();
+	Collision* collision = new Collision();
 public:
 	InGameScene(Engine& engine);
 	~InGameScene();
