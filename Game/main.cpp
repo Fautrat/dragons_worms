@@ -1,12 +1,12 @@
-#include "Game.hpp"
-
+#include "Engine.h"
+#include <iostream>
+#include "ECS/Input.h"
 
 int main()
 {
-    Game* game = new Game();
-    game->gameLoop();
-    delete game;
-    game = nullptr;
+    Engine* engine = Engine::getInstance();
+    engine->Run();
+
 
     return 0;
 }

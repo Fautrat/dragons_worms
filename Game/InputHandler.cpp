@@ -3,6 +3,7 @@
 #include <vector>
 #include <SFML/Window.hpp>
 #include "InputHandler.hpp"
+#include <iostream>
 
 void InputHandler::connect(sf::Keyboard::Key key, Slot slot)
 {
@@ -12,11 +13,11 @@ void InputHandler::connect(sf::Keyboard::Key key, Slot slot)
 void InputHandler::handleInput()
 {
     sf::Event event;
-    while (m_window.pollEvent(event))
+    while (m_window->pollEvent(event))
     {
         if (event.type == sf::Event::Closed)
         {
-            m_window.close();
+            m_window->close();
         }
         else if (event.type == sf::Event::KeyPressed)
         {
