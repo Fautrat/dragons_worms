@@ -32,7 +32,8 @@ public:
     void translate(sf::Vector2f v) {
         position += v;
     }
-    
+
+
     
     sf::Vector2f position = sf::Vector2f();
     sf::Vector2f scale = sf::Vector2f(1.0f,1.0f);

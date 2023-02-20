@@ -1,0 +1,30 @@
+#pragma once
+
+#include "../../Game/InputHandler.hpp"
+#include <sfml/Graphics.hpp>
+#include "Component.h"
+#include "Entity.h"
+#include "RigidBody.h"
+
+class Input : public Component{
+public:
+	Input(InputHandler* input)
+	{
+		input->connect(sf::Keyboard::D, [this] {rigidbody->moveHorizontal(1); });
+		input->connect(sf::Keyboard::Q, [this] {rigidbody->moveHorizontal(-1); });
+		input->connect(sf::Keyboard::Space, [this] {rigidbody->Jump(); });
+	}
+
+	bool init() override final {
+		transform = &entity->getComponent<Transform>();
+		rigidbody = &entity->getComponent<Rigidbody>();
+		return true;
+	}
+
+
+	virtual ~Input() = default;
+private:
+	Transform* transform = nullptr;
+	Rigidbody* rigidbody = nullptr;
+	//float m_speed = 5.0f;
+};

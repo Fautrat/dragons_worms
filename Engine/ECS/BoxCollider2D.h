@@ -23,10 +23,10 @@ public:
 
 	bool init() override final
 	{
-		debugRect.setSize(sf::Vector2f(box.width, box.height));
-		debugRect.setFillColor(sf::Color::Transparent);
-		debugRect.setOutlineThickness(5);
-		debugRect.setOutlineColor(sf::Color(250, 150, 100));
+		//debugRect.setSize(sf::Vector2f(box.width, box.height));
+		//debugRect.setFillColor(sf::Color::Transparent);
+		//debugRect.setOutlineThickness(5);
+		//debugRect.setOutlineColor(sf::Color(250, 150, 100));
 		transform = &entity->getComponent<Transform>();
 		
 		return true;
@@ -43,17 +43,12 @@ public:
 	{
 		box.left = transform->position.x;
 		box.top = transform->position.y;
-		debugRect.setPosition(transform->position);
+		//debugRect.setPosition(transform->position);
 
 	}
 
 	std::string getCollisionTag() const {
 		return collisionTag;
-	}
-
-	sf::Rect<int> getBox()
-	{
-		return box;
 	}
 
 private:

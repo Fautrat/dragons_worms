@@ -1,10 +1,12 @@
 #pragma once
 #include <sfml/Graphics.hpp>
-//#include "BoxCollider2D.h"
+#include "../ECS/BoxCollider2D.h"
 
 class Collision {
 public:
 	//AABB collision handle
 	bool BoxAndBox(const sf::Rect<int>& rectA, const sf::Rect<int>& rectB);
-	//bool BoxAndBox(const BoxCollider2D& colA, const BoxCollider2D& colB);
+	bool BoxAndBox(const BoxCollider2D& colA, const BoxCollider2D& colB);
+
+	// TODO : BoxAndLine / BoxAndCircle
 };

@@ -3,6 +3,7 @@
 #include <vector>
 #include <SFML/Window.hpp>
 #include "InputHandler.hpp"
+#include <iostream>
 
 void InputHandler::connect(sf::Keyboard::Key key, Slot slot)
 {
