@@ -24,6 +24,9 @@ private:
 	EntityManager* m_manager;
 	Entity* dragon = new Entity();
 	Entity* wall = new Entity();
+	Entity* circle = new Entity();
+	Entity* Triangle = new Entity();
+
 	Collision* collision = new Collision();
 public:
 	InGameScene(Engine& engine);

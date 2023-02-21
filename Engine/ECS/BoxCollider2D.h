@@ -27,9 +27,13 @@ public:
 		//debugRect.setFillColor(sf::Color::Transparent);
 		//debugRect.setOutlineThickness(5);
 		//debugRect.setOutlineColor(sf::Color(250, 150, 100));
-		transform = &entity->getComponent<Transform>();
-		
-		return true;
+		if (transform = &entity->getComponent<Transform>())
+			return true;
+		else
+		{
+			std::cout << "Problème d'initialisation component BoxCollider" << std::endl;
+			return false;
+		}
 	}
 
 	void draw(sf::RenderTarget* renderWindow) override final
