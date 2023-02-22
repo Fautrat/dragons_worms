@@ -6,16 +6,25 @@
 #include "Component.h"
 #include <vector>
 
+// The angle side is the position of the 90° angle of the triangle
+enum AngleSide{
+	UPLEFT,
+	UPRIGHT,
+	DOWNLEFT,
+	DOWNRIGHT
+};
 
 class TriangleCollider2D : public Component {
 public:
 	//First Point = 90° angle, Line Vect2 of Vect2 = {{x1,y1},{x2,y2}}
 	TriangleCollider2D(sf::Vector2<sf::Vector2i> Line1, sf::Vector2<sf::Vector2i> Line2, sf::Vector2<sf::Vector2i> Line3 , int spriteWidth)
 	{
-		m_lines.push_back(Line1);
-		m_lines.push_back(Line2);
-		m_lines.push_back(Line3);
-		m_spriteWidth = spriteWidth;
+
+	}
+
+	TriangleCollider2D(int spriteWidth, AngleSide angle) : m_spriteWidth(spriteWidth), m_angle(angle)
+	{
+		
 	}
 
 	/*TriangleCollider2D(int firstPointx, int firstPointy, int secondPointx, int secondPointy, int thirdPointx, int thirdPointy, std::string tag) : collisionTag(tag)
@@ -28,12 +37,59 @@ public:
 		pointC.y = thirdPointy;
 	}*/
 
-	~TriangleCollider2D() = default;
+	~TriangleCollider2D()
+	{
+		delete transform;
+	};
 
 	bool init() override final
 	{
 		if (transform = &entity->getComponent<Transform>())
 		{
+			auto LineUPleftToUpRight = sf::Vector2(sf::Vector2i(transform->position.x, transform->position.y),
+				sf::Vector2i(transform->position.x + m_spriteWidth, transform->position.y));
+
+			auto LineUPleftToDownLeft = sf::Vector2(sf::Vector2i(transform->position.x, transform->position.y),
+				sf::Vector2i(transform->position.x, transform->position.y + m_spriteWidth));
+
+			auto LineUPRightToDownRight = sf::Vector2(sf::Vector2i(transform->position.x + m_spriteWidth, transform->position.y),
+				sf::Vector2i(transform->position.x + m_spriteWidth, transform->position.y + m_spriteWidth));
+
+			auto LineDownLeftToDownRight = sf::Vector2(sf::Vector2i(transform->position.x, transform->position.y + m_spriteWidth),
+				sf::Vector2i(transform->position.x + m_spriteWidth, transform->position.y + m_spriteWidth));
+
+			auto DiagDownLeftToUpRight = sf::Vector2(sf::Vector2i(transform->position.x, transform->position.y + m_spriteWidth),
+				sf::Vector2i(transform->position.x + m_spriteWidth, transform->position.y));
+
+			auto DiagUpLeftToDownRight = sf::Vector2(sf::Vector2i(transform->position.x, transform->position.y),
+				sf::Vector2i(transform->position.x + m_spriteWidth, transform->position.y + m_spriteWidth));
+
+			switch (m_angle)
+			{
+			case UPLEFT:
+				m_lines.push_back(LineUPleftToUpRight);
+				m_lines.push_back(LineUPleftToDownLeft);
+				m_lines.push_back(DiagDownLeftToUpRight);
+				break;
+			case UPRIGHT:
+				m_lines.push_back(LineUPleftToUpRight);
+				m_lines.push_back(LineUPRightToDownRight);
+				m_lines.push_back(DiagUpLeftToDownRight);
+				break;
+			case DOWNLEFT:
+				m_lines.push_back(LineUPleftToDownLeft);
+				m_lines.push_back(LineDownLeftToDownRight);
+				m_lines.push_back(DiagUpLeftToDownRight);
+				break;
+			case DOWNRIGHT:
+				m_lines.push_back(LineUPRightToDownRight);
+				m_lines.push_back(LineDownLeftToDownRight);
+				m_lines.push_back(DiagDownLeftToUpRight);
+				break;
+			default:
+				break;
+			}
+
 			return true;
 		}
 		else
@@ -41,6 +97,7 @@ public:
 			std::cout << "Problème d'initialisation component TriangleCollider" << std::endl;
 			return false;
 		}
+
 	}
 
 	void draw(sf::RenderTarget* renderWindow) override final
@@ -65,7 +122,7 @@ private:
 	
 	int m_spriteWidth = 0;
 
-
+	AngleSide m_angle = DOWNLEFT;
 	std::string collisionTag = "";
 	Transform* transform = nullptr;
 

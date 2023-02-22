@@ -21,7 +21,10 @@ public:
 
 	}
 
-	~SphereCollider2D() = default;
+	~SphereCollider2D()
+	{
+		delete transform;
+	}
 
 	bool init() override final
 	{

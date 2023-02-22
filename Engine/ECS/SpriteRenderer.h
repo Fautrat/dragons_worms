@@ -9,16 +9,26 @@ class SpriteRenderer : public Component
 {
 public:
 	SpriteRenderer() = default;
-	virtual ~SpriteRenderer() = default;
+	~SpriteRenderer() {
+		delete transform;
+		delete sprite;
+		delete texture;
+	}
+
 	SpriteRenderer(std::string textureid) :textureID(textureid){}
 
 	bool init() override final{
 
-		if(nullptr != entity)
+		if (nullptr == entity && 
+			nullptr == AssetManagerTemp::get().getTexture(textureID)) 
+			return false;
+
 		transform = &entity->getComponent<Transform>();
 		texture = AssetManagerTemp::get().getTexture(textureID);
-
 		sprite = new sf::Sprite();
+		if (nullptr == sprite) 
+			return false;
+
 		sprite->setTexture(*texture);
 		sprite->setScale(transform->scale);
 		sprite->setPosition(transform->position);
@@ -47,7 +57,7 @@ public:
 private:
 
 	Transform* transform = nullptr;
-	sf::Sprite* sprite;
+	sf::Sprite* sprite = nullptr;
 	std::string textureID = "";
 	sf::Texture* texture = nullptr;
 

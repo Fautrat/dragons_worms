@@ -11,13 +11,22 @@ class Rigidbody : public Component
 {
 public:
 	Rigidbody() = default;
-	virtual ~Rigidbody() = default;
+	~Rigidbody()
+	{
+		delete transform;
+		delete rigidbody;
+	}
 
 	Rigidbody(float gravity_scale) : m_gravity_scale(gravity_scale) {}
 
 	bool init() override final {
 		transform = &entity->getComponent<Transform>();
-		return true;
+		rigidbody = &entity->getComponent<Rigidbody>();
+		if (nullptr != transform && nullptr != rigidbody)
+		{
+			return true;
+		}
+		return false;
 	}
 
 	void update() override final{
@@ -68,7 +77,7 @@ public:
 
 
 private:
-	//float mass
+	//temp Jump
 	float timeSpentJump = 0.0f;
 	float m_gravity_scale = 1.0f;
 	sf::Vector2f m_drag = sf::Vector2f();

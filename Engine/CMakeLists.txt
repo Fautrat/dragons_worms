@@ -5,7 +5,7 @@ set(ENGINE_HEADERS
 
 set(ENGINE_SOURCES
         Engine.cpp "Scene/Scene.cpp" "Scene/MainMenuScene.cpp" "Scene/InGameScene.cpp" "UI/UI.cpp"
-        "ECS/EntityManager.cpp" "AssetManagerTemp/AssetManagerTemp.cpp" "Physics/Collision.cpp")
+        "ECS/EntityManager.cpp" "AssetManagerTemp/AssetManagerTemp.cpp" "Physics/Collision.cpp" )
 
 find_package(SFML COMPONENTS system window graphics audio CONFIG REQUIRED)
 

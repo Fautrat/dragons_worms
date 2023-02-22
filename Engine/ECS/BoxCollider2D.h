@@ -19,7 +19,10 @@ public:
 		box.height = height;
 	}
 
-	~BoxCollider2D() = default;
+	~BoxCollider2D()
+	{
+		delete transform;
+	}
 
 	bool init() override final
 	{

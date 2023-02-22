@@ -16,13 +16,23 @@ public:
 	}
 
 	bool init() override final {
+		
 		transform = &entity->getComponent<Transform>();
 		rigidbody = &entity->getComponent<Rigidbody>();
-		return true;
+		if (nullptr != transform && nullptr != rigidbody)
+		{
+			return true;
+		}
+		return false;
 	}
 
 
-	virtual ~Input() = default;
+	~Input()
+	{
+		delete transform;
+		delete rigidbody;
+	}
+
 private:
 	Transform* transform = nullptr;
 	Rigidbody* rigidbody = nullptr;
