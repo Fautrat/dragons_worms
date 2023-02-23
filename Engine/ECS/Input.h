@@ -11,7 +11,8 @@ public:
 	Input(InputHandler* input)
 	{
 		input->connect(sf::Keyboard::D, [this] {rigidbody->moveHorizontal(1); });
-		input->connect(sf::Keyboard::Q, [this] {rigidbody->moveHorizontal(-1); });
+		input->connect(sf::Keyboard::Q, [this] {rigidbody->moveHorizontal(-1);});
+		input->connect(sf::Keyboard::N, [this] {entity->shoot(sf::Mouse::getPosition()); });
 		input->connect(sf::Keyboard::Space, [this] {rigidbody->Jump(); });
 	}
 

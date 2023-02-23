@@ -10,7 +10,7 @@ public:
 	~EntityManager() = default;
 
 	void draw(sf::RenderTarget* renderwindow);
-	void update();
+	void update(const float& deltaTime);
 	void refresh();
 
 	void addEntity(Entity* player);

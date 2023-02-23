@@ -29,69 +29,52 @@ public:
 		return false;
 	}
 
-	void update() override final{
-		applyJump();
-		m_velocity.x =+ m_force.x - m_drag.x + directionX;
-		m_velocity.y =+ m_force.y + m_drag.y + m_gravity_scale * GRAVITY + directionY;
+	void update(const float& deltaTime) override final{
+		m_velocity.x = m_velocity.x * 0.9f * deltaTime;
+		m_velocity.y = m_velocity.y + (m_gravity_scale * GRAVITY * deltaTime) ;
 
 		transform->translate(m_velocity);
 	}
 
-	void setForce(const sf::Vector2f f) {m_force = f;}
 	void setMovementSpeed(const float speed) {
 		m_speed = speed;
 	}
 
 	void moveHorizontal(int direction) {
-		directionX = m_speed * direction;
+		m_velocity.x = m_speed * direction;
 	}
 
-	void applyJump()
-	{	
-		timeSpentJump++;
-		if (timeSpentJump >= 0.0f && jump == true)
-		{
-			directionY = -m_jumpForce;
-			isOnGround = false;
-		}
-
-		if (timeSpentJump >= 20)
-		{
-			directionY = 0;
-			jump = false;
-			timeSpentJump = 0.0f;
-		}
-		
-	}
-
-	void isgrounded(bool state)
+	void setVelocityY(const float newVelocityY)
 	{
-		isOnGround = state;
+		m_velocity.y = newVelocityY;
 	}
+
+	void setVelocityX(const float newVelocityX)
+	{
+		m_velocity.x = newVelocityX;
+	}
+
 	void Jump()
 	{
-		jump = true;
+		if (!isOnGround)
+			return;
+		m_velocity.y = -m_jumpForce;
+		isOnGround = false;
 	}
 
-
+	void landing()
+	{
+		isOnGround = true;
+	}
 
 
 private:
-	//temp Jump
-	float timeSpentJump = 0.0f;
 	float m_gravity_scale = 1.0f;
-	sf::Vector2f m_drag = sf::Vector2f();
-	sf::Vector2f m_force = sf::Vector2f();
 	sf::Vector2f m_velocity = sf::Vector2f();
-	float m_speed = 5.0f;
-	float m_jumpForce = 25.0f;
-	float directionX = 0.0f;
-	float directionY = 0.0f;
+	float m_speed = 300.0f;
+	float m_jumpForce = 8.0f;
 	Transform* transform = nullptr;
-	Rigidbody* rigidbody = nullptr;
-	bool jump = false;
 	bool isOnGround = false;
-
 
 
 };
