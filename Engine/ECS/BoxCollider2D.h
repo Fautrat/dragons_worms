@@ -7,49 +7,58 @@
 
 class BoxCollider2D : public Component{
 public:
-	BoxCollider2D(int width, int height)
+	BoxCollider2D(int width, int height): m_width(width), m_height(height)
 	{
 		box.width = width;
 		box.height = height;
 	}
 
-	BoxCollider2D(int width, int height, std::string tag) : collisionTag(tag)
+	BoxCollider2D(int width, int height, std::string tag) : m_width(width), m_height(height), collisionTag(tag)
 	{
 		box.width = width;
 		box.height = height;
 	}
 
-	~BoxCollider2D() = default;
+	~BoxCollider2D()
+	{
+		delete transform;
+	}
 
 	bool init() override final
 	{
-		//debugRect.setSize(sf::Vector2f(box.width, box.height));
-		//debugRect.setFillColor(sf::Color::Transparent);
-		//debugRect.setOutlineThickness(5);
-		//debugRect.setOutlineColor(sf::Color(250, 150, 100));
-		transform = &entity->getComponent<Transform>();
-		
-		return true;
+		debugRect.setSize(sf::Vector2f(box.width, box.height));
+		debugRect.setFillColor(sf::Color::Transparent);
+		debugRect.setOutlineThickness(2);
+		debugRect.setOutlineColor(sf::Color(250, 150, 100));
+		debugRect.setOrigin(sf::Vector2f(box.width / 2, box.height / 2));
+
+		if (transform = &entity->getComponent<Transform>())
+			return true;
+		else
+		{
+			std::cout << "Problème d'initialisation component BoxCollider" << std::endl;
+			return false;
+		}
 	}
 
 	void draw(sf::RenderTarget* renderWindow) override final
 	{
 		//Debug
-		//renderWindow->draw(debugRect);
+		renderWindow->draw(debugRect);
 		
 	}
 
 	void update(const float& deltaTime) override final
 	{
-		box.left = transform->position.x;
-		box.top = transform->position.y;
-		//debugRect.setPosition(transform->position);
-
+		box.left = transform->position.x - m_width;
+		box.top = transform->position.y - m_height;
+		debugRect.setPosition(transform->position);
 	}
 
 	std::string getCollisionTag() const {
 		return collisionTag;
 	}
+	int m_width, m_height = 0;
 
 private:
 	friend class Collision;
@@ -57,5 +66,4 @@ private:
 	std::string collisionTag = "";
 	Transform* transform = nullptr;
 	sf::RectangleShape debugRect;
-	
 };

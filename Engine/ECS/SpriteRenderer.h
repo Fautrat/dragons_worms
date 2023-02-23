@@ -1,28 +1,37 @@
+#pragma once 
+
 #include <string>
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "Entity.h"
 #include "Component.h"
-#include "../AssetManagerTemp/AssetManagerTemp.h"
+#include "../AssetManager/AssetManager.h"
 
 class SpriteRenderer : public Component
 {
 public:
 	SpriteRenderer() = default;
-	virtual ~SpriteRenderer() = default;
+	~SpriteRenderer() {
+		delete transform;
+		delete sprite;
+		delete texture;
+	}
+
 	SpriteRenderer(std::string textureid) :textureID(textureid){}
 
 	bool init() override final{
-
-		if(nullptr != entity)
-		transform = &entity->getComponent<Transform>();
-		texture = AssetManagerTemp::get().getTexture(textureID);
-
 		sprite = new sf::Sprite();
-		sprite->setTexture(*texture);
-		sprite->setScale(transform->scale);
-		sprite->setPosition(transform->position);
-		return true;
+		if (nullptr != entity && nullptr != AssetManager::get().getTexture(textureID) && nullptr != sprite)
+		{
+			transform = &entity->getComponent<Transform>();
+			texture = AssetManager::get().getTexture(textureID);
+			sprite->setTexture(*texture);
+			sprite->setScale(transform->scale);
+			sprite->setPosition(transform->position);
+			sprite->setOrigin(sf::Vector2f(texture->getSize().x / 2, texture->getSize().y / 2));
+			return true;
+		}
+		return false;
 	}
 
 	void draw(sf::RenderTarget* renderwindow) override final
@@ -49,7 +58,7 @@ public:
 private:
 
 	Transform* transform = nullptr;
-	sf::Sprite* sprite;
+	sf::Sprite* sprite = nullptr;
 	std::string textureID = "";
 	sf::Texture* texture = nullptr;
 

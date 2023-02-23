@@ -11,13 +11,20 @@ class Rigidbody : public Component
 {
 public:
 	Rigidbody() = default;
-	virtual ~Rigidbody() = default;
+	~Rigidbody()
+	{
+		delete transform;
+	}
 
 	Rigidbody(float gravity_scale) : m_gravity_scale(gravity_scale) {}
 
 	bool init() override final {
 		transform = &entity->getComponent<Transform>();
-		return true;
+		if (nullptr != transform)
+		{
+			return true;
+		}
+		return false;
 	}
 
 	void update(const float& deltaTime) override final{

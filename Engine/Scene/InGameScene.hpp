@@ -22,8 +22,9 @@ private:
 	sf::Sprite backgroundSprite;
 	Dragon* player;
 	EntityManager* m_manager;
-	Entity* dragon = new Entity();
-	Entity* wall = new Entity();
+
+	Entity dragon, wall, circle, Triangle;
+
 	Collision* collision = new Collision();
 public:
 	InGameScene(Engine& engine);
