@@ -39,7 +39,7 @@ public:
 		
 	}
 
-	void update() override final
+	void update(const float& deltaTime) override final
 	{
 		box.left = transform->position.x;
 		box.top = transform->position.y;

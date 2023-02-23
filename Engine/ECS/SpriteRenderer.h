@@ -30,7 +30,7 @@ public:
 		renderwindow->draw(*sprite);
 	}
 
-	void update() override final {
+	void update(const float& deltaTime) override final {
 
 		sprite->setPosition(transform->position);
 	}
@@ -44,6 +44,8 @@ public:
 	{
 		return sprite;
 	}
+
+	void flipTexture();
 private:
 
 	Transform* transform = nullptr;

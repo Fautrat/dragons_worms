@@ -64,11 +64,16 @@ public:
         }
     }
 
-    inline void update() {
+    inline void update(const float& deltaTime) {
         for (auto& comp : components)
         {
-            comp->update();
+            comp->update(deltaTime);
         }
+    }
+
+    inline void shoot(sf::Vector2i mousePosition)
+    {
+        //Entity* fireball = new Entity();
     }
 
 

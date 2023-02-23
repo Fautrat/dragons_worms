@@ -7,9 +7,9 @@ void EntityManager::draw(sf::RenderTarget* renderwindow){
 		entity->draw(renderwindow);
 }
 
-void EntityManager::update(){
+void EntityManager::update(const float& deltaTime){
 	for (auto& entity : entities) 
-		entity->update();
+		entity->update(deltaTime);
 }
 
 void EntityManager::refresh(){

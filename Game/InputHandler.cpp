@@ -21,11 +21,26 @@ void InputHandler::handleInput()
         }
         else if (event.type == sf::Event::KeyPressed)
         {
-            auto it = m_slots.find(event.key.code);
-            if (it != m_slots.end())
+            if (std::find(m_using_keys.begin(), m_using_keys.end(), event.key.code) == m_using_keys.end())
+                m_using_keys.push_back(event.key.code);
+        }
+        else if (event.type == sf::Event::KeyReleased)
+        {
+            if (auto it = std::find(m_using_keys.begin(), m_using_keys.end(), event.key.code); it != m_using_keys.end())
             {
-                it->second();
+                m_using_keys.erase(it);
             }
+        }
+        //if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right)
+            //m_fireball.shoot(sf::Vector2f {0., 0.}, (sf::Vector2f)sf::Mouse::getPosition(m_window));
+
+    }
+    for (auto& keys : m_using_keys)
+    {
+        auto it = m_slots.find(keys);
+        if (it != m_slots.end())
+        {
+            it->second();
         }
     }
 }

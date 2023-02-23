@@ -27,4 +27,5 @@ public:
 private:
     sf::RenderWindow* m_window;
     std::map<sf::Keyboard::Key, std::function<void()>> m_slots;
+    std::vector<sf::Keyboard::Key> m_using_keys;
 };
