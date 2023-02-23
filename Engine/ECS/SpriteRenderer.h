@@ -28,6 +28,7 @@ public:
 			sprite->setTexture(*texture);
 			sprite->setScale(transform->scale);
 			sprite->setPosition(transform->position);
+			sprite->setOrigin(sf::Vector2f(texture->getSize().x / 2, texture->getSize().y / 2));
 			return true;
 		}
 		return false;

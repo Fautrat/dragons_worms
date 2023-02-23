@@ -25,7 +25,7 @@ void InGameScene::Start()
     //PLAYER WITH GRAVITY AND COLLISION
     AssetManager::get().loadTexture("Player", "../../../../assets/Dragon/dragon_testsprite.png");
     m_manager = new EntityManager();
-    dragon.addComponent<Transform>(100, 100, 1, 1);
+    dragon.addComponent<Transform>(500, 100, 1, 1);
     dragon.addComponent<Rigidbody>(1);
     dragon.addComponent<SpriteRenderer>("Player");
     dragon.addComponent<BoxCollider2D>(
@@ -53,14 +53,15 @@ void InGameScene::Start()
         AssetManager::get().getTexture("Circle")->getSize().x * circle.getComponent<SpriteRenderer>().getSprite()->getScale().x,
         AssetManager::get().getTexture("Circle")->getSize().y * circle.getComponent<SpriteRenderer>().getSprite()->getScale().y);
     circle.addComponent<Rigidbody>(1);
-    m_manager->addEntity(&circle);
+    //m_manager->addEntity(&circle);
 
     //Triangle FOR TEST COLLISION
     AssetManager::get().loadTexture("Triangle", "../../../../assets/Dragon/TRIANGLE.png");
-    Triangle.addComponent<Transform>(450, 550, 2, 2);
+    Triangle.addComponent<Transform>(450, 550, 1, 1);
     Triangle.addComponent<SpriteRenderer>("Triangle");
     Triangle.addComponent<TriangleCollider2D>(AssetManager::get().getTexture("Triangle")->getSize().x * Triangle.getComponent<SpriteRenderer>().getSprite()->getScale().x, DOWNRIGHT);
-        m_manager->addEntity(&Triangle);
+    m_manager->addEntity(&Triangle);
+
 }
 
 void InGameScene::Update(const float& deltaTime)
@@ -73,7 +74,7 @@ void InGameScene::Update(const float& deltaTime)
     auto v = dragon.getComponent<Transform>().position;
     std::string log = "Transform (" + std::to_string(v.x) + " " + std::to_string(v.y) + ")";
     
-    if (collision->BoxAndBox(dragon.getComponent<BoxCollider2D>(), wall.getComponent<BoxCollider2D>()) )
+  /*  if (collision->BoxAndBox(dragon.getComponent<BoxCollider2D>(), wall.getComponent<BoxCollider2D>()) )
     {
             dragon.getComponent<Transform>().position.y = lastPosDrag;
     }
@@ -92,6 +93,11 @@ void InGameScene::Update(const float& deltaTime)
     if (collision->TriangleAndSphere(Triangle.getComponent<TriangleCollider2D>(), circle.getComponent<SphereCollider2D>()))
     {
         circle.getComponent<Transform>().position.y = lastPosCircle;
+    }*/
+    
+    if (collision->BoxAndTriangle(dragon.getComponent<BoxCollider2D>(), Triangle.getComponent<TriangleCollider2D>()))
+    {
+        dragon.getComponent<Transform>().position.y = lastPosDrag;
     }
     
     

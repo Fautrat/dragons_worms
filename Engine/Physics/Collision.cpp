@@ -122,7 +122,7 @@ bool Collision::linePoint(float x1, float y1, float x2, float y2, float px, floa
 bool Collision::pointCircle(float px, float py, float cx, float cy, float r)
 {
 	// get distance between the point and circle's center
-// using the Pythagorean Theorem
+	// using the Pythagorean Theorem
 	float distX = px - cx;
 	float distY = py - cy;
 	float distance = std::sqrt((distX * distX) + (distY * distY));
@@ -130,6 +130,52 @@ bool Collision::pointCircle(float px, float py, float cx, float cy, float r)
 	// if the distance is less than the circle's
 	// radius the point is inside!
 	if (distance <= r) {
+		return true;
+	}
+	return false;
+}
+
+bool Collision::BoxAndTriangle(const BoxCollider2D& colA, const TriangleCollider2D& colB)
+{
+	int increment = 0;
+	for (auto line : colB.m_lines)
+	{
+		increment++;
+		
+		// check if the line has hit any of the rectangle's sides
+		// uses the Line/Line function below
+		float x1 = line.x.x;      // points for line (controlled by mouse)
+		float y1 = line.x.y;
+		float x2 = line.y.x;      // static point
+		float y2 = line.x.y;
+
+		float rx = colA.box.left;    // square position
+		float ry = colA.box.top;
+		float rw = colA.box.width;    // and size
+		float rh = colA.box.height;
+
+		bool left = LineAndLine(x1, y1, x2, y2, rx, ry, rx, ry + rh);
+		bool right = LineAndLine(x1, y1, x2, y2, rx + rw, ry, rx + rw, ry + rh);
+		bool top = LineAndLine(x1, y1, x2, y2, rx, ry, rx + rw, ry);
+		bool bottom = LineAndLine(x1, y1, x2, y2, rx, ry + rh, rx + rw, ry + rh);
+
+		// if ANY of the above are true, the line
+		// has hit the rectangle
+		if (left || right || top || bottom) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool Collision::LineAndLine(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
+{
+	// calculate the direction of the lines
+	float uA = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
+	float uB = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
+
+	// if uA and uB are between 0-1, lines are colliding
+	if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
 		return true;
 	}
 	return false;

@@ -15,7 +15,13 @@ public:
 	bool TriangleAndSphere(const TriangleCollider2D& colA, const SphereCollider2D& colB);
 
 	bool linePoint(float x1, float y1, float x2, float y2, float px, float py);
+
 	bool pointCircle(float px, float py, float cx, float cy, float r);
+
+	//More precisely its box on the lines of the triangle
+	bool BoxAndTriangle(const BoxCollider2D& colA, const TriangleCollider2D& colB);
+
+	bool LineAndLine(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
 
 	float dist(float x1, float y1, float x2, float y2);
 
