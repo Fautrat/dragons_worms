@@ -11,9 +11,6 @@ InGameScene::InGameScene(Engine& engine) :Scene(engine)
     backgroundSprite.setTexture(backgroundTexture);
     //TODO : changer les valeurs en dur
     backgroundSprite.setScale({ (float)1920 / (float)backgroundSprite.getTexture()->getSize().x, (float)1080 / (float)backgroundSprite.getTexture()->getSize().y });
-
-
-    
 }
 
 InGameScene::~InGameScene()
@@ -26,43 +23,43 @@ void InGameScene::Start()
     //player = new Dragon(&engine->getInputHandler()); 
 
     //PLAYER WITH GRAVITY AND COLLISION
-    AssetManagerTemp::get().loadTexture("Player", "../../../../assets/Dragon/dragon_testsprite.png");
+    AssetManager::get().loadTexture("Player", "../../../../assets/Dragon/dragon_testsprite.png");
     m_manager = new EntityManager();
     dragon.addComponent<Transform>(100, 100, 1, 1);
     dragon.addComponent<Rigidbody>(1);
     dragon.addComponent<SpriteRenderer>("Player");
     dragon.addComponent<BoxCollider2D>(
-        AssetManagerTemp::get().getTexture("Player")->getSize().x * dragon.getComponent<SpriteRenderer>().getSprite()->getScale().x,
-        AssetManagerTemp::get().getTexture("Player")->getSize().y * dragon.getComponent<SpriteRenderer>().getSprite()->getScale().y);
+        AssetManager::get().getTexture("Player")->getSize().x * dragon.getComponent<SpriteRenderer>().getSprite()->getScale().x,
+        AssetManager::get().getTexture("Player")->getSize().y * dragon.getComponent<SpriteRenderer>().getSprite()->getScale().y);
     dragon.addComponent<Input>(&engine->getInputHandler());
     m_manager->addEntity(&dragon);
 
     //WALL FOR TEST COLLISION
-    AssetManagerTemp::get().loadTexture("Wall", "../../../../assets/Dragon/wall.png");
+    AssetManager::get().loadTexture("Wall", "../../../../assets/Dragon/wall.png");
     wall.addComponent<Transform>(0, 1000, 10, 1);
     wall.addComponent<SpriteRenderer>("Wall");
     wall.addComponent<BoxCollider2D>(
-        AssetManagerTemp::get().getTexture("Wall")->getSize().x * wall.getComponent<SpriteRenderer>().getSprite()->getScale().x,
-        AssetManagerTemp::get().getTexture("Wall")->getSize().y * wall.getComponent<SpriteRenderer>().getSprite()->getScale().y
+        AssetManager::get().getTexture("Wall")->getSize().x * wall.getComponent<SpriteRenderer>().getSprite()->getScale().x,
+        AssetManager::get().getTexture("Wall")->getSize().y * wall.getComponent<SpriteRenderer>().getSprite()->getScale().y
         );
     m_manager->addEntity(&wall);
 
     //CiRCLE FOR TEST COLLISION
-    AssetManagerTemp::get().loadTexture("Circle", "../../../../assets/Dragon/Circle.png");
+    AssetManager::get().loadTexture("Circle", "../../../../assets/Dragon/Circle.png");
     circle.addComponent<Transform>(500, 100, 1, 1);
     circle.addComponent<SpriteRenderer>("Circle");
     circle.addComponent<SphereCollider2D>(
-        (AssetManagerTemp::get().getTexture("Circle")->getSize().x * circle.getComponent<SpriteRenderer>().getSprite()->getScale().x) / 2,
-        AssetManagerTemp::get().getTexture("Circle")->getSize().x * circle.getComponent<SpriteRenderer>().getSprite()->getScale().x,
-        AssetManagerTemp::get().getTexture("Circle")->getSize().y * circle.getComponent<SpriteRenderer>().getSprite()->getScale().y);
+        (AssetManager::get().getTexture("Circle")->getSize().x * circle.getComponent<SpriteRenderer>().getSprite()->getScale().x) / 2,
+        AssetManager::get().getTexture("Circle")->getSize().x * circle.getComponent<SpriteRenderer>().getSprite()->getScale().x,
+        AssetManager::get().getTexture("Circle")->getSize().y * circle.getComponent<SpriteRenderer>().getSprite()->getScale().y);
     circle.addComponent<Rigidbody>(1);
     m_manager->addEntity(&circle);
 
     //Triangle FOR TEST COLLISION
-    AssetManagerTemp::get().loadTexture("Triangle", "../../../../assets/Dragon/TRIANGLE.png");
+    AssetManager::get().loadTexture("Triangle", "../../../../assets/Dragon/TRIANGLE.png");
     Triangle.addComponent<Transform>(450, 550, 2, 2);
     Triangle.addComponent<SpriteRenderer>("Triangle");
-    Triangle.addComponent<TriangleCollider2D>(AssetManagerTemp::get().getTexture("Triangle")->getSize().x * Triangle.getComponent<SpriteRenderer>().getSprite()->getScale().x, DOWNLEFT);
+    Triangle.addComponent<TriangleCollider2D>(AssetManager::get().getTexture("Triangle")->getSize().x * Triangle.getComponent<SpriteRenderer>().getSprite()->getScale().x, DOWNRIGHT);
         m_manager->addEntity(&Triangle);
 }
 

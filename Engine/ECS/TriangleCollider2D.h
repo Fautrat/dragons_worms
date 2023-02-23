@@ -5,6 +5,7 @@
 #include "Entity.h"
 #include "Component.h"
 #include <vector>
+#include "SpriteRenderer.h"
 
 // The angle side is the position of the 90° angle of the triangle
 enum AngleSide{
@@ -44,8 +45,11 @@ public:
 
 	bool init() override final
 	{
-		if (transform = &entity->getComponent<Transform>())
+		transform = &entity->getComponent<Transform>();
+		m_spriteRenderer = &entity->getComponent<SpriteRenderer>();
+		if(transform && m_spriteRenderer)
 		{
+			// Set all lines in the triangle 
 			auto LineUPleftToUpRight = sf::Vector2(sf::Vector2i(transform->position.x, transform->position.y),
 				sf::Vector2i(transform->position.x + m_spriteWidth, transform->position.y));
 
@@ -70,11 +74,16 @@ public:
 				m_lines.push_back(LineUPleftToUpRight);
 				m_lines.push_back(LineUPleftToDownLeft);
 				m_lines.push_back(DiagDownLeftToUpRight);
+				m_spriteRenderer->getSprite()->setRotation(90);
+				transform->position.x += m_spriteWidth;
 				break;
 			case UPRIGHT:
 				m_lines.push_back(LineUPleftToUpRight);
 				m_lines.push_back(LineUPRightToDownRight);
 				m_lines.push_back(DiagUpLeftToDownRight);
+				m_spriteRenderer->getSprite()->setRotation(180);
+				transform->position.x += m_spriteWidth;
+				transform->position.y += m_spriteWidth;
 				break;
 			case DOWNLEFT:
 				m_lines.push_back(LineUPleftToDownLeft);
@@ -85,6 +94,8 @@ public:
 				m_lines.push_back(LineUPRightToDownRight);
 				m_lines.push_back(LineDownLeftToDownRight);
 				m_lines.push_back(DiagDownLeftToUpRight);
+				m_spriteRenderer->getSprite()->setRotation(-90);
+				transform->position.y += m_spriteWidth;
 				break;
 			default:
 				break;
@@ -125,6 +136,7 @@ private:
 	AngleSide m_angle = DOWNLEFT;
 	std::string collisionTag = "";
 	Transform* transform = nullptr;
+	SpriteRenderer* m_spriteRenderer = nullptr;
 
 
 };

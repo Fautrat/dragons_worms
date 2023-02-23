@@ -1,16 +1,16 @@
-#include "AssetManagerTemp.h"
+#include "AssetManager.h"
 #include <iostream>
 #include "../Engine.h"
 
-AssetManagerTemp* AssetManagerTemp::s_instance = nullptr;
+AssetManager* AssetManager::s_instance = nullptr;
 
-AssetManagerTemp::AssetManagerTemp() {}
+AssetManager::AssetManager() {}
 
-sf::Texture* AssetManagerTemp::getTexture(std::string id) {
+sf::Texture* AssetManager::getTexture(std::string id) {
 	return (textures.count(id) > 0) ? textures[id] : nullptr;
 }
 
-void AssetManagerTemp::loadTexture(std::string id, std::string path) {
+void AssetManager::loadTexture(std::string id, std::string path) {
 	if (textures.count(id) <= 0)
 	{
 		sf::Texture* texture = new sf::Texture();
@@ -28,11 +28,11 @@ void AssetManagerTemp::loadTexture(std::string id, std::string path) {
 	}
 }
 
-sf::Font* AssetManagerTemp::getFont(std::string id) {
+sf::Font* AssetManager::getFont(std::string id) {
 	return (fonts.count(id) > 0) ? fonts[id] : nullptr;
 }
 
-void AssetManagerTemp::loadFont(std::string id, std::string path, int size) {
+void AssetManager::loadFont(std::string id, std::string path, int size) {
 	if (fonts.count(id) <= 0)
 	{
 		sf::Font* font = new sf::Font();
@@ -50,11 +50,11 @@ void AssetManagerTemp::loadFont(std::string id, std::string path, int size) {
 	}
 }
 
-sf::Music* AssetManagerTemp::getMusic(std::string id) {
+sf::Music* AssetManager::getMusic(std::string id) {
 	return (musics.count(id) > 0) ? musics[id] : nullptr;
 }
 
-void AssetManagerTemp::loadMusic(std::string id, std::string path, int volume) {
+void AssetManager::loadMusic(std::string id, std::string path, int volume) {
 	if (musics.count(id) <= 0)
 	{
 		sf::Music* music = new sf::Music();
@@ -72,7 +72,7 @@ void AssetManagerTemp::loadMusic(std::string id, std::string path, int volume) {
 	}
 }
 
-void AssetManagerTemp::clean() {
+void AssetManager::clean() {
 
 	for (auto it = textures.begin(); it != textures.end(); it++) {
 		textures.erase(it);

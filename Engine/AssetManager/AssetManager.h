@@ -3,11 +3,11 @@
 #include <map>
 #include <string>
 
-class AssetManagerTemp
+class AssetManager
 {
 public:
-	AssetManagerTemp();
-	~AssetManagerTemp() = default;
+	AssetManager();
+	~AssetManager() = default;
 
 	void clean();
 
@@ -20,15 +20,15 @@ public:
 	sf::Music* getMusic(std::string id);
 	void loadMusic(std::string id, std::string path, int volume);
 
-	inline static AssetManagerTemp& get() {
+	inline static AssetManager& get() {
 		if (s_instance == nullptr) {
-			s_instance = new AssetManagerTemp();
+			s_instance = new AssetManager();
 		}
 		return *s_instance;
 	}
 	
 private:
-	static AssetManagerTemp* s_instance;
+	static AssetManager* s_instance;
 	std::map<std::string, sf::Font*> fonts;
 	std::map<std::string, sf::Texture*> textures;
 	std::map<std::string, sf::Music*> musics;

@@ -13,6 +13,4 @@ int main()
     return 0;
 }
 
- Projectiletest.cpp : Defines the entry point for the console application.
-
 

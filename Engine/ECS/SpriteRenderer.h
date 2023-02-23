@@ -1,9 +1,11 @@
+#pragma once 
+
 #include <string>
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "Entity.h"
 #include "Component.h"
-#include "../AssetManagerTemp/AssetManagerTemp.h"
+#include "../AssetManager/AssetManager.h"
 
 class SpriteRenderer : public Component
 {
@@ -18,21 +20,17 @@ public:
 	SpriteRenderer(std::string textureid) :textureID(textureid){}
 
 	bool init() override final{
-
-		if (nullptr == entity && 
-			nullptr == AssetManagerTemp::get().getTexture(textureID)) 
-			return false;
-
-		transform = &entity->getComponent<Transform>();
-		texture = AssetManagerTemp::get().getTexture(textureID);
 		sprite = new sf::Sprite();
-		if (nullptr == sprite) 
-			return false;
-
-		sprite->setTexture(*texture);
-		sprite->setScale(transform->scale);
-		sprite->setPosition(transform->position);
-		return true;
+		if (nullptr != entity && nullptr != AssetManager::get().getTexture(textureID) && nullptr != sprite)
+		{
+			transform = &entity->getComponent<Transform>();
+			texture = AssetManager::get().getTexture(textureID);
+			sprite->setTexture(*texture);
+			sprite->setScale(transform->scale);
+			sprite->setPosition(transform->position);
+			return true;
+		}
+		return false;
 	}
 
 	void draw(sf::RenderTarget* renderwindow) override final
