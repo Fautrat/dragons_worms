@@ -14,15 +14,13 @@ public:
 	~Rigidbody()
 	{
 		delete transform;
-		delete rigidbody;
 	}
 
 	Rigidbody(float gravity_scale) : m_gravity_scale(gravity_scale) {}
 
 	bool init() override final {
 		transform = &entity->getComponent<Transform>();
-		rigidbody = &entity->getComponent<Rigidbody>();
-		if (nullptr != transform && nullptr != rigidbody)
+		if (nullptr != transform)
 		{
 			return true;
 		}

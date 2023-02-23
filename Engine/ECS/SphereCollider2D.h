@@ -43,7 +43,7 @@ public:
 
 	}
 
-	void update() override final
+	void update(const float& deltaTime) override final
 	{
 		circle_position.x = transform->position.x + (m_spriteWidth /2);
 		circle_position.y = transform->position.y + (m_spriteHeight /2);

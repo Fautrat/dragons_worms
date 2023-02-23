@@ -24,7 +24,7 @@ void InGameScene::Start()
     //player = new Dragon(&engine->getInputHandler()); 
 
     //PLAYER WITH GRAVITY AND COLLISION
-    AssetManagerTemp::get().loadTexture("Player", "../../../../assets/Dragon/dragon.png");
+    AssetManager::get().loadTexture("Player", "../../../../assets/Dragon/dragon.png");
     m_manager = new EntityManager();
     dragon.addComponent<Transform>(500, 100, 1, 1);
     dragon.addComponent<Rigidbody>(1);
@@ -72,7 +72,7 @@ void InGameScene::Update(const float& deltaTime)
     auto lastPosDragx = dragon.getComponent<Transform>().position.x;
     m_manager->refresh();
     m_manager->update(deltaTime);
-    auto v = dragon->getComponent<Transform>().position;
+    auto v = dragon.getComponent<Transform>().position;
     std::string log = "Transform (" + std::to_string(v.x) + " " + std::to_string(v.y) + ")";
     
   /*  if (collision->BoxAndBox(dragon.getComponent<BoxCollider2D>(), wall.getComponent<BoxCollider2D>()) )

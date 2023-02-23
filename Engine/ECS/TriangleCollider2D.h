@@ -141,7 +141,7 @@ public:
 		renderWindow->draw(line3, 2, sf::Lines);
 	}
 
-	void update() override final
+	void update(const float& deltaTime) override final
 	{
 		/*pointA.x = transform->position.x;
 		pointA.y = transform->position.y;*/

@@ -5,6 +5,7 @@
 #include "Component.h"
 #include "Entity.h"
 #include "RigidBody.h"
+#include "SpriteRenderer.h"
 
 class Input : public Component{
 public:
