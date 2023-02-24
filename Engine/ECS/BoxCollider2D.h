@@ -50,8 +50,8 @@ public:
 
 	void update(const float& deltaTime) override final
 	{
-		box.left = transform->position.x - m_width;
-		box.top = transform->position.y - m_height;
+		box.left = transform->position.x - m_width / 2;
+		box.top = transform->position.y - m_height / 2;
 		debugRect.setPosition(transform->position);
 	}
 

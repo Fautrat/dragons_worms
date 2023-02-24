@@ -11,33 +11,59 @@ InGameScene::InGameScene(Engine& engine) :Scene(engine)
     backgroundSprite.setTexture(backgroundTexture);
     //TODO : changer les valeurs en dur
     backgroundSprite.setScale({ (float)1920 / (float)backgroundSprite.getTexture()->getSize().x, (float)1080 / (float)backgroundSprite.getTexture()->getSize().y });
+    ui = new UI();
 
+    ui->CreateText("Timer", sf::Color::White, " ", 100, sf::Vector2f(900, 100), ui->getFont());
 }
 
 InGameScene::~InGameScene()
 {
-    delete player;   
+    delete m_manager;
+    delete ui;
+    delete collision;
 }
 
 void InGameScene::Start()
 {
-    //player = new Dragon(&engine->getInputHandler()); 
 
     //PLAYER WITH GRAVITY AND COLLISION
     AssetManager::get().loadTexture("Player", "../../../../assets/Dragon/dragon.png");
     m_manager = new EntityManager();
-    dragon.addComponent<Transform>(500, 100, 1, 1);
-    dragon.addComponent<Rigidbody>(1);
-    dragon.addComponent<SpriteRenderer>("Player");
-    dragon.addComponent<BoxCollider2D>(
-        AssetManager::get().getTexture("Player")->getSize().x * dragon.getComponent<SpriteRenderer>().getSprite()->getScale().x,
-        AssetManager::get().getTexture("Player")->getSize().y * dragon.getComponent<SpriteRenderer>().getSprite()->getScale().y);
-    dragon.addComponent<Input>(&engine->getInputHandler());
-    m_manager->addEntity(&dragon);
+   /* player1.addComponent<Transform>(800, 100, 1, 1);
+    player1.addComponent<Rigidbody>(1);
+    player1.addComponent<SpriteRenderer>("Player");
+    player1.addComponent<BoxCollider2D>(
+        AssetManager::get().getTexture("Player")->getSize().x * player1.getComponent<SpriteRenderer>().getSprite()->getScale().x,
+        AssetManager::get().getTexture("Player")->getSize().y * player1.getComponent<SpriteRenderer>().getSprite()->getScale().y);*/
+    //player1.addComponent<Input>(&engine->getInputHandler());
+    
+    player3.addComponent<Transform>(800, 100, 1, 1);
+    player3.addComponent<Rigidbody>(1);
+    player3.addComponent<SpriteRenderer>("Player");
+    player3.addComponent<BoxCollider2D>(
+        AssetManager::get().getTexture("Player")->getSize().x * player3.getComponent<SpriteRenderer>().getSprite()->getScale().x,
+        AssetManager::get().getTexture("Player")->getSize().y * player3.getComponent<SpriteRenderer>().getSprite()->getScale().y);
+    player3.addComponent<LifeBar>();
+
+    player3.connectInput(&engine->getInputHandler());
+
+    m_manager = new EntityManager();
+    player2.addComponent<Transform>(1400, 100, 1, 1);
+    player2.addComponent<Rigidbody>(1);
+    player2.addComponent<SpriteRenderer>("Player");
+    player2.addComponent<BoxCollider2D>(
+        AssetManager::get().getTexture("Player")->getSize().x * player2.getComponent<SpriteRenderer>().getSprite()->getScale().x,
+        AssetManager::get().getTexture("Player")->getSize().y * player2.getComponent<SpriteRenderer>().getSprite()->getScale().y);
+    //player2.addComponent<Input>(&engine->getInputHandler());
+    player2.addComponent<LifeBar>();
+
+
+    m_manager->addEntity(&player3);
+    m_manager->addEntity(&player2);
 
     //WALL FOR TEST COLLISION
     AssetManager::get().loadTexture("Wall", "../../../../assets/Dragon/wall.png");
-    wall.addComponent<Transform>(0, 1000, 10, 1);
+    wall.addComponent<Transform>(1000, 1000, 10, 1);
     wall.addComponent<SpriteRenderer>("Wall");
     wall.addComponent<BoxCollider2D>(
         AssetManager::get().getTexture("Wall")->getSize().x * wall.getComponent<SpriteRenderer>().getSprite()->getScale().x,
@@ -67,22 +93,36 @@ void InGameScene::Start()
 
 void InGameScene::Update(const float& deltaTime)
 {
-    auto lastPosDrag = dragon.getComponent<Transform>().position.y;
+    auto lastPosDrag = player3.getComponent<Transform>().position.y;
+    auto lastPosDrag2 = player2.getComponent<Transform>().position.y;
     auto lastPosCircle = circle.getComponent<Transform>().position.y;
-    auto lastPosDragx = dragon.getComponent<Transform>().position.x;
+    auto lastPosDragx = player3.getComponent<Transform>().position.x;
     m_manager->refresh();
     m_manager->update(deltaTime);
-    auto v = dragon.getComponent<Transform>().position;
-    std::string log = "Transform (" + std::to_string(v.x) + " " + std::to_string(v.y) + ")";
     
-  /*  if (collision->BoxAndBox(dragon.getComponent<BoxCollider2D>(), wall.getComponent<BoxCollider2D>()) )
+    if (collision->BoxAndBox(player3.getComponent<BoxCollider2D>(), wall.getComponent<BoxCollider2D>()) )
     {
-          dragon->getComponent<Transform>().position.y = lastPos;
-          dragon->getComponent<Rigidbody>().setVelocityY(0.f);
-          dragon->getComponent<Rigidbody>().landing();
+        player3.getComponent<Transform>().position.y = lastPosDrag;
+        player3.getComponent<Rigidbody>().setVelocityY(0.f);
+        player3.getComponent<Rigidbody>().landing();
     }
 
-    if (collision->SphereAndBox(circle.getComponent<SphereCollider2D>(), wall.getComponent<BoxCollider2D>()))
+    if (collision->BoxAndBox(player2.getComponent<BoxCollider2D>(), wall.getComponent<BoxCollider2D>()))
+    {
+        player2.getComponent<Transform>().position.y = lastPosDrag2;
+        player2.getComponent<Rigidbody>().setVelocityY(0.f);
+        player2.getComponent<Rigidbody>().landing();
+    }
+
+    if (deltaTime >= 1.f)
+        timer--;
+
+    if (timer < 0)
+        newTurn();
+
+    ui->Text("Timer").setString(std::to_string(timer));
+
+    /* if (collision->SphereAndBox(circle.getComponent<SphereCollider2D>(), wall.getComponent<BoxCollider2D>()))
     {
             circle.getComponent<Transform>().position.y = lastPosCircle;
     }
@@ -104,8 +144,22 @@ void InGameScene::Update(const float& deltaTime)
 void InGameScene::Render(sf::RenderTarget* renderTarget)
 { 
     renderTarget->draw(backgroundSprite);
-    /*if(&player->getShape())
-    renderTarget->draw(player->getShape());
-    */
+    renderTarget->draw(ui->Text("Timer"));
     m_manager->draw(renderTarget);
+}
+
+void InGameScene::newTurn()
+{
+    if (currentPlayer == WhosTurn::Player1)
+    {
+        player2.connectInput(&engine->getInputHandler());
+        currentPlayer = Player2;
+    }
+    else
+    {
+        player3.connectInput(&engine->getInputHandler());
+        currentPlayer = Player1;
+    }
+
+    timer = 10;
 }

@@ -28,7 +28,7 @@ public:
 
 	bool init() override final
 	{
-		if (transform = &entity->getComponent<Transform>())
+		transform = &entity->getComponent<Transform>();
 		if (transform)
 			return true;
 		else

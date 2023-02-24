@@ -31,7 +31,7 @@ public:
 		m_velocity.x = m_velocity.x * 0.9f * deltaTime;
 		m_velocity.y = m_velocity.y + (m_gravity_scale * GRAVITY * deltaTime) ;
 
-		transform->translate(m_velocity);
+		transform->translate(m_velocity * deltaTime);
 	}
 
 	void setMovementSpeed(const float speed) {
@@ -65,12 +65,16 @@ public:
 		isOnGround = true;
 	}
 
+	const sf::Vector2f getVelocity() const
+	{
+		return m_velocity;
+	}
 
 private:
 	float m_gravity_scale = 1.0f;
 	sf::Vector2f m_velocity = sf::Vector2f();
-	float m_speed = 300.0f;
-	float m_jumpForce = 8.0f;
+	float m_speed = 10.0f;
+	float m_jumpForce = 100.0f;
 	Transform* transform = nullptr;
 	bool isOnGround = false;
 

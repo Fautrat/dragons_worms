@@ -25,7 +25,6 @@ Engine::Engine()
     m_renderWindow->setFramerateLimit(60);
     m_input = new InputHandler(m_renderWindow);
 
-
 }
 
 Engine::~Engine()
@@ -45,11 +44,11 @@ void Engine::Run()
         
         if (gameState == RUNNING)
         {
-            sf::Time _deltaTime = m_deltaClock.restart();
-            m_deltaTime = _deltaTime.asSeconds();
-           
             HandleEvent();
-            
+
+            sf::Time _deltaTime = m_deltaClock.getElapsedTime();
+            m_deltaTime = _deltaTime.asSeconds();
+
             if (nullptr != m_currScene)
             {
                 m_mousePosition = sf::Mouse::getPosition();
@@ -61,7 +60,11 @@ void Engine::Run()
             
             if (m_sceneToLoad != ESceneType::NONE)
                 LoadScene(m_sceneToLoad);
-            
+             
+            if (m_deltaTime >= 1.f)
+            {
+                m_deltaClock.restart();
+            }
         }
     }
 }

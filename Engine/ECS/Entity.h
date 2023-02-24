@@ -10,7 +10,8 @@
 class Entity
 {
 public:
-    Entity() {
+    Entity() 
+    {
         this->addComponent<Transform>(0, 0);
     };
     virtual ~Entity() = default;
@@ -36,7 +37,7 @@ public:
     }
 
     template<typename T>
-    inline T& getComponent() const {
+    inline T& getComponent() {
         auto test = getComponentTypeId<T>();
         auto test2 = compArray.at(test);
         auto ptr(test2);
@@ -70,13 +71,6 @@ public:
             comp->update(deltaTime);
         }
     }
-
-    inline void shoot(sf::Vector2i mousePosition)
-    {
-        //Entity* fireball = new Entity();
-    }
-
-
 
 private:
     bool active = false;
