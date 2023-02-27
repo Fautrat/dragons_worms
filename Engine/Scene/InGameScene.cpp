@@ -63,6 +63,9 @@ void InGameScene::Start()
     Triangle.addComponent<TriangleCollider2D>(AssetManager::get().getTexture("Triangle")->getSize().x * Triangle.getComponent<SpriteRenderer>().getSprite()->getScale().x, DOWNRIGHT);
     m_manager->addEntity(&Triangle);
 
+    Map* map = new Map();
+    
+
 }
 
 void InGameScene::Update(const float& deltaTime)
