@@ -1,188 +1,262 @@
 #include "Collision.h"
 #include <math.h>
 
-//bool Collision::BoxAndBox(const sf::Rect<int>& recA, const sf::Rect<int>& recB)
-//{
-//	return (recA.left + recA.width >= recB.left &&
-//		recB.left + recB.width >= recA.left &&
-//		recA.top + recA.height >= recB.top &&
-//		recB.top + recB.height >= recA.top);
-//}
-
-bool Collision::BoxAndBox(const BoxCollider2D& colA, const BoxCollider2D& colB) {
-
-	return (colA.box.left + colA.box.width >= colB.box.left &&
-		colB.box.left + colB.box.width >= colA.box.left &&
-		colA.box.top + colA.box.height >= colB.box.top &&
-		colB.box.top + colB.box.height >= colA.box.top);
-
-}
-
-bool Collision::SphereAndBox(const SphereCollider2D& colA, const BoxCollider2D& colB)
+//SPHERE THEN POLYGON
+bool Collision::IntersectCirclePolygon(Entity& objA, Entity& objB)
 {
-	int cx = colA.circle_position.x;
-	int cy = colA.circle_position.y;
-	int radius = colA.m_radius;
+	sf::Vector2f center = sf::Vector2f(0, 0);
+	float radius = 0;
+	std::vector<sf::Vector2f> vertices;
+	sf::Vector2f polygonCenter = sf::Vector2f(0, 0);
 
-	int rx = colB.box.left;
-	int ry = colB.box.top;
-	int rw = colB.box.width;
-	int rh = colB.box.height;
-
-	int testX = cx;
-	int testY = cy;
-
-	// which edge is closest?
-	if (cx < rx)         testX = rx;      // test left edge
-	else if (cx > rx + rw) testX = rx + rw;   // right edge
-	if (cy < ry)         testY = ry;      // top edge
-	else if (cy > ry + rh) testY = ry + rh;   // bottom edge
-
-	// get distance from closest edges
-	float distX = cx - testX;
-	float distY = cy - testY;
-	float distance = sqrt((distX * distX) + (distY * distY));
-
-	// if the distance is less than the radius, collision!
-	if (distance <= radius) {
-		return true;
-	}
-	return false;
-
-}
-
-bool Collision::TriangleAndSphere(const TriangleCollider2D& colA, const SphereCollider2D& colB)
-{
-	for (auto line : colA.m_lines)
+	if (objA.hasComponent<SphereCollider2D>())
 	{
-		// is either end INSIDE the circle?
-		// if so, return true immediately
-		bool inside1 = pointCircle(line.x.x, line.x.y, colB.circle_position.x, colB.circle_position.y, colB.m_radius);
-		bool inside2 = pointCircle(line.y.x, line.y.y, colB.circle_position.x, colB.circle_position.y, colB.m_radius);
-		if (inside1 || inside2) return true;
+		center = objA.getComponent<SphereCollider2D>().circle_position;
+		radius = objA.getComponent<SphereCollider2D>().m_radius;
+		vertices = objB.getComponent<PolygonCollider2D>().transformedVertices;
+		polygonCenter = objB.getComponent<Transform>().position;
+	}
+	else
+	{
+		center = objB.getComponent<SphereCollider2D>().circle_position;
+		radius = objB.getComponent<SphereCollider2D>().m_radius;
+		vertices = objA.getComponent<PolygonCollider2D>().transformedVertices;
+		polygonCenter = objA.getComponent<Transform>().position;
+	}
 
-		// get length of the line
-		float distX = line.x.x - line.y.x;
-		float distY = line.x.y - line.y.y;
-		float len = sqrt((distX * distX) + (distY * distY));
+	normal = sf::Vector2f(0, 0);
+	depth = std::numeric_limits<float>::max();
 
-		// get dot product of the line and circle
-		float dot = (((colB.circle_position.x - line.x.x) * (line.y.x - line.x.x)) + ((colB.circle_position.y - line.x.y) * (line.y.y - line.x.y))) / pow(len, 2);
+	
+	sf::Vector2f axis = sf::Vector2f(0, 0);
+	float axisDepth = 0.0f;
 
-		// find the closest point on the line
-		float closestX = line.x.x + (dot * (line.y.x - line.x.x));
-		float closestY = line.x.y + (dot * (line.y.y - line.x.y));
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		sf::Vector2f va = vertices[i];
+		sf::Vector2f vb = vertices[(i + 1) % vertices.size()];
 
-		// is this point actually on the line segment?
-		// if so keep going, but if not, return false
-		bool onSegment = linePoint(line.x.x, line.x.y, line.y.x, line.y.y, closestX, closestY);
-		if (!onSegment) continue;
+		sf::Vector2f edge = vb - va;
+		axis = sf::Vector2f(-edge.y, edge.x);
+		axis = vecMath.Normalize(axis);
 
-		// optionally, draw a circle at the closest
-		// point on the li
+		std::pair<int, int> minmaxVertices = ProjectVertices(vertices, axis);
+		std::pair<int, int> minmaxCircle = ProjectCircle(center, radius, axis);
 
-		// get distance to closest point
-		distX = closestX - colB.circle_position.x;
-		distY = closestY - colB.circle_position.y;
-		float distance = sqrt((distX * distX) + (distY * distY));
-
-		if (distance <= colB.m_radius) {
-			return true;
+		if (minmaxVertices.first >= minmaxCircle.second || minmaxCircle.first >= minmaxVertices.second)
+		{
+			return false;
 		}
 
+		axisDepth = std::min<float>(minmaxCircle.second - minmaxVertices.first, minmaxVertices.second - minmaxCircle.first);
+
+		if (axisDepth < depth)
+		{
+			depth = axisDepth;
+			normal = axis;
+		}
 	}
-	return false;
 
-}
+	int cpIndex = FindClosestPointOnPolygons(center, vertices);
+	sf::Vector2f cp = vertices[cpIndex];
 
-bool Collision::linePoint(float x1, float y1, float x2, float y2, float px, float py)
-{
-	// get distance from the point to the two ends of the line
-	float d1 = dist(px, py, x1, y1);
-	float d2 = dist(px, py, x2, y2);
+	axis = cp - center;
+	axis = vecMath.Normalize(axis);
 
-	// get the length of the line
-	float lineLen = dist(x1, y1, x2, y2);
+	std::pair<int, int> minmaxVertices = ProjectVertices(vertices, axis);
+	std::pair<int, int> minmaxCircle = ProjectCircle(center, radius, axis);
 
-	// since floats are so minutely accurate, add
-	// a little buffer zone that will give collision
-	float buffer = 0.1;    // higher # = less accurate
-
-	// if the two distances are equal to the line's
-	// length, the point is on the line!
-	// note we use the buffer here to give a range,
-	// rather than one #
-	if (d1 + d2 >= lineLen - buffer && d1 + d2 <= lineLen + buffer) {
-		return true;
-	}
-	return false;
-
-}
-
-bool Collision::pointCircle(float px, float py, float cx, float cy, float r)
-{
-	// get distance between the point and circle's center
-	// using the Pythagorean Theorem
-	float distX = px - cx;
-	float distY = py - cy;
-	float distance = std::sqrt((distX * distX) + (distY * distY));
-
-	// if the distance is less than the circle's
-	// radius the point is inside!
-	if (distance <= r) {
-		return true;
-	}
-	return false;
-}
-
-bool Collision::BoxAndTriangle(const BoxCollider2D& colA, const TriangleCollider2D& colB)
-{
-	int increment = 0;
-	for (auto line : colB.m_lines)
+	if (minmaxVertices.first >= minmaxCircle.second || minmaxCircle.first >= minmaxVertices.second)
 	{
-		increment++;
+		return false;
+	}
+
+	axisDepth = std::min<float>(minmaxCircle.second - minmaxVertices.first, minmaxVertices.second - minmaxCircle.first);
+
+	if (axisDepth < depth)
+	{
+		depth = axisDepth;
+		normal = axis;
+	}
+	polygonCenter = FindArithmeticMean(vertices);
+
+	sf::Vector2f direction = polygonCenter - center;
+
+	if (vecMath.Dot(direction, normal) < 0.0f)
+	{
+		normal = -normal;
+	}
+
+	if (objB.hasComponent<SphereCollider2D>())
+	{
+		normal = -normal;
+	}
+
+	return true;
+
+}
+
+bool Collision::IntersectPolygons(Entity& objA, Entity& objB)
+{
+	normal = sf::Vector2f(0, 0);
+	depth = std::numeric_limits<float>::max();
+
+	std::vector<sf::Vector2f> verticesA = objA.getComponent<PolygonCollider2D>().transformedVertices;
+	std::vector<sf::Vector2f> verticesB = objB.getComponent<PolygonCollider2D>().transformedVertices;
+
+	for (int i = 0; i < verticesA.size(); i++)
+	{
+		sf::Vector2f va = verticesA[i];
+		sf::Vector2f vb = verticesA[(i + 1) % verticesA.size()];
+
+		sf::Vector2f edge = vb - va;
+		sf::Vector2f axis = sf::Vector2f(-edge.y, edge.x);
+		axis = vecMath.Normalize(axis);
 		
-		// check if the line has hit any of the rectangle's sides
-		// uses the Line/Line function below
-		float x1 = line.x.x;      // points for line (controlled by mouse)
-		float y1 = line.x.y;
-		float x2 = line.y.x;      // static point
-		float y2 = line.x.y;
+		std::pair<float, float> minmaxA = ProjectVertices(verticesA, axis);
+		std::pair<float, float> minmaxB = ProjectVertices(verticesB, axis);
 
-		float rx = colA.box.left;    // square position
-		float ry = colA.box.top;
-		float rw = colA.box.width;    // and size
-		float rh = colA.box.height;
+		if (minmaxA.first >= minmaxB.second || minmaxB.first >= minmaxA.second)
+		{
+			return false;
+		}
 
-		bool left = LineAndLine(x1, y1, x2, y2, rx, ry, rx, ry + rh);
-		bool right = LineAndLine(x1, y1, x2, y2, rx + rw, ry, rx + rw, ry + rh);
-		bool top = LineAndLine(x1, y1, x2, y2, rx, ry, rx + rw, ry);
-		bool bottom = LineAndLine(x1, y1, x2, y2, rx, ry + rh, rx + rw, ry + rh);
+		float axisDepth = std::min<float>(minmaxB.second - minmaxA.first, minmaxA.second - minmaxB.first);
 
-		// if ANY of the above are true, the line
-		// has hit the rectangle
-		if (left || right || top || bottom) {
-			return true;
+		if (axisDepth < depth)
+		{
+			depth = axisDepth;
+			normal = axis;
 		}
 	}
-	return false;
-}
 
-bool Collision::LineAndLine(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4)
-{
-	// calculate the direction of the lines
-	float uA = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
-	float uB = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
+	for (int i = 0; i < verticesB.size(); i++)
+	{
+		sf::Vector2f va = verticesB[i];
+		sf::Vector2f vb = verticesB[(i + 1) % verticesB.size()];
 
-	// if uA and uB are between 0-1, lines are colliding
-	if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1) {
-		return true;
+		sf::Vector2f edge = vb - va;
+		sf::Vector2f axis = sf::Vector2f(-edge.y, edge.x);
+		axis = vecMath.Normalize(axis);
+
+		std::pair<float, float> minmaxA = ProjectVertices(verticesA, axis);
+		std::pair<float, float> minmaxB = ProjectVertices(verticesB, axis);
+		
+	
+		if (minmaxA.first >= minmaxB.second || minmaxB.first >= minmaxA.second)
+		{
+			return false;
+		}
+
+		float axisDepth = std::min<float>(minmaxB.second - minmaxA.first, minmaxA.second - minmaxB.first);
+
+		if (axisDepth < depth)
+		{
+			depth = axisDepth;
+			normal = axis;
+		}
 	}
-	return false;
+	sf::Vector2f centerA = FindArithmeticMean(verticesA);
+	sf::Vector2f centerB = FindArithmeticMean(verticesB);
+
+	sf::Vector2f direction = centerB - centerA;
+
+	if (vecMath.Dot(direction, normal) < 0.0f)
+	{
+		normal = -normal;
+	}
+
+	
+	return true;
 }
 
-float Collision::dist(float x1, float y1, float x2, float y2)
+sf::Vector2f Collision::FindArithmeticMean(std::vector<sf::Vector2f> vertices)
 {
+	float sumX = 0.0f;
+	float sumY = 0.0f;
+	
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		sf::Vector2f v = vertices[i];
+		sumX += v.x;
+		sumY += v.y;
+	}
 
-	return std::sqrt(std::pow(x2-x1,2)+std::pow(y2-y1,2));
+	return sf::Vector2f(sumX / (float)vertices.size(), sumY / (float)vertices.size());
+}
+
+std::pair<float,float> Collision::ProjectVertices(std::vector<sf::Vector2f> vertices, sf::Vector2f axis)
+{
+	float min = std::numeric_limits<float>::max();
+	float max = std::numeric_limits<float>::min();
+
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		sf::Vector2f v = vertices[i];
+		float proj = vecMath.Dot(v, axis);
+
+		if (proj < min) { min = proj; }
+		if (proj > max) { max = proj; }
+	}
+	return std::make_pair(min, max);
+}
+
+std::pair<float, float> Collision::ProjectCircle(sf::Vector2f center, float radius, sf::Vector2f axis)
+{
+	sf::Vector2f direction = vecMath.Normalize(axis);
+	sf::Vector2f directionAndRadius = direction * radius;
+
+	sf::Vector2f p1 = center + directionAndRadius;
+	sf::Vector2f p2 = center - directionAndRadius;
+
+	float min = vecMath.Dot(p1, axis);
+	float max = vecMath.Dot(p2, axis);
+
+	if (min > max)
+	{
+		//Swap min and max values
+		float t = min;
+		min = max;
+		max = t;
+	}
+
+	return std::make_pair(min, max);
+}
+
+int Collision::FindClosestPointOnPolygons(sf::Vector2f center, std::vector<sf::Vector2f> vertices)
+{
+	int result = -1;
+	float minDistance = std::numeric_limits<float>::max();
+	for (int i = 0; i < vertices.size(); i++)
+	{
+		sf::Vector2f v = vertices[i];
+		float distance = vecMath.Distance(v, center);
+
+		if (distance < minDistance)
+		{
+			minDistance = distance;
+			result = i;
+		}
+	}
+	return result;
+
+}
+
+bool Collision::IntersectCircles(Entity& objA, Entity& objB)
+{
+	sf::Vector2f centerA = objA.getComponent<SphereCollider2D>().circle_position;
+	sf::Vector2f centerB = objB.getComponent<SphereCollider2D>().circle_position;
+	float radiusA = objA.getComponent<SphereCollider2D>().m_radius;
+	float radiusB = objB.getComponent<SphereCollider2D>().m_radius;
+
+	float distance = vecMath.Distance(centerA, centerB);
+	float radii = radiusA + radiusB;
+
+	if(distance >= radii) return false;
+
+
+	normal = vecMath.Normalize(centerB - centerA);
+	depth = radii - distance;
+
+	return true;
 }

@@ -17,8 +17,11 @@ void EntityManager::refresh(){
 }
 
 void EntityManager::addEntity(Entity* player){
+	
 	std::unique_ptr<Entity> uniquePtr{ player };
+	auto test = &uniquePtr;
 	entities.emplace_back(std::move(uniquePtr));
+	
 }
 
 void EntityManager::eraseEntity(Entity* player)

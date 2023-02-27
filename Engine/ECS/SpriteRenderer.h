@@ -34,27 +34,21 @@ public:
 		return false;
 	}
 
-	void draw(sf::RenderTarget* renderwindow) override final
-	{
+	void draw(sf::RenderTarget* renderwindow) override final{
 		renderwindow->draw(*sprite);
 	}
 
 	void update(const float& deltaTime) override final {
-
 		sprite->setPosition(transform->position);
+		sprite->setRotation(transform->rotation);
 	}
 
-	sf::Texture* getTexture()
-	{
-		return texture;
-	}
+	sf::Texture* getTexture(){return texture;}
 
-	sf::Sprite* getSprite()
-	{
-		return sprite;
-	}
+	sf::Sprite* getSprite(){return sprite;}
 
-	void flipTexture();
+	void flipTexture() {};
+
 private:
 
 	Transform* transform = nullptr;

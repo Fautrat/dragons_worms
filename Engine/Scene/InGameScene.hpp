@@ -7,12 +7,14 @@
 #include "../ECS/SpriteRenderer.h"
 #include "../ECS/ECS.h"
 #include "../ECS/RigidBody.h"
-#include "../ECS/BoxCollider2D.h"
-#include "../Physics/Collision.h"
+#include "../ECS/PolygonCollider2D.h"
+#include "../ECS/Collider2D.h"
 #include "../ECS/Input.h"
+#include "../Physics/World.h"
 
-
+#include <memory>
 class Engine;
+
 
 class InGameScene : public Scene
 {
@@ -23,9 +25,8 @@ private:
 	Dragon* player;
 	EntityManager* m_manager;
 
-	Entity dragon, wall, circle, Triangle;
+	Entity dragon, box1, box2, circle, circle2, circle3, Triangle , ground;
 
-	Collision* collision = new Collision();
 public:
 	InGameScene(Engine& engine);
 	~InGameScene();
@@ -33,5 +34,7 @@ public:
 	void Start() final;
 	void Update(const float& deltaTime) final;
 	void Render(sf::RenderTarget* renderTarget) final;
+
+	std::unique_ptr<World> worldptr = std::make_unique<World>();
 
 };
