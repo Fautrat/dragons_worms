@@ -27,15 +27,19 @@ public:
 	bool init() override final;
 
 	void update(const float& deltaTime) override final {
-
-		m_velocity += m_gravity_scale * gravity * deltaTime;
-		//acceleration = force / mass;
-		m_velocity += force * deltaTime;
-		   /* m_velocity = m_velocity * deltaTime;
-		m_rotation = m_rotation * deltaTime;*/
+		if (isInputMovement) 
+		{
+			m_velocity.x = m_velocity.x * deltaTime;
+			m_velocity.y = m_velocity.y + (m_gravity_scale * gravity.y * deltaTime);
+		}
+		else 
+		{
+			m_velocity += (m_gravity_scale * gravity * deltaTime);
+			m_velocity += force * deltaTime;
+		}
 		force = sf::Vector2f(0, 0);
-		translate(m_velocity, m_rotation);
 		
+		translate(m_velocity, m_rotation);
 	}
 
 	void AddForce(sf::Vector2f amount)
@@ -47,15 +51,12 @@ public:
 		this->gravity = gravity;
 	}
 	void setMovementSpeed(const float speed) { m_speed = speed; }
-	void moveHorizontal(int direction) {
-		//m_velocity.x = m_speed * direction;
-		//m_speed = m_speed * direction;
-		force.x = direction * forceMagnitude;
-		//m_velocity.x = force.x;
-	}
-	void moveVertical(int direction) { 
-		//force.y = direction * forceMagnitude;
-		//m_velocity.y = m_speed * direction; 
+	void moveHorizontal(int direction) 
+	{
+		isInputMovement = true;
+		//if (m_velocity.y == 0)
+		m_velocity.x =+ m_speed * direction;
+		force = sf::Vector2f(0, 0);
 	}
 	void setVelocityY(const float newVelocityY) { m_velocity.y = newVelocityY; }
 	void setVelocityX(const float newVelocityX) { m_velocity.x = newVelocityX; }
@@ -64,6 +65,7 @@ public:
 	{
 		transform->moveTo(newPosition);
 		transformUpdateRequired = true;
+		onCollision = false;
 	}
 
 	void Rotate(float amount)
@@ -74,7 +76,6 @@ public:
 
 	void translate(sf::Vector2f v,float rotation) {
 		transformUpdateRequired = true;
-		//if (isStatic)return;
 		transform->translate(v, rotation);
 	}
 
@@ -85,10 +86,11 @@ public:
 
 	void Jump()
 	{
-		if (!isOnGround)
-			return;
-		m_velocity.y = -m_jumpForce;
-		isOnGround = false;
+		if (m_velocity.y == 0)
+			m_velocity.y = -m_jumpForce;
+
+		//AddForce(sf::Vector2f(0,-600));
+		//AddForce(sf::Vector2f(600,0));
 	}
 
 	void landing() { isOnGround = true; }
@@ -102,7 +104,7 @@ private:
 	sf::Vector2f acceleration;
 	sf::Vector2f force;
 	float m_gravity_scale = 1.0f;
-	float m_speed = 300.0f;
+	float m_speed = 200;
 	float forceMagnitude = 25;
 	float m_jumpForce = 8.0f;
 	float mass = 0;
@@ -113,11 +115,13 @@ private:
 	float m_rotation = 0;
 	sf::Vector2f m_velocity = sf::Vector2f();
 	sf::Vector2f position;
-	bool isOnGround = false;
+	bool isOnGround = true;
+	bool isInputMovement = false;
+	float tempGravityScale = 0.0f;
 	Transform* transform = nullptr;
 
 public:
-
+	bool onCollision = false;
 	bool transformUpdateRequired;
 	float density;
 	bool isStatic = true;

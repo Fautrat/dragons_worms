@@ -5,7 +5,7 @@ set(ENGINE_HEADERS
 
 set(ENGINE_SOURCES
         Engine.cpp "Scene/Scene.cpp" "Scene/MainMenuScene.cpp" "Scene/InGameScene.cpp" "UI/UI.cpp"
-        "ECS/EntityManager.cpp" "AssetManager/AssetManager.cpp" "Physics/Collision.cpp" "ECS/RigidBody.cpp" "ECS/PolygonCollider2D.cpp" "ECS/SphereCollider2D.cpp" "Physics/World.cpp")
+        "ECS/EntityManager.cpp" "AssetManager/AssetManager.cpp" "Physics/Collision.cpp" "ECS/RigidBody.cpp" "ECS/PolygonCollider2D.cpp" "ECS/SphereCollider2D.cpp" "Physics/World.cpp" "ECS/Collider2D.cpp")
 
 find_package(SFML COMPONENTS system window graphics audio CONFIG REQUIRED)
 

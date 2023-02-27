@@ -32,7 +32,8 @@ void World::resolveCollision(Entity* firstEntity, Entity* secondEntity)
 {
 	Rigidbody& rbA = firstEntity->getComponent<Rigidbody>();
 	Rigidbody& rbB = secondEntity->getComponent<Rigidbody>();
-
+	rbA.onCollision = true;
+	rbB.onCollision = true;
 	sf::Vector2f relativeVelocity = rbB.getVelocity() - rbA.getVelocity();
 
 	if (vecMath.Dot(relativeVelocity, normal) > 0.0f)
@@ -61,11 +62,12 @@ void World::updatePhysics(const float& deltaTime)
 		for (int j = i + 1; j < entities.size(); j++)
 		{
 			Entity* entityB = entities[j];
-
+			
 			if (entityA->getComponent<Rigidbody>().getIsStatic() && entityB->getComponent<Rigidbody>().getIsStatic()) continue;
 
 			if (Collide(entityA, entityB))
 			{
+				
 				depth = collision->getDepth();
 				normal = collision->getNormal();
 
