@@ -66,7 +66,7 @@ void PolygonCollider2D::CreateTriangleVertices(float width, float height)
 	float top = -height / 2;
 	float rotation = entity->getComponent<Transform>().rotation;
 
-	if (rotation == 0)
+	/*if (rotation == 0)
 	{
 		vertices.push_back(sf::Vector2f(left, top));
 		vertices.push_back(sf::Vector2f(0, 0));
@@ -94,8 +94,26 @@ void PolygonCollider2D::CreateTriangleVertices(float width, float height)
 		vertices.push_back(sf::Vector2f(right, top));
 		vertices.push_back(sf::Vector2f(right, bottom));
 		vertices.push_back(sf::Vector2f(left, bottom));
-	}
+	}*/
 	
+	switch (directionTriangle)
+	{
+	case UPLEFT:
+		vertices.push_back(sf::Vector2f(right, top));
+		//vertices.push_back(sf::Vector2f(entity->getComponent<SpriteRenderer>().getSprite()->getGlobalBounds().width / 2, entity->getComponent<SpriteRenderer>().getSprite()->getGlobalBounds().height / 2));
+		vertices.push_back(sf::Vector2f(right, bottom));
+		vertices.push_back(sf::Vector2f(left, bottom));
+		break;
+	case UPRIGHT:
+		vertices.push_back(sf::Vector2f(left, top));
+		//vertices.push_back(sf::Vector2f(entity->getComponent<SpriteRenderer>().getSprite()->getGlobalBounds().width / 2, entity->getComponent<SpriteRenderer>().getSprite()->getGlobalBounds().height / 2));
+		vertices.push_back(sf::Vector2f(left, bottom));
+		vertices.push_back(sf::Vector2f(right, bottom));
+		
+		break;
+	default:
+		break;
+	}
 }
 
 

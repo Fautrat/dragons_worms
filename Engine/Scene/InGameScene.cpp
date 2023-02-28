@@ -29,7 +29,7 @@ void InGameScene::Start()
     AssetManager::get().loadTexture("Circle", "../../../../assets/Dragon/circle.png");
     AssetManager::get().loadTexture("Triangle", "../../../../assets/Dragon/triangle.png");
 
-    dragon.getComponent<Transform>().setTransform(300, 0, 0, 0, 1, 1);
+    dragon.getComponent<Transform>().setTransform(800, 0, 0, 0, 1, 1);
     dragon.addComponent<SpriteRenderer>("Player");
     dragon.addComponent<Rigidbody>(1, false, 0, 2);
     dragon.addComponent<Collider2D>(BOX);
@@ -43,25 +43,24 @@ void InGameScene::Start()
     circle2.addComponent<Collider2D>(SPHERE);
     m_manager->addEntity(&circle2);
 
-    Triangle.getComponent<Transform>().setTransform(800, 872, 90, 0, 1, 1);
-    Triangle.addComponent<SpriteRenderer>("Triangle");
-    Triangle.addComponent<Rigidbody>(1, true, 1, 0);
-    Triangle.addComponent<Collider2D>(TRIANGLE);
-    m_manager->addEntity(&Triangle);
+    //Triangle.getComponent<Transform>().setTransform(800, 872, 90, 0, 1, 1);
+    //Triangle.addComponent<SpriteRenderer>("Triangle");
+    //Triangle.addComponent<Rigidbody>(1, true, 1, 0);
+    //Triangle.addComponent<Collider2D>(TRIANGLE);
+    //m_manager->addEntity(&Triangle);
 
 
-    ground.getComponent<Transform>().setTransform(1000, 1000, 0, 0, 20, 1);
-    ground.addComponent<SpriteRenderer>("Wall");
-    ground.addComponent<Rigidbody>(1, true, 0.7, 0);
-    ground.addComponent<Collider2D>(BOX);
-    m_manager->addEntity(&ground);
+    //ground.getComponent<Transform>().setTransform(1000, 1000, 0, 0, 20, 1);
+    //ground.addComponent<SpriteRenderer>("Wall");
+    //ground.addComponent<Rigidbody>(1, true, 0.7, 0);
+    //ground.addComponent<Collider2D>(BOX);
+    //m_manager->addEntity(&ground);
 
 
-    // ADD ENTITY FOR PHYSICS CALCUL IN THE WORLD
-    worldptr->addEntityWithPhysics(circle2);
-    worldptr->addEntityWithPhysics(dragon);
-    worldptr->addEntityWithPhysics(Triangle);
-    worldptr->addEntityWithPhysics(ground);
+    //// ADD ENTITY FOR PHYSICS CALCUL IN THE WORLD
+   
+    //worldptr->addEntityWithPhysics(Triangle);
+    //worldptr->addEntityWithPhysics(ground);
 
     readMap();
 
@@ -71,6 +70,9 @@ void InGameScene::Start()
         m_manager->addEntity(entity);
         worldptr->addEntityWithPhysics(*entity);
     }
+
+    worldptr->addEntityWithPhysics(circle2);
+    worldptr->addEntityWithPhysics(dragon);
 }
 
 void InGameScene::Update(const float& deltaTime)
