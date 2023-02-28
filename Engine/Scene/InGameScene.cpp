@@ -1,8 +1,10 @@
 #include "InGameScene.hpp"
 #include <iostream>
 
+
 InGameScene::InGameScene(Engine& engine) :Scene(engine)
 {
+
     if (!backgroundTexture.loadFromFile("../../../../assets/Maps/background1.png"))
     {
         std::cout << "Failed to load background" << std::endl;
@@ -11,7 +13,6 @@ InGameScene::InGameScene(Engine& engine) :Scene(engine)
     backgroundSprite.setTexture(backgroundTexture);
     //TODO : changer les valeurs en dur
     backgroundSprite.setScale({ (float)1920 / (float)backgroundSprite.getTexture()->getSize().x, (float)1080 / (float)backgroundSprite.getTexture()->getSize().y });
-
 }
 
 InGameScene::~InGameScene()
@@ -21,91 +22,60 @@ InGameScene::~InGameScene()
 
 void InGameScene::Start()
 {
-    //player = new Dragon(&engine->getInputHandler()); 
-
-    //PLAYER WITH GRAVITY AND COLLISION
-    AssetManager::get().loadTexture("Player", "../../../../assets/Dragon/dragon.png");
     m_manager = new EntityManager();
-    dragon.addComponent<Transform>(500, 100, 1, 1);
-    dragon.addComponent<Rigidbody>(1);
+
+    AssetManager::get().loadTexture("Player", "../../../../assets/Dragon/dragon.png");
+    AssetManager::get().loadTexture("Wall", "../../../../assets/Dragon/wall.png");
+    AssetManager::get().loadTexture("Circle", "../../../../assets/Dragon/Circle.png");
+    AssetManager::get().loadTexture("Triangle", "../../../../assets/Dragon/TRIANGLE.png");
+
+
+    dragon.getComponent<Transform>().setTransform(300, 0, 0, 0, 1, 1);
     dragon.addComponent<SpriteRenderer>("Player");
-    dragon.addComponent<BoxCollider2D>(
-        AssetManager::get().getTexture("Player")->getSize().x * dragon.getComponent<SpriteRenderer>().getSprite()->getScale().x,
-        AssetManager::get().getTexture("Player")->getSize().y * dragon.getComponent<SpriteRenderer>().getSprite()->getScale().y);
+    dragon.addComponent<Rigidbody>(1, false, 0, 2);
+    dragon.addComponent<Collider2D>(BOX);
     dragon.addComponent<Input>(&engine->getInputHandler());
     m_manager->addEntity(&dragon);
 
-    //WALL FOR TEST COLLISION
-    AssetManager::get().loadTexture("Wall", "../../../../assets/Dragon/wall.png");
-    wall.addComponent<Transform>(0, 1000, 10, 1);
-    wall.addComponent<SpriteRenderer>("Wall");
-    wall.addComponent<BoxCollider2D>(
-        AssetManager::get().getTexture("Wall")->getSize().x * wall.getComponent<SpriteRenderer>().getSprite()->getScale().x,
-        AssetManager::get().getTexture("Wall")->getSize().y * wall.getComponent<SpriteRenderer>().getSprite()->getScale().y
-        );
-    m_manager->addEntity(&wall);
 
-    //CiRCLE FOR TEST COLLISION
-    AssetManager::get().loadTexture("Circle", "../../../../assets/Dragon/Circle.png");
-    circle.addComponent<Transform>(500, 100, 1, 1);
-    circle.addComponent<SpriteRenderer>("Circle");
-    circle.addComponent<SphereCollider2D>(
-        (AssetManager::get().getTexture("Circle")->getSize().x * circle.getComponent<SpriteRenderer>().getSprite()->getScale().x) / 2,
-        AssetManager::get().getTexture("Circle")->getSize().x * circle.getComponent<SpriteRenderer>().getSprite()->getScale().x,
-        AssetManager::get().getTexture("Circle")->getSize().y * circle.getComponent<SpriteRenderer>().getSprite()->getScale().y);
-    circle.addComponent<Rigidbody>(1);
-    //m_manager->addEntity(&circle);
+    circle2.getComponent<Transform>().setTransform(800,0,0,0,0.5,0.5);
+    circle2.addComponent<SpriteRenderer>("Circle");
+    circle2.addComponent<Rigidbody>(1, false, 1, 1);
+    circle2.addComponent<Collider2D>(SPHERE);
+    m_manager->addEntity(&circle2);
 
-    //Triangle FOR TEST COLLISION
-    AssetManager::get().loadTexture("Triangle", "../../../../assets/Dragon/TRIANGLE.png");
-    Triangle.addComponent<Transform>(450, 550, 1, 1);
+
+    Triangle.getComponent<Transform>().setTransform(800, 872, 270, 0, 1, 1);
     Triangle.addComponent<SpriteRenderer>("Triangle");
-    Triangle.addComponent<TriangleCollider2D>(AssetManager::get().getTexture("Triangle")->getSize().x * Triangle.getComponent<SpriteRenderer>().getSprite()->getScale().x, DOWNRIGHT);
+    Triangle.addComponent<Rigidbody>(1, true, 1, 0);
+    Triangle.addComponent<Collider2D>(TRIANGLE);
     m_manager->addEntity(&Triangle);
+
+
+    ground.getComponent<Transform>().setTransform(1000, 1000, 0, 0, 20, 1);
+    ground.addComponent<SpriteRenderer>("Wall");
+    ground.addComponent<Rigidbody>(1, true, 0.7, 0);
+    ground.addComponent<Collider2D>(BOX);
+    m_manager->addEntity(&ground);
+
+
+    // ADD ENTITY FOR PHYSICS CALCUL IN THE WORLD
+    worldptr->addEntityWithPhysics(circle2);
+    worldptr->addEntityWithPhysics(dragon);
+    worldptr->addEntityWithPhysics(Triangle);
+    worldptr->addEntityWithPhysics(ground);
 
 }
 
 void InGameScene::Update(const float& deltaTime)
 {
-    auto lastPosDrag = dragon.getComponent<Transform>().position.y;
-    auto lastPosCircle = circle.getComponent<Transform>().position.y;
-    auto lastPosDragx = dragon.getComponent<Transform>().position.x;
     m_manager->refresh();
     m_manager->update(deltaTime);
-    auto v = dragon.getComponent<Transform>().position;
-    std::string log = "Transform (" + std::to_string(v.x) + " " + std::to_string(v.y) + ")";
-    
-  /*  if (collision->BoxAndBox(dragon.getComponent<BoxCollider2D>(), wall.getComponent<BoxCollider2D>()) )
-    {
-          dragon->getComponent<Transform>().position.y = lastPos;
-          dragon->getComponent<Rigidbody>().setVelocityY(0.f);
-          dragon->getComponent<Rigidbody>().landing();
-    }
-
-    if (collision->SphereAndBox(circle.getComponent<SphereCollider2D>(), wall.getComponent<BoxCollider2D>()))
-    {
-            circle.getComponent<Transform>().position.y = lastPosCircle;
-    }
-
-
-    if (collision->SphereAndBox(circle.getComponent<SphereCollider2D>(), dragon.getComponent<BoxCollider2D>()))
-    {
-        dragon.getComponent<Transform>().position.x = lastPosDragx;
-    }
-
-    if (collision->TriangleAndSphere(Triangle.getComponent<TriangleCollider2D>(), circle.getComponent<SphereCollider2D>()))
-    {
-        circle.getComponent<Transform>().position.y = lastPosCircle;
-    }*/
-    
-   // player->update(&engine->getRenderWindow());
+    worldptr->updatePhysics(deltaTime);
 }
 
 void InGameScene::Render(sf::RenderTarget* renderTarget)
 { 
     renderTarget->draw(backgroundSprite);
-    /*if(&player->getShape())
-    renderTarget->draw(player->getShape());
-    */
     m_manager->draw(renderTarget);
 }

@@ -4,75 +4,134 @@
 #include <sfml/Graphics.hpp>
 #include "Component.h"
 #include <iostream>
+#include "../Utils/Vectormath.h"
+#include <vector>
+#include "SpriteRenderer.h"
 
-constexpr float GRAVITY = 9.81f;
+//constexpr float GRAVITY = 9.81f;
+constexpr float PI = 3.14f;
+
+enum ShapeType
+{
+	Circle = 0,
+	Box = 1
+};
 
 class Rigidbody : public Component
 {
 public:
 	Rigidbody() = default;
-	~Rigidbody()
-	{
-		delete transform;
-	}
+	Rigidbody(float density, bool isStatic, float restitution, float gravity_scale) : restitution(restitution), density(density), isStatic(isStatic), m_gravity_scale(gravity_scale) {};
+	~Rigidbody() { delete transform; }
 
-	Rigidbody(float gravity_scale) : m_gravity_scale(gravity_scale) {}
+	bool init() override final;
 
-	bool init() override final {
-		transform = &entity->getComponent<Transform>();
-		if (nullptr != transform)
+	void update(const float& deltaTime) override final {
+		if (isInputMovement) 
 		{
-			return true;
+			m_velocity.x = m_velocity.x * deltaTime;
+			m_velocity.y = m_velocity.y + (m_gravity_scale * gravity.y * deltaTime);
 		}
-		return false;
+		else 
+		{
+			m_velocity += (m_gravity_scale * gravity * deltaTime);
+			m_velocity += force * deltaTime;
+		}
+		force = sf::Vector2f(0, 0);
+		
+		translate(m_velocity, m_rotation);
 	}
 
-	void update(const float& deltaTime) override final{
-		m_velocity.x = m_velocity.x * 0.9f * deltaTime;
-		m_velocity.y = m_velocity.y + (m_gravity_scale * GRAVITY * deltaTime) ;
-
-		transform->translate(m_velocity);
-	}
-
-	void setMovementSpeed(const float speed) {
-		m_speed = speed;
-	}
-
-	void moveHorizontal(int direction) {
-		m_velocity.x = m_speed * direction;
-	}
-
-	void setVelocityY(const float newVelocityY)
+	void AddForce(sf::Vector2f amount)
 	{
-		m_velocity.y = newVelocityY;
+		force = amount;
+	}
+	void setGravity(sf::Vector2f gravity)
+	{
+		this->gravity = gravity;
+	}
+	void setMovementSpeed(const float speed) { m_speed = speed; }
+	void moveHorizontal(int direction) 
+	{
+		isInputMovement = true;
+		//if (m_velocity.y == 0)
+		m_velocity.x =+ m_speed * direction;
+		force = sf::Vector2f(0, 0);
+	}
+	void setVelocityY(const float newVelocityY) { m_velocity.y = newVelocityY; }
+	void setVelocityX(const float newVelocityX) { m_velocity.x = newVelocityX; }
+
+	void moveTo(sf::Vector2f newPosition)
+	{
+		transform->moveTo(newPosition);
+		transformUpdateRequired = true;
+		onCollision = false;
 	}
 
-	void setVelocityX(const float newVelocityX)
+	void Rotate(float amount)
 	{
-		m_velocity.x = newVelocityX;
+		transform->Rotate(amount);
+		transformUpdateRequired = true;
+	}
+
+	void translate(sf::Vector2f v,float rotation) {
+		transformUpdateRequired = true;
+		transform->translate(v, rotation);
+	}
+
+	void setVelocity(sf::Vector2f value)
+	{
+		m_velocity = value;
 	}
 
 	void Jump()
 	{
-		if (!isOnGround)
-			return;
-		m_velocity.y = -m_jumpForce;
-		isOnGround = false;
+		if (m_velocity.y == 0)
+			m_velocity.y = -m_jumpForce;
+
+		//AddForce(sf::Vector2f(0,-600));
+		//AddForce(sf::Vector2f(600,0));
 	}
 
-	void landing()
-	{
-		isOnGround = true;
-	}
-
-
+	void landing() { isOnGround = true; }
+	sf::Vector2f getVelocity() { return m_velocity; };
+	void InitValues(sf::Vector2f position,float mass,float restitution,float area);
+	float getInvMass() {return invMass;}
 private:
+	//NEEDED
+	sf::Vector2f gravity = sf::Vector2f(0, 9.81f);
+	float invMass = 0;
+	sf::Vector2f acceleration;
+	sf::Vector2f force;
 	float m_gravity_scale = 1.0f;
-	sf::Vector2f m_velocity = sf::Vector2f();
-	float m_speed = 300.0f;
+	float m_speed = 200;
+	float forceMagnitude = 25;
 	float m_jumpForce = 8.0f;
+	float mass = 0;
+	float area = 0;
+	float radius = 0;
+	float width = 0;
+	float height = 0;
+	float m_rotation = 0;
+	sf::Vector2f m_velocity = sf::Vector2f();
+	sf::Vector2f position;
+	bool isOnGround = true;
+	bool isInputMovement = false;
+	float tempGravityScale = 0.0f;
 	Transform* transform = nullptr;
-	bool isOnGround = false;
 
-
+public:
+	bool onCollision = false;
+	bool transformUpdateRequired;
+	float density;
+	bool isStatic = true;
+	float restitution;
+	float getDensity() { return density; };
+	float getMass() { return mass; };
+	float getRestitution() { return restitution;};
+	float getArea() { return area; };
+	bool getIsStatic() { return isStatic; };
+	float getRadius() { return radius; };
+	float getWidth() { return width; };
+	float getHeight() { return height; };
 };

@@ -25,10 +25,8 @@ public:
         components.emplace_back(std::move(uptr));
 
         if (comp->init()) {
-            auto oui = getComponentTypeId<T>();
-            compArray[oui] = comp;
-            auto non = getComponentTypeId<T>();
-            compBitset[non] = true;
+            compArray[getComponentTypeId<T>()] = comp;
+            compBitset[getComponentTypeId<T>()] = true;
             return *comp;
         }
 
