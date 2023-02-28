@@ -29,12 +29,18 @@ void InGameScene::Start()
     AssetManager::get().loadTexture("Circle", "../../../../assets/Dragon/circle.png");
     AssetManager::get().loadTexture("Triangle", "../../../../assets/Dragon/triangle.png");
 
+    dragon.getComponent<Transform>().setTransform(300, 0, 0, 0, 1, 1);
+    dragon.addComponent<SpriteRenderer>("Player");
+    dragon.addComponent<Rigidbody>(1, false, 0, 2);
+    dragon.addComponent<Collider2D>(BOX);
+    dragon.addComponent<Input>(&engine->getInputHandler());
+    m_manager->addEntity(&dragon);
+
 
     circle2.getComponent<Transform>().setTransform(0,300,0,0,0.5f,0.5f);
     circle2.addComponent<SpriteRenderer>("Circle");
     circle2.addComponent<Rigidbody>(1, false, 1, 1);
     circle2.addComponent<Collider2D>(SPHERE);
-    circle2.addComponent<Input>(&engine->getInputHandler());
     m_manager->addEntity(&circle2);
 
     Triangle.getComponent<Transform>().setTransform(800, 872, 90, 0, 1, 1);
@@ -53,6 +59,7 @@ void InGameScene::Start()
 
     // ADD ENTITY FOR PHYSICS CALCUL IN THE WORLD
     worldptr->addEntityWithPhysics(circle2);
+    worldptr->addEntityWithPhysics(dragon);
     worldptr->addEntityWithPhysics(Triangle);
     worldptr->addEntityWithPhysics(ground);
 
