@@ -55,5 +55,4 @@ private:
 	sf::Sprite* sprite = nullptr;
 	std::string textureID = "";
 	sf::Texture* texture = nullptr;
-
 };
