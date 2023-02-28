@@ -1,6 +1,6 @@
 set(ENGINE_HEADERS
         Engine.h "Scene/Scene.hpp" "Scene/MainMenuScene.hpp" "Scene/InGameScene.hpp" "UI/UI.hpp" "ECS/ECS.h"
-        "ECS/Component.h" "ECS/Entity.h"  "ECS/Transform.h" "ECS/EntityManager.h" "ECS/SpriteRenderer.h"
+        "ECS/Component.h" "ECS/Entity.h"  "ECS/Transform.h" "ECS/EntityManager.h" "ECS/SpriteRenderer.h" "ECS/Ground.h"
         "AssetManager/AssetManager.h"  "ECS/RigidBody.h" "Physics/Collision.h" "ECS/PolygonCollider2D.h" "ECS/Input.h" "ECS/SphereCollider2D.h"  "Utils/Vectormath.h" "Physics/World.h"  "ECS/Collider2D.h" "Physics/ECollisionType.h")
 
 set(ENGINE_SOURCES

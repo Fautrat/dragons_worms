@@ -2,17 +2,11 @@
 
 bool SphereCollider2D::init()
 {
-	if (entity->hasComponent<Transform>() && entity->hasComponent<Rigidbody>())
+	if (entity->hasComponent<Transform>() && entity->hasComponent<Rigidbody>() && entity->hasComponent<SpriteRenderer>())
 	{
 		transform = &entity->getComponent<Transform>();
 		rb = &entity->getComponent<Rigidbody>();
 		m_radius = entity->getComponent<Rigidbody>().getRadius();
-
-		if (!entity->hasComponent<SpriteRenderer>())
-		{
-			std::cout << "RIGIDBODY : entity doesn't have a SpriteRender component !" << std::endl;
-			return false;
-		}
 
 		m_radius = entity->getComponent<SpriteRenderer>().getSprite()->getGlobalBounds().width / 2;
 		float area = m_radius * m_radius * PI;

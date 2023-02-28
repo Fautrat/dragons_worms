@@ -11,10 +11,10 @@
 #include "../ECS/Collider2D.h"
 #include "../ECS/Input.h"
 #include "../Physics/World.h"
+#include "../ECS/Ground.h"
 
 #include <memory>
 class Engine;
-
 
 class InGameScene : public Scene
 {
@@ -25,16 +25,19 @@ private:
 	Dragon* player;
 	EntityManager* m_manager;
 
-	Entity dragon, box1, box2, circle, circle2, circle3, Triangle , ground;
+	Entity dragon, box1, box2, circle, circle2, circle3, Triangle, ground;
+
+	std::vector<Ground*> tileset;
 
 public:
 	InGameScene(Engine& engine);
 	~InGameScene();
 
+	void readMap();
 	void Start() final;
 	void Update(const float& deltaTime) final;
 	void Render(sf::RenderTarget* renderTarget) final;
 
 	std::unique_ptr<World> worldptr = std::make_unique<World>();
-
+	
 };
