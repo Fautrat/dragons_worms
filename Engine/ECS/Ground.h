@@ -8,30 +8,17 @@ struct Ground : public Entity
 	Ground(float x, float y, std::string tile)
 	{
 		Entity();
-		getComponent<Transform>().setTransform(x, y, 0, 0, 1, 1);
-		addComponent<SpriteRenderer>("Ground");
-		getComponent<SpriteRenderer>().getSprite()->setOrigin(0, 0);
-		if (tile == "GRASS")
-		{
-			getComponent<SpriteRenderer>().getSprite()->setTextureRect(sf::IntRect(0, 130, 96, 10));
-			getComponent<SpriteRenderer>().getSprite()->setScale(sf::Vector2f(1.375f, 9.f));
-		}
+		getComponent<Transform>().setTransform(x + 66.f, y + 54.f, 0, 0, 0.6f, 0.5f);
+		addComponent<SpriteRenderer>(tile);
+		//getComponent<SpriteRenderer>().getSprite()->setOrigin(0, 0);
 			
-		else if (tile == "DIRT")
-		{
-			getComponent<SpriteRenderer>().getSprite()->setTextureRect(sf::IntRect(36, 30, 33, 33));
-		}
-		else if (tile == "/")
-		{
-			getComponent<SpriteRenderer>().getSprite()->setTextureRect(sf::IntRect(192, 128, 33, 33));
-		}
-		else if (tile == std::string("\\"))
-		{
-			getComponent<SpriteRenderer>().getSprite()->setTextureRect(sf::IntRect(225, 128, 33, 33));
-		}
-		getComponent<SpriteRenderer>().getSprite()->setScale(sf::Vector2f(4.125f, 3.375f));
-		//addComponent<Rigidbody>(1, true, 0.7, 0);
-		addComponent<Collider2D>(BOX);
+		//getComponent<SpriteRenderer>().getSprite()->setScale(sf::Vector2f(3.3f, 2.7f));
+
+		addComponent<Rigidbody>(1, true, 0.7, 0);
+		if(tile == std::string("Left_Diag") || tile == std::string("Right_Diag"))
+			addComponent<Collider2D>(TRIANGLE);
+		else 
+			addComponent<Collider2D>(BOX);
 	}
 
 	~Ground() = default;

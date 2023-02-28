@@ -33,54 +33,39 @@ public:
 		// Je sais c'est pas beau mais manque de temps pour faire mieux
 		if (colTypeA == BOX)
 		{
-			if (colTypeB == BOX)
+			if (colTypeB == BOX || colTypeB == TRIANGLE)
 			{
 				return IntersectPolygons(objA, objB);
 			}
-
-			if (colTypeB == TRIANGLE)
-			{
-				return IntersectPolygons(objA, objB);
-			}
-
-			if (colTypeB == SPHERE)
+			else if (colTypeB == SPHERE)
 			{
 				return IntersectCirclePolygon(objA, objB);
 			}
 		}
 
-		if (colTypeA == SPHERE)
+		else if (colTypeA == SPHERE)
 		{
-			if (colTypeB == BOX)
+			if (colTypeB == BOX || colTypeB == TRIANGLE)
 			{
 				return IntersectCirclePolygon(objA, objB);
 			}
-			if (colTypeB == TRIANGLE)
-			{
-				return IntersectCirclePolygon(objA, objB);
-			}
-			if (colTypeB == SPHERE)
+			else if (colTypeB == SPHERE)
 			{
 				return IntersectCircles(objA, objB);
 			}
 		}
 
-		if (colTypeA == TRIANGLE)
+		else if (colTypeA == TRIANGLE)
 		{
-			if (colTypeB == BOX)
+			if (colTypeB == BOX || colTypeB == TRIANGLE)
 			{
 				return IntersectPolygons(objA, objB);
 			}
-			if (colTypeB == TRIANGLE)
-			{
-				return IntersectPolygons(objA, objB);
-			}
-			if (colTypeB == SPHERE)
+			else if (colTypeB == SPHERE)
 			{
 				return IntersectCirclePolygon(objA, objB);
 			}
 		}
-
 		return false;
 	}
 

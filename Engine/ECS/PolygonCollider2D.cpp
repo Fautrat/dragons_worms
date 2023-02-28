@@ -2,16 +2,10 @@
 
 bool PolygonCollider2D::init()
 {
-	if (entity->hasComponent<Transform>() && entity->hasComponent<Rigidbody>())
+	if (entity->hasComponent<Transform>() && entity->hasComponent<Rigidbody>() && entity->hasComponent<SpriteRenderer>())
 	{
 		transform = &entity->getComponent<Transform>();
 		rb = &entity->getComponent<Rigidbody>();
-
-		if (!entity->hasComponent<SpriteRenderer>())
-		{
-			std::cout << "BOXCOLLIDER : entity doesn't have a SpriteRender component !" << std::endl;
-			return false;
-		}
 
 		width = entity->getComponent<SpriteRenderer>().getSprite()->getGlobalBounds().width;
 		height = entity->getComponent<SpriteRenderer>().getSprite()->getGlobalBounds().height;

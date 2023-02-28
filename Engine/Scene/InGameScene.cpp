@@ -26,18 +26,18 @@ void InGameScene::Start()
 
     AssetManager::get().loadTexture("Player", "../../../../assets/Dragon/dragon.png");
     AssetManager::get().loadTexture("Wall", "../../../../assets/Dragon/wall.png");
-    AssetManager::get().loadTexture("Circle", "../../../../assets/Dragon/Circle.png");
-    AssetManager::get().loadTexture("Triangle", "../../../../assets/Dragon/TRIANGLE.png");
+    AssetManager::get().loadTexture("Circle", "../../../../assets/Dragon/circle.png");
+    AssetManager::get().loadTexture("Triangle", "../../../../assets/Dragon/triangle.png");
 
 
-    circle2.getComponent<Transform>().setTransform(0,0,0,0,0.5,0.5);
+    circle2.getComponent<Transform>().setTransform(0,300,0,0,0.5f,0.5f);
     circle2.addComponent<SpriteRenderer>("Circle");
     circle2.addComponent<Rigidbody>(1, false, 1, 1);
     circle2.addComponent<Collider2D>(SPHERE);
     circle2.addComponent<Input>(&engine->getInputHandler());
     m_manager->addEntity(&circle2);
 
-    Triangle.getComponent<Transform>().setTransform(800, 872, 270, 0, 1, 1);
+    Triangle.getComponent<Transform>().setTransform(800, 872, 90, 0, 1, 1);
     Triangle.addComponent<SpriteRenderer>("Triangle");
     Triangle.addComponent<Rigidbody>(1, true, 1, 0);
     Triangle.addComponent<Collider2D>(TRIANGLE);
@@ -58,10 +58,11 @@ void InGameScene::Start()
 
     readMap();
 
-    for (auto& ground : tileset)
+    for (auto& tile : tileset)
     {
-        auto entity = dynamic_cast<Entity*>(ground);
+        auto entity = dynamic_cast<Entity*>(tile);
         m_manager->addEntity(entity);
+        worldptr->addEntityWithPhysics(*entity);
     }
 }
 
@@ -98,7 +99,9 @@ void InGameScene::readMap(/* std::string& filename */)
     int row = 10, col = 15;
 
     sf::Vector2f tile_size(1980.f / col, 1080.f / row);
-    AssetManager::get().loadTexture("Ground", "../../../../assets/tiles.png");
+    AssetManager::get().loadTexture("Dirt", "../../../../assets/dirt.png");
+    AssetManager::get().loadTexture("Left_Diag", "../../../../assets/left_diag.png");
+    AssetManager::get().loadTexture("Right_Diag", "../../../../assets/right_diag.png");
 
     for (int y = 0; y < row; y++)
     {
@@ -106,17 +109,17 @@ void InGameScene::readMap(/* std::string& filename */)
         {
             if (map_50[x + y * col] == '-')
             {
-                Ground* ground = new Ground(static_cast<float>(tile_size.x * x), static_cast<float>(y * tile_size.y), std::string("DIRT"));
+                Ground* ground = new Ground(static_cast<float>(tile_size.x * x), static_cast<float>(y * tile_size.y), std::string("Dirt"));
                 tileset.push_back(ground);   
             }
             else if (map_50[x + y * col] == '/')
             {
-                Ground* ground = new Ground(static_cast<float>(tile_size.x * x), static_cast<float>(y * tile_size.y), std::string("/"));
+                Ground* ground = new Ground(static_cast<float>(tile_size.x * x), static_cast<float>(y * tile_size.y), std::string("Left_Diag"));
                 tileset.push_back(ground);
             }
             else if (map_50[x + y * col] == '\\')
             {
-                Ground* ground = new Ground(static_cast<float>(tile_size.x * x), static_cast<float>(y * tile_size.y), std::string("\\"));
+                Ground* ground = new Ground(static_cast<float>(tile_size.x * x), static_cast<float>(y * tile_size.y), std::string("Right_Diag"));
                 tileset.push_back(ground);
             }
         }
