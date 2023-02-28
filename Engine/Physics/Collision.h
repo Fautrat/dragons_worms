@@ -1,29 +1,77 @@
 #pragma once
 #include <sfml/Graphics.hpp>
-#include "../ECS/BoxCollider2D.h"
+#include "../ECS/PolygonCollider2D.h"
 #include "../ECS/SphereCollider2D.h"
-#include "../ECS/TriangleCollider2D.h"
+#include "../ECS/Collider2D.h"
+#include "../ECS/RigidBody.h"
+#include "../Utils/Vectormath.h"
+#include <math.h>
+#include "../ECS/Entity.h"
+
 
 class Collision {
+
+private:
+	sf::Vector2f normal;
+	float depth;
+	VectorMath<float> vecMath;
+
+	std::pair<float, float> ProjectVertices(std::vector<sf::Vector2f> vertices, sf::Vector2f axis);
+	std::pair<float, float> ProjectCircle(sf::Vector2f center, float radius, sf::Vector2f axis);
+	int FindClosestPointOnPolygons(sf::Vector2f center, std::vector<sf::Vector2f> vertices);
+	sf::Vector2f FindArithmeticMean(std::vector<sf::Vector2f> vertices);
+
 public:
-	//AABB collision handle
-	//bool BoxAndBox(const sf::Rect<int>& rectA, const sf::Rect<int>& rectB);
-	bool BoxAndBox(const BoxCollider2D& colA, const BoxCollider2D& colB);
 
-	bool SphereAndBox(const SphereCollider2D& colA, const BoxCollider2D& colB);
+	bool detectCollision(Entity& objA, Entity& objB)
+	{
+		if (!objA.hasComponent<Collider2D>() || !objB.hasComponent<Collider2D>()) return false;
+		normal = sf::Vector2f(0, 0);
+		depth = 0;
+		ColliderType colTypeA = objA.getComponent<Collider2D>().getColliderType();
+		ColliderType colTypeB = objB.getComponent<Collider2D>().getColliderType();
+		// Je sais c'est pas beau mais manque de temps pour faire mieux
+		if (colTypeA == BOX)
+		{
+			if (colTypeB == BOX || colTypeB == TRIANGLE)
+			{
+				return IntersectPolygons(objA, objB);
+			}
+			else if (colTypeB == SPHERE)
+			{
+				return IntersectCirclePolygon(objA, objB);
+			}
+		}
 
-	bool TriangleAndSphere(const TriangleCollider2D& colA, const SphereCollider2D& colB);
+		else if (colTypeA == SPHERE)
+		{
+			if (colTypeB == BOX || colTypeB == TRIANGLE)
+			{
+				return IntersectCirclePolygon(objA, objB);
+			}
+			else if (colTypeB == SPHERE)
+			{
+				return IntersectCircles(objA, objB);
+			}
+		}
 
-	bool linePoint(float x1, float y1, float x2, float y2, float px, float py);
+		else if (colTypeA == TRIANGLE)
+		{
+			if (colTypeB == BOX || colTypeB == TRIANGLE)
+			{
+				return IntersectPolygons(objA, objB);
+			}
+			else if (colTypeB == SPHERE)
+			{
+				return IntersectCirclePolygon(objA, objB);
+			}
+		}
+		return false;
+	}
 
-	bool pointCircle(float px, float py, float cx, float cy, float r);
-
-	//More precisely its box on the lines of the triangle
-	bool BoxAndTriangle(const BoxCollider2D& colA, const TriangleCollider2D& colB);
-
-	bool LineAndLine(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
-
-	float dist(float x1, float y1, float x2, float y2);
-
-	// TODO : BoxAndLine / BoxAndCircle
+	sf::Vector2f getNormal() { return normal; };
+	float getDepth() { return depth; };
+	bool IntersectCirclePolygon(Entity& objA, Entity& objB);
+	bool IntersectPolygons(Entity& objA, Entity& objB);
+	bool IntersectCircles(Entity& objA, Entity& objB);
 };

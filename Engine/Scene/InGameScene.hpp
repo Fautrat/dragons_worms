@@ -7,11 +7,16 @@
 #include "../ECS/SpriteRenderer.h"
 #include "../ECS/ECS.h"
 #include "../ECS/RigidBody.h"
-#include "../ECS/BoxCollider2D.h"
-#include "../Physics/Collision.h"
+#include "../ECS/PolygonCollider2D.h"
+#include "../ECS/Collider2D.h"
 #include "../ECS/Input.h"
 #include "../UI/UI.hpp"
 #include "../ECS/LifeBar.h"
+
+#include "../Physics/World.h"
+#include "../ECS/Ground.h"
+
+#include <memory>
 
 enum WhosTurn
 {
@@ -29,17 +34,21 @@ private:
 	sf::Sprite backgroundSprite;
 	EntityManager* m_manager;
 
-	Entity player1, wall, circle, Triangle;
-	Dragon player3, player2;
+	Dragon player
 
 	WhosTurn currentPlayer = Player1;
 
 	UI* ui;
 	Collision* collision = new Collision();
+	Entity box1, box2, circle, circle2, circle3, Triangle, ground;
+
+	std::vector<Ground*> tileset;
+
 public:
 	InGameScene(Engine& engine);
 	~InGameScene();
 
+	void readMap();
 	void Start() final;
 	void Update(const float& deltaTime) final;
 	void Render(sf::RenderTarget* renderTarget) final;
@@ -47,4 +56,6 @@ public:
 
 	void newTurn();
 
+	std::unique_ptr<World> worldptr = std::make_unique<World>();
+	
 };
