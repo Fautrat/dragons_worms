@@ -49,7 +49,6 @@ void World::resolveCollision(Entity* firstEntity, Entity* secondEntity)
 
 	rbA.setVelocity(rbA.getVelocity() - impulse * rbA.getInvMass());
 	rbB.setVelocity(rbB.getVelocity() + impulse * rbB.getInvMass());
-	
 }
 
 
