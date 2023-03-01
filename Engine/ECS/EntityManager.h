@@ -7,9 +7,16 @@
 class Entity;
 
 class EntityManager {
-public:
+protected:
 	EntityManager() = default;
 	~EntityManager() = default;
+	
+public:
+	
+	static EntityManager* getInstance();
+	static void killInstance();
+	EntityManager(EntityManager& other) = delete;
+	void operator=(const EntityManager&) = delete;
 
 	void draw(sf::RenderTarget* renderwindow);
 	void update(const float& deltaTime);
@@ -21,4 +28,5 @@ public:
 
 private:
 	std::vector<std::unique_ptr<Entity>> entities;
+	static EntityManager* m_instance;
 };

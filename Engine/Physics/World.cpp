@@ -55,11 +55,12 @@ void World::resolveCollision(Entity* firstEntity, Entity* secondEntity)
 
 void World::updatePhysics(const float& deltaTime)
 {
-	for (int i = 0; i < entities.size() - 1; i++)
+	const auto copyEntities = entities;
+	for (int i = 0; i < copyEntities.size() - 1; i++)
 	{
 		Entity* entityA = entities[i];
 		
-		for (int j = i + 1; j < entities.size(); j++)
+		for (int j = i + 1; j < copyEntities.size(); j++)
 		{
 			Entity* entityB = entities[j];
 			
@@ -67,7 +68,28 @@ void World::updatePhysics(const float& deltaTime)
 
 			if (Collide(entityA, entityB))
 			{
-				
+				if (entityA->getComponent<Collider2D>().getCollisionTag() == std::string("Fireball"))
+				{
+					if (entityB->getComponent<Collider2D>().getCollisionTag() == std::string("Player"))
+					{
+						continue;
+					}
+					removeEntityWithPhysics(*entityA);
+					delete entityA;
+					break;
+				}
+				else if (entityB->getComponent<Collider2D>().getCollisionTag() == std::string("Fireball"))
+				{
+					if (entityA->getComponent<Collider2D>().getCollisionTag() == std::string("Player"))
+					{
+						continue;
+					}
+					else
+					{
+						removeEntityWithPhysics(*entityA);
+						continue;
+					}
+				}
 				depth = collision->getDepth();
 				normal = collision->getNormal();
 

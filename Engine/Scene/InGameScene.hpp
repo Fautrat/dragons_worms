@@ -19,8 +19,14 @@
 
 enum WhosTurn
 {
-	Player1 = 0,
-	Player2 = 1,
+	Player1,
+	Player2,
+};
+
+enum StateTurn
+{
+	Running,
+	Processing,
 };
 
 class Engine;
@@ -31,11 +37,8 @@ class InGameScene : public Scene
 private:
 	sf::Texture backgroundTexture;
 	sf::Sprite backgroundSprite;
-	EntityManager* m_manager;
 
 	Dragon player1, player2;
-
-	WhosTurn currentPlayer = Player1;
 
 	UI* ui;
 	Collision* collision = new Collision();
@@ -53,10 +56,12 @@ public:
 	void Start() final;
 	void Update(const float& deltaTime) final;
 	void Render(sf::RenderTarget* renderTarget) final;
-	float timer = 10.f;
 
+	float timer = 10.f;
 	void newTurn();
+	WhosTurn currentPlayer = Player1;
+	StateTurn currentState = Running;
 
 	std::unique_ptr<World> worldptr = std::make_unique<World>();
-	
+	EntityManager* m_manager;
 };

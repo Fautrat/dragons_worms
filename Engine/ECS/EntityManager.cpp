@@ -1,6 +1,23 @@
 #include "EntityManager.h"
 #include "Entity.h"
 
+EntityManager* EntityManager::m_instance = nullptr;
+
+EntityManager* EntityManager::getInstance() {
+	if (m_instance == nullptr)
+	{
+		m_instance = new EntityManager;
+	}
+	return m_instance;
+}
+
+void EntityManager::killInstance() {
+	if (m_instance != nullptr)
+	{
+		delete m_instance;
+		m_instance = nullptr;
+	}
+}
 
 void EntityManager::draw(sf::RenderTarget* renderwindow){
 	for (auto& entity : entities)

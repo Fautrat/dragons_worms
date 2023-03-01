@@ -12,8 +12,7 @@ class Collider2D : public Component
 public:
 	
 	Collider2D(ColliderType col) : colliderType(col) {}
-	// Side is the side of the 90° angle
-	Collider2D(ColliderType col, std::string tag) : collisionTag(tag) , colliderType(col) {}
+	Collider2D(ColliderType col, std::string tag) : collisionTag(tag), colliderType(col) {}
 
 	bool init() {
 		switch(colliderType)
@@ -38,6 +37,11 @@ public:
 	ColliderType getColliderType()
 	{
 		return colliderType;
+	}
+
+	std::string getCollisionTag()
+	{;
+		return collisionTag;
 	}
 
 

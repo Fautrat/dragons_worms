@@ -22,14 +22,14 @@ InGameScene::InGameScene(Engine& engine) :Scene(engine)
 
 InGameScene::~InGameScene()
 {
-    delete m_manager;
+    m_manager->killInstance();
     delete ui;
     delete collision;
 }
 
 void InGameScene::Start()
 {
-    m_manager = new EntityManager();
+    m_manager = EntityManager::getInstance();
 
     AssetManager::get().loadTexture("Player", "../../../../assets/Dragon/dragon.png");
     /*AssetManager::get().loadTexture("Wall", "../../../../assets/Dragon/wall.png");
@@ -37,19 +37,19 @@ void InGameScene::Start()
     AssetManager::get().loadTexture("Triangle", "../../../../assets/Dragon/triangle.png");*/
 
     player1.getComponent<Transform>().setTransform(300.f, 0, 0, 0, 0.7f, 0.7f);
-    player1.addComponent<SpriteRenderer>("Player");
+    /*player1.addComponent<SpriteRenderer>("Player");
     player1.addComponent<Rigidbody>(1, false, 0, 2);
     player1.addComponent<Collider2D>(BOX);
-    player1.addComponent<LifeBar>();
+    player1.addComponent<LifeBar>();*/
     m_manager->addEntity(&player1);
 
-    player1.connectInput(&engine->getInputHandler(), *m_manager);
+    player1.connectInput(&engine->getInputHandler(), *m_manager, *worldptr);
 
     player2.getComponent<Transform>().setTransform(800.f, 0, 0, 0, 0.7f, 0.7f);
-    player2.addComponent<SpriteRenderer>("Player");
+    /*player2.addComponent<SpriteRenderer>("Player");
     player2.addComponent<Rigidbody>(1, false, 0, 2);
     player2.addComponent<Collider2D>(BOX);
-    player2.addComponent<LifeBar>();
+    player2.addComponent<LifeBar>();*/
     m_manager->addEntity(&player2);
 
 
@@ -108,20 +108,21 @@ void InGameScene::Update(const float& deltaTime)
 void InGameScene::Render(sf::RenderTarget* renderTarget)
 { 
     renderTarget->draw(backgroundSprite);
-    renderTarget->draw(ui->Text("Timer"));
     m_manager->draw(renderTarget);
+
+    renderTarget->draw(ui->Text("Timer"));
 }
 
 void InGameScene::newTurn()
 {
     if (currentPlayer == WhosTurn::Player1)
     {
-        player2.connectInput(&engine->getInputHandler(), *m_manager);
+        player2.connectInput(&engine->getInputHandler(), *m_manager, *worldptr);
         currentPlayer = Player2;
     }
     else
     {
-        player1.connectInput(&engine->getInputHandler(), *m_manager);
+        player1.connectInput(&engine->getInputHandler(), *m_manager, *worldptr);
         currentPlayer = Player1;
     }
 

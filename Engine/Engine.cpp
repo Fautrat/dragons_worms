@@ -1,13 +1,7 @@
 #include "Engine.h"
-
 #include <iostream>
-
 #include "../Engine/Scene/MainMenuScene.hpp"
 #include "../Engine/Scene/InGameScene.hpp"
-
-
-
-
 
 
 Engine* Engine::m_instance = nullptr;
@@ -72,8 +66,7 @@ void Engine::Run()
 void Engine::ExitGame()
 {
     gameState = STOP;
-    if(m_renderWindow)
-    m_renderWindow->close();
+    if(m_renderWindow) m_renderWindow->close();
 }
 
 void Engine::LoadScene(ESceneType scene)
@@ -133,6 +126,14 @@ Engine* Engine::getInstance() {
         m_instance = new Engine();
     }
     return m_instance;
+}
+
+void Engine::killInstance() {
+    if (m_instance != nullptr)
+    {
+        delete m_instance;
+        m_instance = nullptr;
+    }
 }
 
 sf::RenderWindow& Engine::getRenderWindow()
