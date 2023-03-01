@@ -46,7 +46,7 @@ void Engine::Run()
         {
             HandleEvent();
 
-            sf::Time _deltaTime = m_deltaClock.getElapsedTime();
+            sf::Time _deltaTime = m_deltaClock.restart();
             m_deltaTime = _deltaTime.asSeconds();
 
             if (nullptr != m_currScene)
@@ -61,10 +61,10 @@ void Engine::Run()
             if (m_sceneToLoad != ESceneType::NONE)
                 LoadScene(m_sceneToLoad);
              
-            if (m_deltaTime >= 1.f)
+           /* if (m_deltaTime >= 1.f)
             {
                 m_deltaClock.restart();
-            }
+            }*/
         }
     }
 }

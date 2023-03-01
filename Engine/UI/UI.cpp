@@ -58,8 +58,3 @@ bool UI::InteractionButton(std::string name, sf::Vector2i mouseposition)
 	}
 
 }
-
-sf::Font& UI::getFont()
-{
-	return font;
-}

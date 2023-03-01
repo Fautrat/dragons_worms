@@ -1,20 +1,14 @@
+#pragma once
+
 #include <mutex>
 #include "SFML/Graphics.hpp"
 #include <iostream>
-
-#ifndef UI_H
-#define UI_H
 
 class UI
 {
 public:
 	UI()
 	{
-		if (!font.loadFromFile("../../../../assets/font/shanghai.ttf"))
-		{
-			std::cout << "Failed to load font" << std::endl;
-			return;
-		}
 	}
 
 	~UI() = default;
@@ -33,11 +27,6 @@ private:
 	std::vector<sf::Text> listButtons;
 
 	sf::Text buttonModel;
-
-	sf::Font font;
-
 	std::vector<sf::String> nameTextBox;
 	std::vector<sf::RectangleShape> zone;
 };
-
-#endif // UI_H

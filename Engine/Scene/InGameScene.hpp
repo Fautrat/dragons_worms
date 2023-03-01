@@ -12,7 +12,6 @@
 #include "../ECS/Input.h"
 #include "../UI/UI.hpp"
 #include "../ECS/LifeBar.h"
-
 #include "../Physics/World.h"
 #include "../ECS/Ground.h"
 
@@ -34,7 +33,7 @@ private:
 	sf::Sprite backgroundSprite;
 	EntityManager* m_manager;
 
-	Dragon player
+	Dragon player1, player2;
 
 	WhosTurn currentPlayer = Player1;
 
@@ -48,11 +47,13 @@ public:
 	InGameScene(Engine& engine);
 	~InGameScene();
 
+	sf::Font* font;
+
 	void readMap();
 	void Start() final;
 	void Update(const float& deltaTime) final;
 	void Render(sf::RenderTarget* renderTarget) final;
-	int timer = 10;
+	float timer = 10.f;
 
 	void newTurn();
 

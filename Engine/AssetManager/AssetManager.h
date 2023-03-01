@@ -17,7 +17,7 @@ public:
 	void loadTexture(std::string id, std::string path);
 
 	sf::Font* getFont(std::string id);
-	void loadFont(std::string id, std::string path, int fontSize);
+	void loadFont(std::string id, std::string path);
 
 	sf::Music* getMusic(std::string id);
 	void loadMusic(std::string id, std::string path, int volume);

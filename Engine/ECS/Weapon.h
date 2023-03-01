@@ -42,7 +42,7 @@ public:
 
     void update(const float& deltaTime) override final 
     {
-        m_velocity.y = m_velocity.y + (GRAVITY * deltaTime );
+        m_velocity.y = m_velocity.y + (9.81f * deltaTime );
 
         sprite->move(m_velocity * deltaTime);
 

@@ -3,6 +3,7 @@
 #include "Scene.hpp"
 #include <SFML/Audio.hpp>
 #include <SFML/System.hpp>
+#include "../AssetManager/AssetManager.h"
 #include "../UI/UI.hpp"
 
 class Engine;
@@ -24,6 +25,7 @@ public:
 	void Render(sf::RenderTarget* renderTarget) final;
 
 private :
+    sf::Font* font;
     void Play();
     void Quit();
     void Options();

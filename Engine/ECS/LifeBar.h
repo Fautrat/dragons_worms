@@ -4,6 +4,7 @@
 #include <iostream>
 #include "Entity.h"
 #include "Component.h"
+#include "../AssetManager/AssetManager.h"
 #include <iostream>
 
 class LifeBar : public Component, public sf::Text
@@ -12,19 +13,21 @@ public:
 	LifeBar() = default;
 	~LifeBar() {
 		delete transform;
+		delete font;
 	}
 
 	bool init() override final 
 	{
 		if (nullptr != entity)
 		{
-			if (!font.loadFromFile("../../../../assets/font/shanghai.ttf"))
+			font = AssetManager::get().getFont("Shangai");
+			if (!font)
 			{
-				std::cout << "Failed to load font" << std::endl;
+				std::cout << "Failed to load font for life bar" << std::endl;
 				return false;
 			}
 			transform = &entity->getComponent<Transform>();
-			setFont(font);
+			setFont(*font);
 			setFillColor(sf::Color::Red);
 			setCharacterSize(20);
 			//setOrigin(transform->position);
@@ -48,5 +51,5 @@ public:
 private:
 
 	Transform* transform = nullptr;
-	sf::Font font;
+	sf::Font* font;
 };

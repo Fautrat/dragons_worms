@@ -4,7 +4,6 @@
 #include "../../Game/InputHandler.hpp"
 #include "SpriteRenderer.h"
 #include "Rigidbody.h"
-#include "BoxCollider2D.h"
 #include "Weapon.h"
 #include "SFML/Graphics.hpp"
 
