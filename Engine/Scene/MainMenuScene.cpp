@@ -106,7 +106,8 @@ void MainMenuScene::Update(const float& deltaTime)
             if (ui->InteractionButton("MOVEDOWN", mousepos)) UpdateInput(Action::MoveDown, "MOVEDOWN");
             if (ui->InteractionButton("MOVELEFT", mousepos)) UpdateInput(Action::MoveLeft, "MOVELEFT");
             if (ui->InteractionButton("MOVERIGHT", mousepos)) UpdateInput(Action::MoveRight, "MOVERIGHT");
-
+            if (ui->InteractionButton("ACTION", mousepos)) UpdateInput(Action::Action, "ACTION");
+            if (ui->InteractionButton("JUMP", mousepos)) UpdateInput(Action::Jump, "JUMP");
         }
     }
 }
@@ -163,11 +164,11 @@ void MainMenuScene::Controls()
     ui->CreateText("MOVEDOWN", sf::Color::White, "DOWN : S", 100, sf::Vector2f(400, 400), font);
     ui->CreateText("MOVELEFT", sf::Color::White, "LEFT : Q", 100, sf::Vector2f(400, 500), font);
     ui->CreateText("MOVERIGHT", sf::Color::White, "RIGHT : D", 100, sf::Vector2f(400, 600), font);
-    ui->CreateText("ATTACK", sf::Color::White, "ATTACK : CTRL", 100, sf::Vector2f(400, 700), font);
+    ui->CreateText("ACTION", sf::Color::White, "ACTION : CTRL", 100, sf::Vector2f(400, 700), font);
     ui->CreateText("JUMP", sf::Color::White, "JUMP : SPACE", 100, sf::Vector2f(400, 800), font);
 
     std::shared_ptr<Menu> controlsMenu = std::make_shared<Menu>("Controls");
-    controlsMenu->AddButton({"MOVEUP", "MOVEDOWN", "MOVELEFT", "MOVERIGHT", "ATTACK", "JUMP", "BackButton"});
+    controlsMenu->AddButton({"MOVEUP", "MOVEDOWN", "MOVELEFT", "MOVERIGHT", "ACTION", "JUMP", "BackButton"});
     menuManager->AddMenu(controlsMenu);
     menuManager->SetCurrentMenu("Controls");
 }
