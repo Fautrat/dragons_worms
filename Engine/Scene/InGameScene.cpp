@@ -68,18 +68,18 @@ void InGameScene::Start()
     {
         auto entity = dynamic_cast<Entity*>(tile);
         m_manager->addEntity(entity);
-        worldptr->addEntityWithPhysics(*entity);
+       // worldptr->addEntityWithPhysics(*entity);
     }
 
-    worldptr->addEntityWithPhysics(circle2);
-    worldptr->addEntityWithPhysics(dragon);
+   /* worldptr->addEntityWithPhysics(circle2);
+    worldptr->addEntityWithPhysics(dragon);*/
 }
 
 void InGameScene::Update(const float& deltaTime)
 {
     m_manager->refresh();
     m_manager->update(deltaTime);
-    worldptr->updatePhysics(deltaTime);
+   // worldptr->updatePhysics();
 }
 
 void InGameScene::Render(sf::RenderTarget* renderTarget)

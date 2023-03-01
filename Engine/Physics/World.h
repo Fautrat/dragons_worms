@@ -4,8 +4,6 @@
 #include "Collision.h"
 #include "../Utils/Vectormath.h"
 
-class Entity;
-
 class World
 {
 public:
@@ -17,28 +15,12 @@ public:
 	float getMinDensity() { return MinDensity; };
 	float getMaxDensity() { return MaxDensity; };
 
-
-	void addEntityWithPhysics(Entity& entity);
-
-	void removeEntityWithPhysics(Entity& entity);
-	
-	Entity& getEntityWithPhysics(int index)
-	{
-		if (index > 0 || index <= entities.size())
-		{
-			return *entities[index];
-		}
-	}
-
-
-	bool Collide(Entity* firstEntity, Entity* secondEntity);
-	void updatePhysics(const float& deltaTime);
-
-	void resolveCollision(Entity* firstEntity, Entity* secondEntity);
+	bool Collide(Entity& firstEntity, Entity& secondEntity);
+	void updatePhysics(std::vector<std::unique_ptr<Entity>>& entities);
+	void resolveCollision(Entity& firstEntity, Entity& secondEntity);
 private:
 	 
 	 Collision* collision;
-	 std::vector<Entity*> entities;
 	 float MinBodySize = 1.0f * 1.0f;
 	 float MaxBodySize = 129.0f * 129.0f;
 	 float MinDensity = 0.5f; //g/cm^3

@@ -12,26 +12,16 @@ World::~World()
 }
 
 
-void World::addEntityWithPhysics(Entity& entity)
+
+bool World::Collide(Entity& firstEntity, Entity& secondEntity)
 {
-	entities.push_back(&entity);
+	return collision->detectCollision(firstEntity, secondEntity);
 }
 
-void World::removeEntityWithPhysics(Entity& entity)
+void World::resolveCollision(Entity& firstEntity, Entity& secondEntity)
 {
-	std::remove(entities.begin(), entities.end(), &entity);
-}
-
-
-bool World::Collide(Entity* firstEntity, Entity* secondEntity)
-{
-	return collision->detectCollision(*firstEntity, *secondEntity);
-}
-
-void World::resolveCollision(Entity* firstEntity, Entity* secondEntity)
-{
-	Rigidbody& rbA = firstEntity->getComponent<Rigidbody>();
-	Rigidbody& rbB = secondEntity->getComponent<Rigidbody>();
+	Rigidbody& rbA = firstEntity.getComponent<Rigidbody>();
+	Rigidbody& rbB = secondEntity.getComponent<Rigidbody>();
 	rbA.onCollision = true;
 	rbB.onCollision = true;
 	sf::Vector2f relativeVelocity = rbB.getVelocity() - rbA.getVelocity();
@@ -52,17 +42,19 @@ void World::resolveCollision(Entity* firstEntity, Entity* secondEntity)
 }
 
 
-void World::updatePhysics(const float& deltaTime)
+void World::updatePhysics(std::vector<std::unique_ptr<Entity>>& entities)
 {
 	for (int i = 0; i < entities.size() - 1; i++)
 	{
-		Entity* entityA = entities[i];
+		Entity& entityA = *entities[i];
+		if (!entityA.hasComponent<Collider2D>()) continue;
 		
 		for (int j = i + 1; j < entities.size(); j++)
 		{
-			Entity* entityB = entities[j];
-			
-			if (entityA->getComponent<Rigidbody>().getIsStatic() && entityB->getComponent<Rigidbody>().getIsStatic()) continue;
+			Entity& entityB = *entities[j];
+			if (!entityB.hasComponent<Collider2D>()) continue;
+
+			if (entityA.getComponent<Rigidbody>().getIsStatic() && entityB.getComponent<Rigidbody>().getIsStatic()) continue;
 
 			if (Collide(entityA, entityB))
 			{
@@ -70,18 +62,18 @@ void World::updatePhysics(const float& deltaTime)
 				depth = collision->getDepth();
 				normal = collision->getNormal();
 
-				if (entityB->getComponent<Rigidbody>().getIsStatic())
+				if (entityB.getComponent<Rigidbody>().getIsStatic())
 				{
-					entityA->getComponent<Rigidbody>().translate(-normal * depth, 0);
+					entityA.getComponent<Rigidbody>().translate(-normal * depth, 0);
 				}
-				else if(entityA->getComponent<Rigidbody>().getIsStatic())
+				else if(entityA.getComponent<Rigidbody>().getIsStatic())
 				{
-					entityB->getComponent<Rigidbody>().translate(normal * depth, 0);
+					entityB.getComponent<Rigidbody>().translate(normal * depth, 0);
 				}
 				else
 				{
-					entityA->getComponent<Rigidbody>().translate(-normal * depth / 2.0f, 0);
-					entityB->getComponent<Rigidbody>().translate(normal * depth / 2.0f, 0);
+					entityA.getComponent<Rigidbody>().translate(-normal * depth / 2.0f, 0);
+					entityB.getComponent<Rigidbody>().translate(normal * depth / 2.0f, 0);
 				}
 
 				resolveCollision(entityA, entityB);

@@ -10,7 +10,7 @@
 #include "../ECS/PolygonCollider2D.h"
 #include "../ECS/Collider2D.h"
 #include "../ECS/Input.h"
-#include "../Physics/World.h"
+//#include "../Physics/World.h"
 #include "../ECS/Ground.h"
 
 #include <memory>
@@ -38,6 +38,6 @@ public:
 	void Update(const float& deltaTime) final;
 	void Render(sf::RenderTarget* renderTarget) final;
 
-	std::unique_ptr<World> worldptr = std::make_unique<World>();
+	//std::unique_ptr<World> worldptr = std::make_unique<World>();
 	
 };
