@@ -18,7 +18,7 @@ Engine::Engine()
     gameState = RUNNING;
     m_instance = this;
     m_renderWindow = new sf::RenderWindow(
-        sf::VideoMode(1920, 1080),
+        sf::VideoMode(2560, 1600),
         "Dragons with engine",
         sf::Style::Resize
     );

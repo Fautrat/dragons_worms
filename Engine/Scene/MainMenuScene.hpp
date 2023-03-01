@@ -5,6 +5,7 @@
 #include <SFML/System.hpp>
 #include "../../Game/dragons.hpp"
 #include "../UI/UI.hpp"
+#include "./Menu/MenuManager.hpp"
 
 class Engine;
 
@@ -18,6 +19,7 @@ public:
 
     InputHandler* m_input;
     UI* ui;
+    MenuManager* menuManager;
 
 	MainMenuScene(Engine& engine);
 	~MainMenuScene();
@@ -30,5 +32,11 @@ private :
     void Play();
     void Quit();
     void Options();
+    void Resolution();
+    void Controls();
+    void Volume();
+    void Back();
+    void SetResolution(int width, int height);
+    float delay = 0.0f;
     bool m_isclicked = false;
 };

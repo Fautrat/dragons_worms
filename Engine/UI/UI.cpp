@@ -58,3 +58,25 @@ bool UI::InteractionButton(std::string name, sf::Vector2i mouseposition)
 	}
 
 }
+
+void UI::RemoveText(std::string name) {
+    for (int i = 0; i < nameButton.size(); i++)
+    {
+        if (nameButton[i] == name)
+        {
+            listButtons.erase(listButtons.begin() + i);
+            nameButton.erase(nameButton.begin() + i);
+        }
+    }
+
+}
+
+void UI::UpdateText(std::string name, std::string text) {
+    for (int i = 0; i < nameButton.size(); i++)
+    {
+        if (nameButton[i] == name)
+        {
+            listButtons[i].setString(text);
+        }
+    }
+}
