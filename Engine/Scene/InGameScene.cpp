@@ -43,7 +43,7 @@ void InGameScene::Start()
     player1.addComponent<LifeBar>();
     m_manager->addEntity(&player1);
 
-    player1.connectInput(&engine->getInputHandler());
+    player1.connectInput(&engine->getInputHandler(), *m_manager);
 
     player2.getComponent<Transform>().setTransform(800.f, 0, 0, 0, 0.7f, 0.7f);
     player2.addComponent<SpriteRenderer>("Player");
@@ -116,12 +116,12 @@ void InGameScene::newTurn()
 {
     if (currentPlayer == WhosTurn::Player1)
     {
-        player2.connectInput(&engine->getInputHandler());
+        player2.connectInput(&engine->getInputHandler(), *m_manager);
         currentPlayer = Player2;
     }
     else
     {
-        player1.connectInput(&engine->getInputHandler());
+        player1.connectInput(&engine->getInputHandler(), *m_manager);
         currentPlayer = Player1;
     }
 
