@@ -96,18 +96,30 @@ void MainMenuScene::Update(const float& deltaTime)
         }
         else if (menuManager->GetCurrentMenu()->GetName() == "Controls")
         {
+            if (m_is_remap){
+                // if not clicked or esc or enter
+                if (sf::Mouse::isButtonPressed(sf::Mouse::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) CancelRemap();
+                else Remap();
+            }
             if (ui->InteractionButton("BackButton", mousepos)) Back();
+            if (ui->InteractionButton("MOVEUP", mousepos)) UpdateInput(Action::MoveUp, "MOVEUP");
+            if (ui->InteractionButton("MOVEDOWN", mousepos)) UpdateInput(Action::MoveDown, "MOVEDOWN");
+            if (ui->InteractionButton("MOVELEFT", mousepos)) UpdateInput(Action::MoveLeft, "MOVELEFT");
+            if (ui->InteractionButton("MOVERIGHT", mousepos)) UpdateInput(Action::MoveRight, "MOVERIGHT");
 
         }
     }
 }
+
+
 
 void MainMenuScene::Render(sf::RenderTarget* renderTarget)
 {
     renderTarget->draw(videoSprite);
     for(auto& button : menuManager->GetCurrentMenu()->GetButtons())
     {
-        renderTarget->draw(ui->Text(button));
+        int i = ui->TextExist(button);
+        if (i > -1) renderTarget->draw(ui->Text(i));
     }
 }
 
@@ -147,22 +159,86 @@ void MainMenuScene::Controls()
     std::cout << "Controls pressed" << std::endl;
     m_isclicked = true;
 
-    ui->CreateText("UP", sf::Color::White, "UP : Z", 100, sf::Vector2f(400, 300), font);
-    ui->CreateText("DOWN", sf::Color::White, "DOWN : S", 100, sf::Vector2f(400, 400), font);
-    ui->CreateText("LEFT", sf::Color::White, "LEFT : Q", 100, sf::Vector2f(400, 500), font);
-    ui->CreateText("RIGHT", sf::Color::White, "RIGHT : D", 100, sf::Vector2f(400, 600), font);
+    ui->CreateText("MOVEUP", sf::Color::White, "UP : Z", 100, sf::Vector2f(400, 300), font);
+    ui->CreateText("MOVEDOWN", sf::Color::White, "DOWN : S", 100, sf::Vector2f(400, 400), font);
+    ui->CreateText("MOVELEFT", sf::Color::White, "LEFT : Q", 100, sf::Vector2f(400, 500), font);
+    ui->CreateText("MOVERIGHT", sf::Color::White, "RIGHT : D", 100, sf::Vector2f(400, 600), font);
     ui->CreateText("ATTACK", sf::Color::White, "ATTACK : CTRL", 100, sf::Vector2f(400, 700), font);
     ui->CreateText("JUMP", sf::Color::White, "JUMP : SPACE", 100, sf::Vector2f(400, 800), font);
 
     std::shared_ptr<Menu> controlsMenu = std::make_shared<Menu>("Controls");
-    controlsMenu->AddButton({"UP", "DOWN", "LEFT", "RIGHT", "ATTACK", "JUMP", "BackButton"});
+    controlsMenu->AddButton({"MOVEUP", "MOVEDOWN", "MOVELEFT", "MOVERIGHT", "ATTACK", "JUMP", "BackButton"});
     menuManager->AddMenu(controlsMenu);
     menuManager->SetCurrentMenu("Controls");
 }
 
+
+
+void MainMenuScene::UpdateInput(Action action, std::string buttonName)
+{
+    std::cout << "UpdateInput" << std::endl;
+    std::string text = buttonName + " : ";
+    ui->CreateText("UpdateText", sf::Color::White, "Update", 100, sf::Vector2f(400, 400), font);
+    menuManager->GetCurrentMenu()->AddButton("UpdateText");
+    m_isclicked = true;
+    m_is_remap = true;
+    m_buttonToRemap = buttonName;
+    m_actionToRemap = action;
+}
+
+void MainMenuScene::Remap()
+{
+    for(sf::Keyboard::Key key = sf::Keyboard::A; key <= sf::Keyboard::KeyCount; key = sf::Keyboard::Key(key + 1))
+    {
+        if(sf::Keyboard::isKeyPressed(key))
+        {
+            m_is_remap = false;
+            m_isclicked = false;
+            std::cout << "Remap : "<< m_input->fromKtoS(key) << std::endl;
+            engine->getInputHandler().remapAction(m_actionToRemap, key);
+
+            switch (m_actionToRemap) {
+                case Action::MoveUp:
+                    ui->Text("MOVEUP").setString("UP : " + m_input->fromKtoS(key));
+                    break;
+                case Action::MoveDown:
+                    ui->Text("MOVEDOWN").setString("DOWN : " + m_input->fromKtoS(key));
+                    break;
+                case Action::MoveLeft:
+                    ui->Text("MOVELEFT").setString("LEFT : " + m_input->fromKtoS(key));
+                    break;
+                case Action::MoveRight:
+                    ui->Text("MOVERIGHT").setString("RIGHT : " + m_input->fromKtoS(key));
+                    break;
+                case Action::Action:
+                    ui->Text("Action").setString("ACTION : " + m_input->fromKtoS(key));
+                    break;
+                case Action::Jump:
+                    ui->Text("Jump").setString("JUMP : " + m_input->fromKtoS(key));
+                    break;
+                default:
+                    break;
+            }
+
+
+
+            ui->RemoveText("UpdateText");
+        }
+    }
+}
+
+void MainMenuScene::CancelRemap() {
+    m_is_remap = false;
+    m_isclicked = false;
+    ui->RemoveText("UpdateText");
+}
+
+
+
 void MainMenuScene::Back()
 {
     auto nameMenu = menuManager->GetCurrentMenu()->GetName();
+
     if (nameMenu == "Options")
     {
         for (auto& button : menuManager->GetCurrentMenu()->GetButtons())
@@ -202,9 +278,9 @@ void MainMenuScene::Resolution()
 
 void MainMenuScene::SetResolution(int width, int height)
 {
+    engine->getRenderWindow().setSize(sf::Vector2u(width, height));
     videoSprite.setScale({ (float)width / (float)videoSprite.getTexture()->getSize().x, (float)height / (float)videoSprite.getTexture()->getSize().y });
     videoSprite.setPosition(0, 0);
-    engine->getRenderWindow().setSize(sf::Vector2u(width, height));
 }
 
 void MainMenuScene::Volume() {
@@ -215,4 +291,8 @@ void MainMenuScene::Volume() {
     ui->CreateText("IncreaseVolume", sf::Color::White, "+", 100, sf::Vector2f(400, 500), font);
     ui->CreateText("Mute", sf::Color::White, "MUTE : Off", 100, sf::Vector2f(400, 600), font);
 
+    std::shared_ptr<Menu> volumeMenu = std::make_shared<Menu>("Volume");
+    volumeMenu->AddButton({"ReduceVolume", "IncreaseVolume", "Mute", "BackButton"});
+    menuManager->AddMenu(volumeMenu);
+    menuManager->SetCurrentMenu("Volume");
 }

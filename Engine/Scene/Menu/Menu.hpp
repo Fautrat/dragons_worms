@@ -19,7 +19,7 @@ public:
         }
     };
 
-    std::string GetName(){
+    std::string GetName() {
         return _Name;
     }
 

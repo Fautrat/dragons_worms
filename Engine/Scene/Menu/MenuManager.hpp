@@ -1,6 +1,7 @@
 #pragma once
 #include "Menu.hpp"
 #include <map>
+#include <memory>
 
 class MenuManager{
 public:

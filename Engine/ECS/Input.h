@@ -11,10 +11,15 @@ class Input : public Component{
 public:
 	Input(InputHandler* input)
 	{
-		input->connect(sf::Keyboard::D, [this] {rigidbody->moveHorizontal(1); });
-		input->connect(sf::Keyboard::Q, [this] {rigidbody->moveHorizontal(-1);});
-		input->connect(sf::Keyboard::N, [this] {entity->shoot(sf::Mouse::getPosition()); });
-		input->connect(sf::Keyboard::Space, [this] {rigidbody->Jump(); });
+//		input->connect(sf::Keyboard::D, [this] {rigidbody->moveHorizontal(1); });
+//		input->connect(sf::Keyboard::Q, [this] {rigidbody->moveHorizontal(-1);});
+//		input->connect(sf::Keyboard::N, [this] {entity->shoot(sf::Mouse::getPosition()); });
+//		input->connect(sf::Keyboard::Space, [this] {rigidbody->Jump(); });
+
+        input->connect(Action::Action, [this] {entity->shoot(sf::Mouse::getPosition()); });
+        input->connect(Action::MoveRight, [this] {rigidbody->moveHorizontal(1); });
+        input->connect(Action::MoveLeft, [this] {rigidbody->moveHorizontal(-1);});
+        input->connect(Action::Jump, [this] {rigidbody->Jump(); });
 	}
 
 	bool init() override final {

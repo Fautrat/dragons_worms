@@ -19,6 +19,16 @@ sf::Text& UI::Text(const std::string& name)
 {
 	std::lock_guard guard(_mutex);
 
+    int i = TextExist(name);
+    if (i > -1)
+    {
+        return listButtons.at(i);
+    }
+    else
+    {
+        std::cout << "Error: Text not found" << std::endl;
+    }
+
 	for (int i = 0; i < nameButton.size(); i++)
 	{
 		if (nameButton[i] == name)
@@ -26,6 +36,23 @@ sf::Text& UI::Text(const std::string& name)
 			return listButtons.at(i);
 		}
 	}
+}
+sf::Text& UI::Text(int i)
+{
+    return listButtons.at(i);
+}
+
+
+int UI::TextExist(std::string name)
+{
+    for (int i = 0; i < nameButton.size(); i++)
+    {
+        if (nameButton[i] == name)
+        {
+            return i;
+        }
+    }
+    return -1;
 }
 
 sf::RectangleShape& UI::Zone(const std::string& name)
@@ -41,9 +68,15 @@ sf::RectangleShape& UI::Zone(const std::string& name)
 
 bool UI::InteractionButton(std::string name, sf::Vector2i mouseposition)
 {
-	if (Text(name).getGlobalBounds().contains(mouseposition.x, mouseposition.y))
+    int i = TextExist(name);
+    if(i == -1)
+    {
+        std::cout << "Error: Text not found" << std::endl;
+        return false;
+    }
+	if (Text(i).getGlobalBounds().contains(mouseposition.x, mouseposition.y))
 	{
-		Text(name).setColor(sf::Color::Red);
+		Text(i).setColor(sf::Color::Red);
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			std::cout << name << " activated" << std::endl;
@@ -53,7 +86,7 @@ bool UI::InteractionButton(std::string name, sf::Vector2i mouseposition)
 	}
 	else
 	{
-		Text(name).setColor(sf::Color::White);
+		Text(i).setColor(sf::Color::White);
 		return false;
 	}
 
