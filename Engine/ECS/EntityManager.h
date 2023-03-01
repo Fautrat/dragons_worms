@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 #include "SFML/Graphics.hpp"
-
+#include "../Physics/World.h"
 class Entity;
 
 class EntityManager {
@@ -26,7 +26,8 @@ public:
 	void eraseEntity(Entity* player);
 	Entity* cloneEntity(Entity* player);
 
-private:
+protected:
 	std::vector<std::unique_ptr<Entity>> entities;
 	static EntityManager* m_instance;
+	std::unique_ptr<World> worldPtr = std::make_unique<World>();
 };

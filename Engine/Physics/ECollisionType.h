@@ -7,9 +7,9 @@ enum ColliderType
 	TRIANGLE
 };
 
-enum AngleSide {
+enum Direction {
 	UPLEFT,
 	UPRIGHT,
-	DOWNLEFT,
-	DOWNRIGHT
+	//DOWNLEFT,
+	//DOWNRIGHT
 };

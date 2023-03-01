@@ -15,6 +15,7 @@ class PolygonCollider2D : public Component
 public:
 	PolygonCollider2D() = default;
 	PolygonCollider2D(ColliderType col) : colType(col) {};
+	PolygonCollider2D(ColliderType col,Direction dir) : colType(col),directionTriangle(dir) {};
 	PolygonCollider2D(std::string tag) : collisionTag(tag) {}
 
 	~PolygonCollider2D() {
@@ -52,5 +53,6 @@ private:
 	Transform* transform = nullptr;
 	Rigidbody* rb = nullptr;
 	ColliderType colType;
+	Direction directionTriangle;
 	
 };

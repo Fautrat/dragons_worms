@@ -12,7 +12,6 @@
 #include "../ECS/Input.h"
 #include "../UI/UI.hpp"
 #include "../ECS/LifeBar.h"
-#include "../Physics/World.h"
 #include "../ECS/Ground.h"
 
 #include <memory>
@@ -61,7 +60,5 @@ public:
 	void newTurn();
 	WhosTurn currentPlayer = Player1;
 	StateTurn currentState = Running;
-
-	std::unique_ptr<World> worldptr = std::make_unique<World>();
 	EntityManager* m_manager;
 };
