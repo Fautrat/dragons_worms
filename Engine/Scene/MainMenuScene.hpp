@@ -46,6 +46,5 @@ private :
     float delay = 0.0f;
     bool m_isclicked = false;
     bool m_is_remap = false;
-    std::string m_buttonToRemap = "";
     Action m_actionToRemap = Action::MoveUp;
 };

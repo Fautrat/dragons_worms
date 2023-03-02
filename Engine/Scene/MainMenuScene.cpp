@@ -38,12 +38,14 @@ MainMenuScene::MainMenuScene(Engine& engine) :Scene(engine)
 
 MainMenuScene::~MainMenuScene()
 {
-    delete music;
-    music = nullptr;
+//    delete music;
+//    music = nullptr;
     delete ui;
     ui = nullptr;
     delete menuManager;
     menuManager = nullptr;
+    delete assetManager;
+    assetManager = nullptr;
 }
 
 void MainMenuScene::Start()
@@ -175,7 +177,6 @@ void MainMenuScene::UpdateInput(Action action, std::string buttonName)
     menuManager->GetCurrentMenu()->AddButton("UpdateText");
     m_isclicked = true;
     m_is_remap = true;
-    m_buttonToRemap = buttonName;
     m_actionToRemap = action;
 }
 
