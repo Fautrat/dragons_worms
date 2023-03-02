@@ -5,15 +5,15 @@ MainMenuScene::MainMenuScene(Engine& engine) :Scene(engine)
 {
     ui = new UI();
     music = new sf::Music();
-    AssetManager::get().loadFont("Shangai", "../../../../assets/font/shanghai.ttf");
+    AssetManager::get().loadFont("Shangai", "assets/font/shanghai.ttf");
     font = AssetManager::get().getFont("Shangai");
 
-    if (!videoTexture.loadFromFile("../../../../assets/wallpaper.jpg"))
+    if (!videoTexture.loadFromFile("assets/wallpaper.jpg"))
     {
         std::cout << "Failed to load video" << std::endl;
         return;
     }
-    if (!music->openFromFile("../../../../assets/sound/Dragon.ogg"))
+    if (!music->openFromFile("assets/sound/Dragon.ogg"))
     {
         std::cout << "Failed to load music" << std::endl;
         return;

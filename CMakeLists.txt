@@ -18,3 +18,5 @@ add_subdirectory(Game)
 #	assets
 #	$<TARGET_FILE_DIR:${PROJECT_NAME}>
 #)
+
+file(COPY assets DESTINATION ${CMAKE_BINARY_DIR}/Game)

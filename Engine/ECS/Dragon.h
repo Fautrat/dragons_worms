@@ -16,7 +16,7 @@ public:
 
     Dragon()
     {
-        AssetManager::get().loadTexture("Player", "../../../../assets/Dragon/dragon.png");
+        AssetManager::get().loadTexture("Player", "assets/Dragon/dragon.png");
         getComponent<Transform>()->scale = sf::Vector2f(0.7f, 0.7f);
         addComponent<SpriteRenderer>("Player");
         addComponent<Rigidbody>(1, false, 0, 2);

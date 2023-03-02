@@ -13,7 +13,7 @@ public:
 
     Fireball(std::function<void()>& callback, bool isFragmented) : m_callback(callback), m_isFragmented(isFragmented)
     {
-        AssetManager::get().loadTexture("Fireball", "../../../../assets/Dragon/fireball.png");
+        AssetManager::get().loadTexture("Fireball", "assets/Dragon/fireball.png");
         addComponent<Transform>().setTransform(0.f, 0.f, 0.f, 0.f, 0.5f, 0.5f);
         addComponent<SpriteRenderer>("Fireball");
         addComponent<Rigidbody>(1.f, false, 1.f, 1.f);
