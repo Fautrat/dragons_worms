@@ -19,5 +19,4 @@ public:
 
 protected:
 	Engine* engine;
-	//std::vector<sf::Texture> _textures;
 };

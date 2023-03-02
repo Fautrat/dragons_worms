@@ -13,7 +13,7 @@ Engine::Engine()
     m_renderWindow = new sf::RenderWindow(
         sf::VideoMode(1920, 1080),
         "Dragons with engine",
-        sf::Style::Resize
+        sf::Style::Default
     );
     m_renderWindow->setFramerateLimit(60);
     m_input = new InputHandler(*m_renderWindow);

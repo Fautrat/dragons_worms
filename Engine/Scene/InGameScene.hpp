@@ -12,6 +12,7 @@
 #include "../UI/UI.hpp"
 #include "../ECS/LifeBar.h"
 #include "../ECS/Ground.h"
+#include "../ECS/MapBoundaries.h"
 
 enum WhosTurn
 {
@@ -34,8 +35,6 @@ private:
 	UI* ui;
 	Collision* collision;
 	Entity box1, box2, circle, circle2, circle3, Triangle, ground;
-
-	std::vector<Ground*> tileset;
 
 public:
 	InGameScene(Engine& engine);
