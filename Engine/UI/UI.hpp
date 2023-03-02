@@ -31,7 +31,9 @@ public:
     void RemoveText(std::string name);
     void RemoveZone(std::string name);
 
-	sf::Font& getFont();
+//	sf::Font& getFont();
+
+    void AddTextToZone(std::string TextName, std::string ZoneName);
 
 private:
 

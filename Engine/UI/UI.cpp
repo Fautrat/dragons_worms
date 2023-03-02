@@ -164,3 +164,19 @@ void UI::RemoveZone(std::string name) {
 
 }
 
+void UI::AddTextToZone(std::string TextName, std::string ZoneName) {
+    std::lock_guard guard(_mutex);
+    int i = TextExist(TextName);
+    if (i == -1)
+    {
+        std::cout << "Error: Text '" << TextName << "' not found" << std::endl;
+        return;
+    }
+    int j = ZoneExist(ZoneName);
+    if (j == -1)
+    {
+        std::cout << "Error: Zone '" << ZoneName << "' not found" << std::endl;
+        return;
+    }
+    listButtons[i].setOrigin(listButtons[i].getGlobalBounds().width / 2, listButtons[i].getGlobalBounds().height / 2);
+}

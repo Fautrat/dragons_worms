@@ -10,11 +10,13 @@ std::mutex Engine::m_mutex;
 Engine::Engine()
 {
     gameState = RUNNING;
+    m_resolution = sf::Vector2<int>(2650, 1600);
     m_renderWindow = new sf::RenderWindow(
-        sf::VideoMode(1920, 1080),
+        sf::VideoMode(m_resolution.x, m_resolution.y),
         "Dragons with engine",
         sf::Style::Resize
     );
+    
     m_renderWindow->setFramerateLimit(60);
     m_input = new InputHandler(*m_renderWindow);
 
@@ -139,4 +141,20 @@ sf::RenderWindow& Engine::getRenderWindow()
 const EState& Engine::getGameState() const
 {
     return gameState;
+}
+
+void Engine::setResolution(int width, int height) {
+    m_renderWindow->setSize(sf::Vector2u(width, height));
+}
+
+void Engine::setResolution(sf::Vector2<int> resolution) {
+    m_renderWindow->setSize(sf::Vector2u(resolution.x, resolution.y));
+}
+
+sf::Vector2<int> Engine::getResolution() const {
+    return m_resolution;
+}
+
+void Engine::setGameState(EState state){
+    gameState = state;
 }

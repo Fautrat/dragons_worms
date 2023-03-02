@@ -12,6 +12,7 @@
 #include "../UI/UI.hpp"
 #include "../ECS/LifeBar.h"
 #include "../ECS/Ground.h"
+#include "./Menu/MenuManager.hpp"
 
 enum WhosTurn
 {
@@ -37,6 +38,12 @@ private:
 
 	std::vector<Ground*> tileset;
 
+    MenuManager* menuManager;
+
+    void PauseScene();
+    void ResumeScene();
+    void MainMenu();
+
 public:
 	InGameScene(Engine& engine);
 	~InGameScene();
@@ -52,4 +59,8 @@ public:
 	void newTurn();
 	WhosTurn currentPlayer = Player1;
 	EntityManager* m_manager;
+
+    EStateScene state = EStateScene::RunningScene;
+
+
 };

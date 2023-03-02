@@ -32,8 +32,8 @@ public:
         m_actions[sf::Keyboard::D] = EInput::MoveRight;
         m_actions[sf::Keyboard::LControl] = EInput::Jump;
         m_actions[sf::Keyboard::Space] = EInput::Action;
-        m_actions[sf::Keyboard::Escape] = EInput::Exit;
-        m_actions[sf::Keyboard::Return] = EInput::Pause;
+        m_actions[sf::Keyboard::F4] = EInput::Exit;
+        m_actions[sf::Keyboard::Escape] = EInput::Pause;
         connect(EInput::Exit, [this] { m_window.close(); });
     }
 

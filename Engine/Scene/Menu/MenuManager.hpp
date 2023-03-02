@@ -11,11 +11,8 @@ class UI;
 
 class MenuManager{
 public:
-    MenuManager(sf::Font &font);
-    explicit MenuManager(std::shared_ptr<UI> ui, sf::Font& font) : _ui(std::move(ui)), _font(font) {
-        _CurrentMenu = nullptr;
-        _Menus = std::vector<std::shared_ptr<Menu>>();
-    };
+    explicit MenuManager(sf::Font &font);
+    explicit MenuManager(std::shared_ptr<UI> ui, sf::Font& font);
     virtual ~MenuManager();
 
     void SetFont(sf::Font& font);
@@ -29,8 +26,20 @@ public:
     void UpdateText(std::string name, std::string text);
     void RemoveText(std::string name);
 
+//    void SetTextPosition(std::string name, sf::Vector2f position);
+//    void SetTextSize(std::string name, int size);
+//    void SetTextString(std::string name, std::string text);
+    void SetTextOrigin(std::string name, sf::Vector2f origin);
+
     void AddZone(std::string name, sf::Vector2f position, sf::Vector2f size, sf::Color color, std::function<void(void)> callback);
     void RemoveZone(std::string name);
+
+    void AddTextToZone(std::string TextName, std::string ZoneName);
+
+    void SetZoneOrigin(std::string name, sf::Vector2f origin);
+
+    void SetZonePosition(std::string name, sf::Vector2f position);
+
 
     std::shared_ptr<Menu> GetMenu(std::string menuName);
 

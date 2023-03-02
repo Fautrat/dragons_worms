@@ -4,6 +4,7 @@
 
 InGameScene::InGameScene(Engine& engine) :Scene(engine) , m_manager(EntityManager::getInstance())
 {
+    stateScene = EStateScene::RunningScene;
     if (!backgroundTexture.loadFromFile("../../../../assets/Maps/background1.png"))
     {
         std::cout << "Failed to load background" << std::endl;
@@ -17,6 +18,11 @@ InGameScene::InGameScene(Engine& engine) :Scene(engine) , m_manager(EntityManage
     backgroundSprite.setScale({ (float)1920 / (float)backgroundSprite.getTexture()->getSize().x, (float)1080 / (float)backgroundSprite.getTexture()->getSize().y });
     ui = new UI();
     collision = new Collision();
+    std::shared_ptr<UI> menuManagerUi = std::make_shared<UI>();
+    menuManager = new MenuManager(menuManagerUi, *font);
+    std::shared_ptr<Menu> InGameMenu = std::make_shared<Menu>("InGameMenu"); // default menu
+    menuManager->AddMenu(InGameMenu);
+    menuManager->SetCurrentMenu("InGameMenu");
 
     ui->CreateText("Timer", sf::Color::White, " ", 100, sf::Vector2f(900, 100), *font);
 }
@@ -26,6 +32,8 @@ InGameScene::~InGameScene()
     m_manager->killInstance();
     delete ui;
     delete collision;
+    delete menuManager;
+
 }
 
 void InGameScene::Start()
@@ -89,20 +97,33 @@ void InGameScene::Start()
 
    /* worldptr->addEntityWithPhysics(circle2);
     worldptr->addEntityWithPhysics(dragon);*/
+
+
+   // Pause
+    engine->getInputHandler().connect(EInput::Pause, [&] { PauseScene(); });
 }
 
 void InGameScene::Update(const float& deltaTime)
 {
-    m_manager->update(deltaTime);
-    //worldptr->updatePhysics(deltaTime);
+    sf::Vector2i mousepos = engine->getMousePos();
+    if (menuManager->GetCurrentMenu() != nullptr)
+    {
+        menuManager->Update(deltaTime, mousepos);
+    }
 
-    /* update timer */
-    timer -= deltaTime;
+    if(stateScene == EStateScene::RunningScene)
+    {
+        m_manager->update(deltaTime);
+        //worldptr->updatePhysics(deltaTime);
 
-    if (timer < 0 || players[currentPlayer]->turnEnding)
-        newTurn();
+        /* update timer */
+        timer -= deltaTime;
 
-    ui->Text("Timer").setString(std::to_string(static_cast<int>(timer)));
+        if (timer < 0 || players[currentPlayer]->turnEnding)
+            newTurn();
+
+        ui->Text("Timer").setString(std::to_string(static_cast<int>(timer)));
+    }
 }
 
 void InGameScene::Render(sf::RenderTarget* renderTarget)
@@ -111,6 +132,7 @@ void InGameScene::Render(sf::RenderTarget* renderTarget)
     m_manager->draw(renderTarget);
 
     renderTarget->draw(ui->Text("Timer"));
+    if (menuManager->GetCurrentMenu() != nullptr) menuManager->Render(renderTarget);
 }
 
 void InGameScene::newTurn()
@@ -171,4 +193,42 @@ void InGameScene::readMap()
             }
         }
     }
+}
+
+void InGameScene::PauseScene()
+{
+
+    stateScene = EStateScene::PauseScene;
+
+    std::shared_ptr<Menu> PauseMenu = std::make_shared<Menu>("PauseMenu");
+    menuManager->AddMenu(PauseMenu);
+    menuManager->SetCurrentMenu("PauseMenu");
+
+    // create zone for menu
+    // (std::string name, sf::Vector2f position, sf::Vector2f size, sf::Color color, std::function<void(void)> callback);
+    float margin = 100.f;
+    sf::Vector2<int> resolution = engine->getResolution();
+    sf::Vector2f size = sf::Vector2f((float)resolution.x - margin, (float)resolution.y - margin);
+    std::cout << "size.x = " << size.x << " size.y = " << size.y << std::endl;
+    // orange
+    sf::Color orangeColor = sf::Color(169, 134, 104);
+
+    menuManager->AddText("ResumeText", sf::Color::White, "Resume", 100, sf::Vector2f((float)resolution.x / 2, ((float)resolution.y / 2)-300), [&] { ResumeScene(); });
+    menuManager->AddText("ExitText", sf::Color::White, "MainMenu", 100, sf::Vector2f((float)resolution.x / 2, ((float)resolution.y / 2)+300), [&] { MainMenu(); });
+
+
+
+
+}
+
+void InGameScene::ResumeScene()
+{
+    stateScene = EStateScene::RunningScene;
+    menuManager->SetCurrentMenu("InGameMenu");
+    menuManager->RemoveMenu("PauseMenu");
+}
+
+void InGameScene::MainMenu()
+{
+    engine->setSceneToLoad(MAINMENU);
 }

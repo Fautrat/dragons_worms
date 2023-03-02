@@ -14,6 +14,7 @@ enum EElementType {
 enum EStateMenu {
     Active = 1,
     Inactive,
+    Hidden,
     ToDelete,
 };
 

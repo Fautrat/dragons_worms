@@ -4,6 +4,12 @@
 #include "../Engine.h"
 class Engine;
 
+enum EStateScene
+{
+    PauseScene,
+    RunningScene,
+};
+
 
 class Scene
 {
@@ -19,5 +25,6 @@ public:
 
 protected:
 	Engine* engine;
+    EStateScene stateScene = EStateScene::RunningScene;
 	//std::vector<sf::Texture> _textures;
 };

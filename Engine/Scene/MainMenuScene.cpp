@@ -20,6 +20,7 @@ MainMenuScene::MainMenuScene(Engine& engine) :Scene(engine)
     AssetManager::get().loadMusic("music", "../../../../assets/sound/Dragon.ogg");
 
     videoSprite.setTexture(videoTexture);
+
     videoSprite.setScale({ (float)1920 / (float)videoSprite.getTexture()->getSize().x, (float)1080 / (float)videoSprite.getTexture()->getSize().y });
 
     std::shared_ptr<Menu> mainMenu = std::make_shared<Menu>("MainMenu");
@@ -144,6 +145,7 @@ void MainMenuScene::UpdateInput(EInput action, std::string buttonName)
     std::string text = buttonName + " : ";
     // orange
     sf::Color orangeColor = sf::Color(169, 134, 104);
+
     menuManager->AddZone("UpdateZone", sf::Vector2f(400, 400), sf::Vector2f(400, 400), orangeColor, [&]{} );
     menuManager->AddText("UpdateText", sf::Color::White, "Update", 100, sf::Vector2f(400, 400), [&]{});
 
@@ -232,10 +234,11 @@ void MainMenuScene::Volume() {
     menuManager->AddMenu(volumeMenu);
     menuManager->SetCurrentMenu("Volume");
 
-    menuManager->AddText("ReduceVolume", sf::Color::White, "-", 200, sf::Vector2f(200, 400), [&]{ ReduceVolume(); });
-    menuManager->AddText("Volume", sf::Color::White, "VOLUME : " + std::to_string(AssetManager::get().getSoundVolume()), 100, sf::Vector2f(600, 400), [&]{ });
-    menuManager->AddText("IncreaseVolume", sf::Color::White, "+", 200, sf::Vector2f(1000, 400), [&]{ IncreaseVolume(); });
-    menuManager->AddText("Mute", sf::Color::White, "MUTE : " + std::to_string(AssetManager::get().isMusicMuted()), 100, sf::Vector2f(400, 600), [&]{ Mute(); });
+    menuManager->AddText("ReduceVolume", sf::Color::White, "<-", 100, sf::Vector2f(200, 300), [&]{ ReduceVolume(); });
+    menuManager->AddText("Volume", sf::Color::White, "VOLUME : " + std::to_string(AssetManager::get().getSoundVolume()), 100, sf::Vector2f(600, 300), [&]{ });
+    menuManager->AddText("IncreaseVolume", sf::Color::White, "->", 100, sf::Vector2f(1000, 300), [&]{ IncreaseVolume(); });
+    std::string mute = AssetManager::get().isMusicMuted() ? "true" : "false";
+    menuManager->AddText("Mute", sf::Color::White, "MUTE : " + mute, 100, sf::Vector2f(600, 500), [&]{ Mute(); });
     menuManager->AddText("BackVolumeButton", sf::Color::White, "BACK", 200, sf::Vector2f(400, 900), [&]{ Back(); });
 
 }
@@ -259,7 +262,7 @@ void MainMenuScene::IncreaseVolume() {
 void MainMenuScene::Mute() {
     AssetManager::get().muteMusic(!AssetManager::get().isMusicMuted());
     std::string mute = AssetManager::get().isMusicMuted() ? "true" : "false";
-    menuManager->UpdateText("Volume", "MUTE : " + mute);
+    menuManager->UpdateText("Mute", "MUTE : " + mute);
     m_isclicked = true;
 }
 

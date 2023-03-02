@@ -8,6 +8,10 @@ MenuManager::MenuManager(sf::Font &font) : _font(font) {
     _ui = nullptr;
 }
 
+MenuManager::MenuManager(std::shared_ptr<UI> ui, sf::Font &font) : _ui(std::move(ui)), _font(font) {
+    _CurrentMenu = nullptr;
+    _Menus = std::vector<std::shared_ptr<Menu>>();
+}
 
 MenuManager::~MenuManager() {
     RemoveAllMenu();
@@ -15,6 +19,10 @@ MenuManager::~MenuManager() {
 }
 
 void MenuManager::AddMenu(std::shared_ptr<Menu> menu) {
+    if(GetMenu(menu->GetName()) != nullptr)
+    {
+        return;
+    }
     _Menus.emplace_back(std::move(menu));
 }
 
@@ -100,6 +108,7 @@ void MenuManager::UpdateText(std::string name, std::string text) {
 }
 
 void MenuManager::Render(sf::RenderTarget* renderTarget) {
+    if (GetCurrentMenu()->GetState() == EStateMenu::Hidden) return;
     for(auto& element : GetCurrentMenu()->GetElements())
     {
         if (element->Type == EElementType::Button) {
@@ -141,3 +150,22 @@ void MenuManager::Update(const float &deltaTime, sf::Vector2i mousepos) {
 void MenuManager::SetFont(sf::Font &font) {
     _font = font;
 }
+
+void MenuManager::AddTextToZone(std::string TextName, std::string ZoneName) {
+//    _ui->AddTextToZone(TextName, ZoneName);
+    _ui->Text(TextName).setOrigin(_ui->Zone(ZoneName).getOrigin());
+
+}
+
+void MenuManager::SetTextOrigin(std::string name, sf::Vector2f origin) {
+    _ui->Text(name).setOrigin(origin);
+}
+
+void MenuManager::SetZoneOrigin(std::string name, sf::Vector2f origin) {
+    _ui->Zone(name).setOrigin(origin);
+}
+
+void MenuManager::SetZonePosition(std::string name, sf::Vector2f position) {
+    _ui->Zone(name).setPosition(position);
+}
+
