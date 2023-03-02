@@ -1,9 +1,10 @@
 #include "InGameScene.hpp"
 #include <iostream>
 
+
 InGameScene::InGameScene(Engine& engine) :Scene(engine) , m_manager(EntityManager::getInstance())
 {
-    if (!backgroundTexture.loadFromFile("assets/Map/background1.png"))
+    if (!backgroundTexture.loadFromFile("assets/Maps/background1.png"))
     {
         std::cout << "Failed to load background" << std::endl;
         return;
@@ -40,6 +41,13 @@ void InGameScene::Start()
     m_manager->addEntity(&player2);
 
     readMap();
+
+    for (auto& tile : tileset)
+    {
+        auto entity = dynamic_cast<Entity*>(tile);
+        m_manager->addEntity(entity);
+
+    }
 }
 
 void InGameScene::Update(const float& deltaTime)
@@ -79,55 +87,45 @@ void InGameScene::newTurn()
 void InGameScene::readMap()
 {
     char map_[] = {
-                ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',
-                ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',
-                ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',
-                ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',
-                ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',
-                ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',
-                ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ', ' ',' ',' ',' ',' ',' ',' ',' ',' ',
-                ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','/', ' ',' ',' ',' ',' ',' ',' ',' ',' ',
-                ' ',' ',' ',' ',' ',' ','/','\\',' ',' ',' ',' ',' ','/','-', ' ',' ',' ',' ',' ',' ','/','\\',' ',
-                ' ',' ',' ',' ',' ','/','-','-','\\',' ',' ',' ','/','-','-', ' ',' ',' ',' ',' ','/','-','-','\\',
-                ' ',' ',' ',' ','/','-','-','-','-','\\',' ','/','-','-','-', ' ',' ',' ',' ','/','-','-','-','-',
-                '-','-','-','-','-','-','-','-','-','-','-','-','-','-','-' , '-','-','-','-','-','-','-','-','-'
+                ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',
+                ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',
+                ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',
+                ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',
+                ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','S',
+                ' ',' ',' ',' ',' ',' ','S','S',' ',' ',' ',' ',' ','S','/',
+                ' ',' ',' ',' ',' ','S','/','\\',' ',' ',' ',' ','S','/','-',
+                ' ',' ',' ',' ','S','/','-','-','\\',' ',' ','S','/','-','-',
+                'S','S','S','S','/','-','-','-','-','\\','S','/','-','-','-',
+                '-','-','-','-','-','-','-','-','-','-','-','-','-','-','-'
     };
 
 
     //active = true;
-    int row = 12, col = 24;
+    int row = 10, col = 15;
 
-    sf::Vector2f tile_size(1920.f / col, 1080.f / row);
-    sf::Vector2f tile_scale(tile_size.x / 220.f, tile_size.y / 220.f);
-    AssetManager::get().loadTexture("Dirt", "assets/Map/dirt.png");
-    AssetManager::get().loadTexture("Left_Diag", "assets/Map/left_diag.png");
-    AssetManager::get().loadTexture("Right_Diag", "assets/Map/right_diag.png");
+    sf::Vector2f tile_size(1980.f / col, 1080.f / row);
+    AssetManager::get().loadTexture("Dirt", "assets/dirt.png");
+    AssetManager::get().loadTexture("Left_Diag", "assets/left_diag.png");
+    AssetManager::get().loadTexture("Right_Diag", "assets/right_diag.png");
 
     for (int y = 0; y < row; y++)
     {
         for (int x = 0; x < col; x++)
         {
-            if (x == 0)
-            {
-                MapBoundaries* boundariesLeft = new MapBoundaries(-tile_size.x, (float)y * tile_size.y, tile_scale.x, tile_scale.y);
-                MapBoundaries* boundariesRight = new MapBoundaries(tile_size.x * col, (float)y * tile_size.y, tile_scale.x, tile_scale.y);
-                EntityManager::getInstance()->addEntity(boundariesLeft);
-                EntityManager::getInstance()->addEntity(boundariesRight);
-            }
             if (map_[x + y * col] == '-')
             {
-                Ground* ground = new Ground(tile_size.x * (float)x, (float)y * tile_size.y, tile_scale.x, tile_scale.y, std::string("Dirt"));
-                EntityManager::getInstance()->addEntity(ground);
+                Ground* ground = new Ground(static_cast<float>(tile_size.x * x), static_cast<float>(y * tile_size.y), std::string("Dirt"));
+                tileset.push_back(ground);
             }
             else if (map_[x + y * col] == '/')
             {
-                Ground* ground = new Ground(tile_size.x * (float) x, (float)y * tile_size.y, tile_scale.x, tile_scale.y, std::string("Left_Diag"));
-                EntityManager::getInstance()->addEntity(ground);
+                Ground* ground = new Ground(static_cast<float>(tile_size.x * x), static_cast<float>(y * tile_size.y), std::string("Left_Diag"));
+                tileset.push_back(ground);
             }
             else if (map_[x + y * col] == '\\')
             {
-                Ground* ground = new Ground(tile_size.x * (float)x, (float)y * tile_size.y, tile_scale.x, tile_scale.y, std::string("Right_Diag"));
-                EntityManager::getInstance()->addEntity(ground);
+                Ground* ground = new Ground(static_cast<float>(tile_size.x * x), static_cast<float>(y * tile_size.y), std::string("Right_Diag"));
+                tileset.push_back(ground);
             }
         }
     }
