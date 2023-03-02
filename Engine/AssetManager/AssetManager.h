@@ -29,6 +29,11 @@ public:
     void setSoundVolume(unsigned int volume);
     unsigned int getSoundVolume() const;
 
+    bool isMusicMuted() const;
+    void muteMusic();
+    void muteMusic(bool mute);
+
+
 	inline static AssetManager& get() {
 		if (s_instance == nullptr) {
 			s_instance = new AssetManager();
@@ -38,10 +43,13 @@ public:
 
 	
 private:
+    void applyMusicVolume();
+
 	static AssetManager* s_instance;
 	std::map<std::string, sf::Font*> fonts;
 	std::map<std::string, sf::Texture*> textures;
 	std::map<std::string, sf::Music*> musics;
 
     unsigned int m_musicVolume = 10;
+    bool m_isMusicMuted = false;
 };

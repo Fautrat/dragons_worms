@@ -40,6 +40,9 @@ private :
     void Remap();
     void CancelRemap();
     void Volume();
+    void ReduceVolume();
+    void IncreaseVolume();
+    void Mute();
     void Back();
     void SetResolution(int width, int height);
     float delay = 0.0f;

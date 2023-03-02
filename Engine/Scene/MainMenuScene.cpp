@@ -77,7 +77,7 @@ void MainMenuScene::Update(const float& deltaTime)
         {
             if (ui->InteractionButton("ResolutionButton", mousepos)) Resolution();
             if (ui->InteractionButton("ControlsButton", mousepos)) Controls();
-            if (ui->InteractionButton("VolumeButton", mousepos)) Back();
+            if (ui->InteractionButton("VolumeButton", mousepos)) Volume();
             if (ui->InteractionButton("BackButton", mousepos)) Back();
         }
         else if (menuManager->GetCurrentMenu()->GetName() == "Resolution")
@@ -101,6 +101,13 @@ void MainMenuScene::Update(const float& deltaTime)
             if (ui->InteractionButton("MOVERIGHT", mousepos)) UpdateInput(Action::MoveRight, "MOVERIGHT");
             if (ui->InteractionButton("ACTION", mousepos)) UpdateInput(Action::Action, "ACTION");
             if (ui->InteractionButton("JUMP", mousepos)) UpdateInput(Action::Jump, "JUMP");
+        }
+        else if (menuManager->GetCurrentMenu()->GetName() == "Volume")
+        {
+            if (ui->InteractionButton("ReduceVolume", mousepos)) ReduceVolume();
+            if (ui->InteractionButton("IncreaseVolume", mousepos)) IncreaseVolume();
+            if (ui->InteractionButton("Mute", mousepos)) Mute();
+            if (ui->InteractionButton("BackButton", mousepos)) Back();
         }
     }
 }
@@ -259,7 +266,7 @@ void MainMenuScene::Back()
         menuManager->RemoveMenu("Options");
         menuManager->SetCurrentMenu("MainMenu");
     }
-    else if (nameMenu == "Controls" || nameMenu == "Resolution")
+    else if (nameMenu == "Controls" || nameMenu == "Resolution" || nameMenu == "Volume")
     {
         for (auto& button : menuManager->GetCurrentMenu()->GetButtons())
         {
@@ -297,13 +304,35 @@ void MainMenuScene::SetResolution(int width, int height)
 void MainMenuScene::Volume() {
     std::cout << "Volume pressed" << std::endl;
     m_isclicked = true;
-    ui->CreateText("ReduceVolume", sf::Color::White, "-", 100, sf::Vector2f(400, 300), *assetManager->getFont("shanghai"));
-    ui->CreateText("Volume", sf::Color::White, "VOLUME", 100, sf::Vector2f(400, 400), *assetManager->getFont("shanghai"));
-    ui->CreateText("IncreaseVolume", sf::Color::White, "+", 100, sf::Vector2f(400, 500), *assetManager->getFont("shanghai"));
-    ui->CreateText("Mute", sf::Color::White, "MUTE : Off", 100, sf::Vector2f(400, 600), *assetManager->getFont("shanghai"));
+    ui->CreateText("ReduceVolume", sf::Color::White, "-", 200, sf::Vector2f(200, 400), *assetManager->getFont("shanghai"));
+    ui->CreateText("Volume", sf::Color::White, "VOLUME : " + std::to_string(assetManager->getSoundVolume()), 100, sf::Vector2f(600, 400), *assetManager->getFont("shanghai"));
+    ui->CreateText("IncreaseVolume", sf::Color::White, "+", 200, sf::Vector2f(1000, 400), *assetManager->getFont("shanghai"));
+    ui->CreateText("Mute", sf::Color::White, "MUTE : " + std::to_string(assetManager->isMusicMuted()), 100, sf::Vector2f(400, 600), *assetManager->getFont("shanghai"));
 
     std::shared_ptr<Menu> volumeMenu = std::make_shared<Menu>("Volume");
-    volumeMenu->AddButton({"ReduceVolume", "IncreaseVolume", "Mute", "BackButton"});
+    volumeMenu->AddButton({"ReduceVolume", "IncreaseVolume", "Volume", "Mute", "BackButton"});
     menuManager->AddMenu(volumeMenu);
     menuManager->SetCurrentMenu("Volume");
+}
+
+void MainMenuScene::ReduceVolume() {
+    if (assetManager->getSoundVolume() > 0) {
+        assetManager->setSoundVolume(assetManager->getSoundVolume() - 1);
+        ui->Text("Volume").setString("VOLUME : " + std::to_string(assetManager->getSoundVolume()));
+    }
+    m_isclicked = true;
+}
+
+void MainMenuScene::IncreaseVolume() {
+    if (assetManager->getSoundVolume() < 10) {
+        assetManager->setSoundVolume(assetManager->getSoundVolume() + 1);
+        ui->Text("Volume").setString("VOLUME : " + std::to_string(assetManager->getSoundVolume()));
+    }
+    m_isclicked = true;
+}
+
+void MainMenuScene::Mute() {
+    assetManager->muteMusic(!assetManager->isMusicMuted());
+    ui->Text("Mute").setString("MUTE : " + std::to_string(assetManager->isMusicMuted()));
+    m_isclicked = true;
 }

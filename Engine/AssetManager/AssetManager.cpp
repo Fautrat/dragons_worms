@@ -74,18 +74,36 @@ void AssetManager::loadMusic(std::string id, std::string path) {
 void AssetManager::playMusic(std::string id, bool loop) {
     if (musics.count(id) > 0) {
         musics[id]->setLoop(loop);
-        musics[id]->setVolume(m_musicVolume*10);
+        if (m_isMusicMuted)
+            musics[id]->setVolume(0);
+        else
+            musics[id]->setVolume(m_musicVolume*10);
         musics[id]->play();
     }
 }
 
 void AssetManager::setSoundVolume(unsigned int volume) {
     m_musicVolume = volume;
-
+    applyMusicVolume();
 }
 
 unsigned int AssetManager::getSoundVolume() const {
     return m_musicVolume;
+}
+
+
+bool AssetManager::isMusicMuted() const {
+	return m_isMusicMuted;
+}
+
+void AssetManager::muteMusic() {
+	m_isMusicMuted = !m_isMusicMuted;
+    applyMusicVolume();
+}
+
+void AssetManager::muteMusic(bool mute) {
+	m_isMusicMuted = mute;
+    applyMusicVolume();
 }
 
 
@@ -114,5 +132,18 @@ void AssetManager::clean() {
 	
 }
 
+void AssetManager::applyMusicVolume() {
+    for (auto it = musics.begin(); it != musics.end(); it++)
+    {
+        if (m_isMusicMuted)
+        {
+            it->second->setVolume(0);
+        }
+        else
+        {
+            it->second->setVolume(m_musicVolume * 10);
+        }
+    }
+}
 
 
