@@ -12,8 +12,8 @@ MainMenuScene::MainMenuScene(Engine& engine) :Scene(engine)
         std::cout << "Failed to load video" << std::endl;
         return;
     }
-    AssetManager::get().loadFont("shanghai", "../../../../assets/font/shanghai.ttf");
-    menuManager = new MenuManager(ui, *AssetManager::get().getFont("shanghai"));
+    AssetManager::get().loadFont("Varnished", "../../../../assets/font/Varnished.ttf");
+    menuManager = new MenuManager(ui, *AssetManager::get().getFont("Varnished"));
 
     AssetManager::get().loadMusic("music", "../../../../assets/sound/Dragon.ogg");
 
