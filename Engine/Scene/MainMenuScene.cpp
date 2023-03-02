@@ -13,7 +13,9 @@ MainMenuScene::MainMenuScene(Engine& engine) :Scene(engine)
         return;
     }
     AssetManager::get().loadFont("Varnished", "../../../../assets/font/Varnished.ttf");
-    menuManager = new MenuManager(ui, *AssetManager::get().getFont("Varnished"));
+    AssetManager::get().loadFont("shanghai", "../../../../assets/font/shanghai.ttf");
+    AssetManager::get().loadFont("Shangai", "../../../../assets/font/shanghai.ttf");
+    menuManager = new MenuManager(ui, *AssetManager::get().getFont("Shangai"));
 
     AssetManager::get().loadMusic("music", "../../../../assets/sound/Dragon.ogg");
 
