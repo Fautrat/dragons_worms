@@ -88,7 +88,8 @@ void World::updatePhysics(std::vector<Entity*>& entities)
 				}
 
 				resolveCollision(entityA, entityB);
-
+				
+				//Not definitiv solution
 				if (entityB.getComponent<Collider2D>()->getCollisionTag() == std::string("Fireball"))
 				{
 					if (entityA.getComponent<Collider2D>()->getCollisionTag() == std::string("Player"))

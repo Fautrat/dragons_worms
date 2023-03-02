@@ -16,7 +16,7 @@ public:
         AssetManager::get().loadTexture("Fireball", "assets/Dragon/fireball.png");
         addComponent<Transform>().setTransform(0.f, 0.f, 0.f, 0.f, 0.5f, 0.5f);
         addComponent<SpriteRenderer>("Fireball");
-        addComponent<Rigidbody>(1.f, false, 1.f, 1.f);
+        addComponent<Rigidbody>(1.f , false, 1.f, 1.f);
         if(isFragmented)
             addComponent<Collider2D>(SPHERE, std::string("Frag_fireball"));
         else 

@@ -30,14 +30,18 @@ InGameScene::~InGameScene()
 
 void InGameScene::Start()
 {
-    AssetManager::get().loadTexture("Player", "assets/Dragon/dragon.png");
 
 
     player1.getComponent<Transform>()->setTransform(300.f, 0, 0, 0, 0.7f, 0.7f);
-    m_manager->addEntity(&player1);
+    player1.initPlayer(FirstTeam);
     player1.connectInput(&engine->getInputHandler());
+    player1.startTurn();
+    m_manager->addEntity(&player1);
 
-    player2.getComponent<Transform>()->setTransform(800.f, 0, 0, 0, 0.7f, 0.7f);
+
+
+    player2.getComponent<Transform>()->setTransform(1400.f, 0, 0, 0, 0.7f, 0.7f);
+    player2.initPlayer(SecondTeam);
     m_manager->addEntity(&player2);
 
     readMap();
@@ -56,7 +60,7 @@ void InGameScene::Update(const float& deltaTime)
 
     /* update timer */
     timer -= deltaTime;
-
+    
     if (timer < 0 || players[currentPlayer]->turnEnding)
         newTurn();
 
@@ -81,6 +85,7 @@ void InGameScene::newTurn()
         currentPlayer = Player1;
 
     players[currentPlayer]->connectInput(&engine->getInputHandler());
+    players[currentPlayer]->startTurn();
     timer = 10;
 }
 

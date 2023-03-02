@@ -6,36 +6,62 @@
 #include "SpriteRenderer.h"
 #include "Rigidbody.h"
 #include "Fireball.h"
-#include "LifeBar.h"
+#include "PlayerInterface.h"
 #include "SFML/Graphics.hpp"
 #include <functional>
+
+enum Team
+{
+    FirstTeam,
+    SecondTeam
+};
 
 class Dragon : public Entity
 {
 public:
-
+    
     Dragon()
     {
         AssetManager::get().loadTexture("Player", "assets/Dragon/dragon.png");
-        getComponent<Transform>()->scale = sf::Vector2f(0.7f, 0.7f);
-        addComponent<SpriteRenderer>("Player");
-        addComponent<Rigidbody>(1, false, 0, 2);
-        addComponent<Collider2D>(BOX, std::string("Player"));
-        addComponent<LifeBar>();
+        AssetManager::get().loadTexture("Player2", "assets/Dragon/SecondDragon.png");
+       
+
         turnEnding = false;
         hasShoot = false;
     }
 
     ~Dragon() = default;
 
+    void initPlayer(Team team) {
+
+        getComponent<Transform>()->scale = sf::Vector2f(0.7f, 0.7f);
+        
+        addComponent<PlayerInterface>();
+
+        if (team == FirstTeam)
+        {
+            addComponent<SpriteRenderer>("Player");
+            addComponent<Rigidbody>(1, false, 0, 2);
+            addComponent<Collider2D>(BOX, std::string("Player"));
+		}
+        else if(team == SecondTeam)
+        {
+            addComponent<SpriteRenderer>("Player2");
+            addComponent<Rigidbody>(1, false, 0, 2);
+            addComponent<Collider2D>(BOX, std::string("Player2"));
+		}
+        
+    }
+
     const int getLife()
     {
-        return getComponent<LifeBar>()->life;
+        return getComponent<PlayerInterface>()->life;
     }
 
     void takeDamage(int damage)
     {
-        getComponent<LifeBar>()->life -= damage;
+        getComponent<PlayerInterface>()->applyDamageInterface(damage);
+
         //life -= damage;
 
         /* if (life <= 0) is dead */
@@ -83,9 +109,16 @@ public:
         return fireball;
     }
 
+    void startTurn()
+    {
+        getComponent<PlayerInterface>()->setIsPlaying(true);
+    }
+
     void endTurn()
     {
         turnEnding = true;
+        getComponent<PlayerInterface>()->setIsPlaying(false);
+       
     }
 
     bool turnEnding;
