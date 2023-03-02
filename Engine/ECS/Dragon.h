@@ -100,7 +100,7 @@ public:
         else
             newPos.x += getComponent<SpriteRenderer>()->getSprite()->getGlobalBounds().width + 1.f;
         std::function<void()> callback = [this] {endTurn();};
-        Fireball* fireball = new Fireball(callback, true);
+        Fireball* fireball = new Fireball(callback, false);
         if (direction.x <= 0)
         {
             fireball->getComponent<SpriteRenderer>()->flipTextureLeft();
