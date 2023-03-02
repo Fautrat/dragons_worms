@@ -16,7 +16,7 @@ public:
 
     Dragon()
     {
-        AssetManager::get().loadTexture("Player", "../../../../assets/Dragon/dragon.png");
+        AssetManager::get().loadTexture("Player", "assets/Dragon/dragon.png");
         getComponent<Transform>()->scale = sf::Vector2f(0.7f, 0.7f);
         addComponent<SpriteRenderer>("Player");
         addComponent<Rigidbody>(1, false, 0, 2);
@@ -50,8 +50,8 @@ public:
                 const auto fireball = shoot();
                 if (fireball)
                 {
-                    auto entity = static_cast<Entity*>(fireball);
-                    EntityManager::getInstance()->addEntity(entity);
+                    //auto entity = static_cast<Entity*>(fireball);
+                    EntityManager::getInstance()->addEntity(fireball);
                 }
             });
         input->connect(EInput::Jump, [this] {getComponent<Rigidbody>()->Jump(); });
@@ -70,7 +70,7 @@ public:
 
         sf::Vector2f newPos (getComponent<Transform>()->position.x, getComponent<Transform>()->position.y);
         std::function<void()> callback = [this] {endTurn();};
-        Fireball* fireball = new Fireball(callback);
+        Fireball* fireball = new Fireball(callback, true);
         if (direction.x <= 0)
         {
             fireball->getComponent<SpriteRenderer>()->flipTextureLeft();

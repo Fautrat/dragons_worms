@@ -3,21 +3,19 @@
 
 MainMenuScene::MainMenuScene(Engine& engine) :Scene(engine)
 {
+    AssetManager::get().loadFont("Shangai", "assets/font/shanghai.ttf");
 
     ui = std::make_shared<UI>();
     m_input = &engine.getInputHandler();
-
-    if (!videoTexture.loadFromFile("../../../../assets/wallpaper.jpg"))
+    if (!videoTexture.loadFromFile("assets/wallpaper.jpg"))
     {
         std::cout << "Failed to load video" << std::endl;
         return;
     }
-    AssetManager::get().loadFont("Varnished", "../../../../assets/font/Varnished.ttf");
-    AssetManager::get().loadFont("shanghai", "../../../../assets/font/shanghai.ttf");
-    AssetManager::get().loadFont("Shangai", "../../../../assets/font/shanghai.ttf");
+    AssetManager::get().loadFont("Shangai", "assets/font/shanghai.ttf");
     menuManager = new MenuManager(ui, *AssetManager::get().getFont("Shangai"));
 
-    AssetManager::get().loadMusic("music", "../../../../assets/sound/Dragon.ogg");
+    AssetManager::get().loadMusic("music", "assets/sound/Dragon.ogg");
 
     videoSprite.setTexture(videoTexture);
 
