@@ -20,7 +20,7 @@ MainMenuScene::MainMenuScene(Engine& engine) :Scene(engine)
     assetManager->loadMusic("music", "../../../../assets/sound/Dragon.ogg");
 
     videoSprite.setTexture(videoTexture);
-    videoSprite.setScale({ (float)2560 / (float)videoSprite.getTexture()->getSize().x, (float)1600 / (float)videoSprite.getTexture()->getSize().y });
+    videoSprite.setScale({ (float)1920 / (float)videoSprite.getTexture()->getSize().x, (float)1080 / (float)videoSprite.getTexture()->getSize().y });
    
     ui->CreateText("PlayButton", sf::Color::White, "PLAY", 300, sf::Vector2f(400, 200), *assetManager->getFont("shanghai"));
     ui->CreateText("OptionsButton", sf::Color::White, "OPTIONS", 200, sf::Vector2f(400, 525), *assetManager->getFont("shanghai"));
@@ -297,8 +297,8 @@ void MainMenuScene::Resolution()
 void MainMenuScene::SetResolution(int width, int height)
 {
     engine->getRenderWindow().setSize(sf::Vector2u(width, height));
-    videoSprite.setScale({ (float)width / (float)videoSprite.getTexture()->getSize().x, (float)height / (float)videoSprite.getTexture()->getSize().y });
-    videoSprite.setPosition(0, 0);
+//    videoSprite.setScale({ (float)width / (float)videoSprite.getTexture()->getSize().x, (float)height / (float)videoSprite.getTexture()->getSize().y });
+//    videoSprite.setPosition(0, 0);
 }
 
 void MainMenuScene::Volume() {

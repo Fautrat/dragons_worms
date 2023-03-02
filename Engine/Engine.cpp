@@ -18,7 +18,7 @@ Engine::Engine()
     gameState = RUNNING;
     m_instance = this;
     m_renderWindow = new sf::RenderWindow(
-        sf::VideoMode(2560, 1600),
+        sf::VideoMode(1920, 1080),
         "Dragons with engine",
         sf::Style::Resize
     );
@@ -52,7 +52,7 @@ void Engine::Run()
             
             if (nullptr != m_currScene)
             {
-                m_mousePosition = sf::Mouse::getPosition();
+                m_mousePosition = sf::Mouse::getPosition(*m_renderWindow);
                 m_currScene->Update(getDeltaTime());
                 m_renderWindow->clear();
                 m_currScene->Render(m_renderWindow);
