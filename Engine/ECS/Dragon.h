@@ -45,13 +45,13 @@ public:
     {
         input->connect(sf::Keyboard::D, [this] {getComponent<Rigidbody>()->moveHorizontal(1); getComponent<SpriteRenderer>()->flipTextureRight(); });
         input->connect(sf::Keyboard::Q, [this] {getComponent<Rigidbody>()->moveHorizontal(-1); getComponent<SpriteRenderer>()->flipTextureLeft(); });
-        input->connect(sf::Keyboard::N, [this]
+        input->connect(sf::Keyboard::N, [this, &input]
             {
                 const auto fireball = shoot();
                 if (fireball)
                 {
-                    auto entity = static_cast<Entity*>(fireball);
-                    EntityManager::getInstance()->addEntity(entity);
+                    //auto entity = static_cast<Entity*>(fireball);
+                    EntityManager::getInstance()->addEntity(fireball);
                 }
             });
         input->connect(sf::Keyboard::Space, [this] {getComponent<Rigidbody>()->Jump(); });
@@ -70,7 +70,7 @@ public:
 
         sf::Vector2f newPos (getComponent<Transform>()->position.x, getComponent<Transform>()->position.y);
         std::function<void()> callback = [this] {endTurn();};
-        Fireball* fireball = new Fireball(callback);
+        Fireball* fireball = new Fireball(callback, true);
         if (direction.x <= 0)
         {
             fireball->getComponent<SpriteRenderer>()->flipTextureLeft();

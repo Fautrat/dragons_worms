@@ -70,7 +70,7 @@ public:
         }
     }
 
-    inline void update(const float& deltaTime) 
+    virtual inline void update(const float& deltaTime) 
     {
         for (auto& comp : components)
         {
@@ -78,7 +78,7 @@ public:
         }
     }
 
-private:
+protected:
     bool active = false;
     ComponentArray compArray;
     ComponentBitset compBitset;

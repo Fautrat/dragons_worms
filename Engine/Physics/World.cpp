@@ -3,7 +3,7 @@
 #include "../ECS/Dragon.h"
 
 class Dragon;
-
+class Fireball;
 class EntityManager;
 
 World::World() 
@@ -61,7 +61,7 @@ void World::updatePhysics(std::vector<Entity*>& entities)
 
 			if (Collide(entityA, entityB))
 			{
-				if (entityB.getComponent<Collider2D>()->getCollisionTag() == std::string("Fireball"))
+				if (dynamic_cast<Fireball*>(&entityB))
 				{
 					if (entityA.getComponent<Collider2D>()->getCollisionTag() == std::string("Player"))
 					{
