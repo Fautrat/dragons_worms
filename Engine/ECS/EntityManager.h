@@ -20,14 +20,12 @@ public:
 
 	void draw(sf::RenderTarget* renderwindow);
 	void update(const float& deltaTime);
-	void refresh();
 
-	void addEntity(Entity* player);
-	void eraseEntity(Entity* player);
-	Entity* cloneEntity(Entity* player);
+	void addEntity(Entity* entity);
+	void eraseEntity(Entity* entity);
 
 protected:
-	std::vector<std::unique_ptr<Entity>> entities;
+	std::vector<Entity*> entities;
 	static EntityManager* m_instance;
 	std::unique_ptr<World> worldPtr = std::make_unique<World>();
 };

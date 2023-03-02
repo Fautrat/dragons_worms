@@ -10,14 +10,13 @@ std::mutex Engine::m_mutex;
 Engine::Engine()
 {
     gameState = RUNNING;
-    m_instance = this;
     m_renderWindow = new sf::RenderWindow(
         sf::VideoMode(1920, 1080),
         "Dragons with engine",
         sf::Style::Fullscreen
     );
     m_renderWindow->setFramerateLimit(60);
-    m_input = new InputHandler(m_renderWindow);
+    m_input = new InputHandler(*m_renderWindow);
 
 }
 
@@ -35,7 +34,6 @@ void Engine::Run()
 {
     while (m_renderWindow->isOpen())
     {
-        
         if (gameState == RUNNING)
         {
             HandleEvent();
@@ -54,11 +52,7 @@ void Engine::Run()
             
             if (m_sceneToLoad != ESceneType::NONE)
                 LoadScene(m_sceneToLoad);
-             
-           /* if (m_deltaTime >= 1.f)
-            {
-                m_deltaClock.restart();
-            }*/
+
         }
     }
 }
@@ -66,7 +60,7 @@ void Engine::Run()
 void Engine::ExitGame()
 {
     gameState = STOP;
-    if(m_renderWindow) m_renderWindow->close();
+    if (m_renderWindow) m_renderWindow->close();
 }
 
 void Engine::LoadScene(ESceneType scene)

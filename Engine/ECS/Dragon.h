@@ -5,11 +5,10 @@
 #include "../../Game/InputHandler.hpp"
 #include "SpriteRenderer.h"
 #include "Rigidbody.h"
-#include "Weapon.h"
 #include "Fireball.h"
 #include "LifeBar.h"
-#include "../Physics/World.h"
 #include "SFML/Graphics.hpp"
+#include <functional>
 
 class Dragon : public Entity
 {
@@ -23,34 +22,36 @@ public:
         addComponent<Rigidbody>(1, false, 0, 2);
         addComponent<Collider2D>(BOX, std::string("Player"));
         addComponent<LifeBar>();
+        turnEnding = false;
+        hasShoot = false;
     }
 
     ~Dragon() = default;
 
-    const unsigned int getLife() const
+    const int getLife()
     {
-        return life;
+        return getComponent<LifeBar>().life;
     }
 
-    void takeDamage(unsigned int damage)
+    void takeDamage(int damage)
     {
-        life -= damage;
+        getComponent<LifeBar>().life -= damage;
+        //life -= damage;
 
         /* if (life <= 0) is dead */
     }
 
-    void connectInput(InputHandler* input, EntityManager& manager, World& worldPhysics)
+    void connectInput(InputHandler* input)
     {
         input->connect(sf::Keyboard::D, [this] {getComponent<Rigidbody>().moveHorizontal(1); getComponent<SpriteRenderer>().flipTextureRight(); });
         input->connect(sf::Keyboard::Q, [this] {getComponent<Rigidbody>().moveHorizontal(-1); getComponent<SpriteRenderer>().flipTextureLeft(); });
-        input->connect(sf::Keyboard::N, [&manager, this, &worldPhysics] 
+        input->connect(sf::Keyboard::N, [this]
             {
-                const auto fireball = this->shoot();
+                const auto fireball = shoot();
                 if (fireball)
                 {
-                    auto entity = dynamic_cast<Entity*>(fireball);
-                    worldPhysics.addEntityWithPhysics(*entity);
-                    manager.addEntity(entity);
+                    auto entity = static_cast<Entity*>(fireball);
+                    EntityManager::getInstance()->addEntity(entity);
                 }
             });
         input->connect(sf::Keyboard::Space, [this] {getComponent<Rigidbody>().Jump(); });
@@ -58,6 +59,9 @@ public:
 
     Fireball* shoot()
     {
+        if (hasShoot)
+            return nullptr;
+
         /* calcul de direction */
         sf::Vector2f direction = static_cast<sf::Vector2f>(sf::Mouse::getPosition()) - getComponent<Transform>().position;
         float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
@@ -65,33 +69,25 @@ public:
         direction *= 10.f;
 
         sf::Vector2f newPos (getComponent<Transform>().position.x, getComponent<Transform>().position.y);
-        Fireball* fireball = new Fireball();
+        std::function<void()> callback = [this] {endTurn();};
+        Fireball* fireball = new Fireball(callback);
         if (direction.x <= 0)
         {
-            newPos.x += getComponent<SpriteRenderer>().getSprite()->getGlobalBounds().width;
             fireball->getComponent<SpriteRenderer>().flipTextureLeft();
         }
-        else
-        {
-            newPos.x += getComponent<SpriteRenderer>().getSprite()->getGlobalBounds().width;
-        }
 
-        if (direction.y <= 0)
-        {
-            newPos.y -= getComponent<SpriteRenderer>().getSprite()->getGlobalBounds().height;
-        }
-        else
-        {
-            newPos.y += getComponent<SpriteRenderer>().getSprite()->getGlobalBounds().height;
-        }
         fireball->getComponent<Transform>().moveTo(newPos);
         fireball->getComponent<Rigidbody>().setVelocity(direction);
-        
-        auto fi = fireball->getComponent<Collider2D>().getCollisionTag();
+        hasShoot = true;
 
         return fireball;
     }
 
-private:
-    unsigned int life = 100;
+    void endTurn()
+    {
+        turnEnding = true;
+    }
+
+    bool turnEnding;
+    bool hasShoot;
 };

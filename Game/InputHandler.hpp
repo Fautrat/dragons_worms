@@ -11,10 +11,9 @@ class InputHandler
 public:
     typedef std::function<void()> Slot;
 
-    InputHandler(sf::RenderWindow* window) : m_window(window)
+    InputHandler(sf::RenderWindow& window) : m_window(window)
     {
-        connect(sf::Keyboard::Escape, [this] { m_window->close(); });
-        //connect<sf::RenderWindow>(window, &sf::RenderWindow::close);
+        connect(sf::Keyboard::Escape, [this] {m_window.close();});
     }
 
     void connect(sf::Keyboard::Key key, Slot slot);
@@ -39,13 +38,10 @@ public:
     void disconnect(const size_t& id) const;*/
 
     void handleInput();
-    ~InputHandler()
-    {
-        delete m_window;
-    }
+    ~InputHandler() = default;
 
 private:
-    sf::RenderWindow* m_window;
+    sf::RenderWindow& m_window;
     mutable std::map<sf::Keyboard::Key, std::function<void()>> m_slots;
     //mutable size_t m_currentId;
     std::vector<sf::Keyboard::Key> m_using_keys;

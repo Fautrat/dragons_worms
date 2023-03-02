@@ -1,9 +1,4 @@
-#include <functional>
-#include <map>
-#include <vector>
-#include <SFML/Window.hpp>
 #include "InputHandler.hpp"
-#include <iostream>
 
 void InputHandler::connect(sf::Keyboard::Key key, Slot slot)
 {
@@ -13,11 +8,11 @@ void InputHandler::connect(sf::Keyboard::Key key, Slot slot)
 void InputHandler::handleInput()
 {
     sf::Event event;
-    while (m_window->pollEvent(event))
+    while (m_window.pollEvent(event))
     {
         if (event.type == sf::Event::Closed)
         {
-            m_window->close();
+            m_window.close();
         }
         else if (event.type == sf::Event::KeyPressed)
         {
@@ -31,9 +26,6 @@ void InputHandler::handleInput()
                 m_using_keys.erase(it);
             }
         }
-        //if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right)
-            //m_fireball.shoot(sf::Vector2f {0., 0.}, (sf::Vector2f)sf::Mouse::getPosition(m_window));
-
     }
     for (auto& keys : m_using_keys)
     {

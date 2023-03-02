@@ -23,51 +23,7 @@ private:
 
 public:
 
-	bool detectCollision(Entity& objA, Entity& objB)
-	{
-		if (!objA.hasComponent<Collider2D>() || !objB.hasComponent<Collider2D>()) return false;
-		normal = sf::Vector2f(0, 0);
-		depth = 0;
-		ColliderType colTypeA = objA.getComponent<Collider2D>().getColliderType();
-		ColliderType colTypeB = objB.getComponent<Collider2D>().getColliderType();
-		// Je sais c'est pas beau mais manque de temps pour faire mieux
-		if (colTypeA == BOX)
-		{
-			if (colTypeB == BOX || colTypeB == TRIANGLE)
-			{
-				return IntersectPolygons(objA, objB);
-			}
-			else if (colTypeB == SPHERE)
-			{
-				return IntersectCirclePolygon(objA, objB);
-			}
-		}
-
-		else if (colTypeA == SPHERE)
-		{
-			if (colTypeB == BOX || colTypeB == TRIANGLE)
-			{
-				return IntersectCirclePolygon(objA, objB);
-			}
-			else if (colTypeB == SPHERE)
-			{
-				return IntersectCircles(objA, objB);
-			}
-		}
-
-		else if (colTypeA == TRIANGLE)
-		{
-			if (colTypeB == BOX || colTypeB == TRIANGLE)
-			{
-				return IntersectPolygons(objA, objB);
-			}
-			else if (colTypeB == SPHERE)
-			{
-				return IntersectCirclePolygon(objA, objB);
-			}
-		}
-		return false;
-	}
+	bool detectCollision(Entity& objA, Entity& objB);
 
 	sf::Vector2f getNormal() { return normal; };
 	float getDepth() { return depth; };

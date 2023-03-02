@@ -18,10 +18,7 @@ public:
 	PolygonCollider2D(ColliderType col,Direction dir) : colType(col),directionTriangle(dir) {};
 	PolygonCollider2D(std::string tag) : collisionTag(tag) {}
 
-	~PolygonCollider2D() {
-		delete transform;
-		delete rb;
-	}
+	~PolygonCollider2D() = default;
 
 	bool init() override final;
 
@@ -50,8 +47,6 @@ private:
 	//std::vector<int> Triangles;
 	int width = 0;
 	int height = 0;
-	Transform* transform = nullptr;
-	Rigidbody* rb = nullptr;
 	ColliderType colType;
 	Direction directionTriangle;
 	

@@ -7,32 +7,29 @@
 #include "../AssetManager/AssetManager.h"
 #include <iostream>
 
+class Dragon;
+
 class LifeBar : public Component, public sf::Text
 {
 public:
 	LifeBar() = default;
-	~LifeBar() {
-		delete transform;
-		delete font;
-	}
+	~LifeBar() = default;
 
 	bool init() override final 
 	{
-		if (nullptr != entity)
+		if (nullptr != entity && entity->hasComponent<Transform>())
 		{
-			font = AssetManager::get().getFont("Shangai");
-			if (!font)
+			if (!AssetManager::get().getFont("Shangai"))
 			{
 				std::cout << "Failed to load font for life bar" << std::endl;
 				return false;
 			}
-			transform = &entity->getComponent<Transform>();
-			setFont(*font);
+			font = *AssetManager::get().getFont("Shangai");
+			const auto& transform = entity->getComponent<Transform>();
+			setFont(font);
 			setFillColor(sf::Color::Red);
 			setCharacterSize(20);
-			//setOrigin(transform->position);
-			setPosition(sf::Vector2f{ transform->position.x, transform->position.y - 80 });
-			setString("100");
+			life = 100;
 			return true;
 		}
 		return false;
@@ -45,11 +42,17 @@ public:
 
 	void update(const float& deltaTime) override final 
 	{
-		setPosition(sf::Vector2f{ transform->position.x, transform->position.y - 80 });
+		if(entity->hasComponent<Transform>())
+		{
+			setString(sf::String(std::to_string(life)));
+			const auto& transform = entity->getComponent<Transform>();
+			float posY = transform.position.y - entity->getComponent<SpriteRenderer>().getSprite()->getGlobalBounds().height / 2.f - getGlobalBounds().height - 5.f; // léger offset
+			setPosition(sf::Vector2f{ transform.position.x - getGlobalBounds().width / 2.f, posY});
+		}
 	}
 
-private:
+	int life;
 
-	Transform* transform = nullptr;
-	sf::Font* font;
+private:
+	sf::Font font;
 };

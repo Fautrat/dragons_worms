@@ -1,8 +1,13 @@
 #include "World.h"
-#include "Collision.h"
+#include "../ECS/EntityManager.h"
+#include "../ECS/Dragon.h"
 
+class Dragon;
 
-World::World() {
+class EntityManager;
+
+World::World() 
+{
 	collision = new Collision();
 }
 
@@ -10,8 +15,6 @@ World::~World()
 {
 	delete collision;
 }
-
-
 
 bool World::Collide(Entity& firstEntity, Entity& secondEntity)
 {
@@ -42,15 +45,14 @@ void World::resolveCollision(Entity& firstEntity, Entity& secondEntity)
 }
 
 
-void World::updatePhysics(std::vector<std::unique_ptr<Entity>>& entities)
+void World::updatePhysics(std::vector<Entity*>& entities)
 {
-	const auto copyEntities = entities;
-	for (int i = 0; i < copyEntities.size() - 1; i++)
+	for (int i = 0; i < entities.size() - 1; i++)
 	{
 		Entity& entityA = *entities[i];
 		if (!entityA.hasComponent<Collider2D>()) continue;
 		
-		for (int j = i + 1; j < copyEntities.size(); j++)
+		for (int j = i + 1; j < entities.size(); j++)
 		{
 			Entity& entityB = *entities[j];
 			if (!entityB.hasComponent<Collider2D>()) continue;
@@ -59,25 +61,22 @@ void World::updatePhysics(std::vector<std::unique_ptr<Entity>>& entities)
 
 			if (Collide(entityA, entityB))
 			{
-				if (entityA->getComponent<Collider2D>().getCollisionTag() == std::string("Fireball"))
+				if (entityB.getComponent<Collider2D>().getCollisionTag() == std::string("Fireball"))
 				{
-					if (entityB->getComponent<Collider2D>().getCollisionTag() == std::string("Player"))
+					if (entityA.getComponent<Collider2D>().getCollisionTag() == std::string("Player"))
 					{
-						continue;
-					}
-					removeEntityWithPhysics(*entityA);
-					delete entityA;
-					break;
-				}
-				else if (entityB->getComponent<Collider2D>().getCollisionTag() == std::string("Fireball"))
-				{
-					if (entityA->getComponent<Collider2D>().getCollisionTag() == std::string("Player"))
-					{
+						Dragon dragon = dynamic_cast<Dragon&>(entityA);
+						if (!dragon.hasShoot)
+						{
+							EntityManager::getInstance()->eraseEntity(&entityB);
+							dragon.takeDamage(10);
+						}
 						continue;
 					}
 					else
 					{
-						removeEntityWithPhysics(*entityA);
+						EntityManager::getInstance()->eraseEntity(&entityB);
+
 						continue;
 					}
 				}

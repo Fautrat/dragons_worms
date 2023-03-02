@@ -2,7 +2,7 @@
 #include <iostream>
 
 
-InGameScene::InGameScene(Engine& engine) :Scene(engine)
+InGameScene::InGameScene(Engine& engine) :Scene(engine) , m_manager(EntityManager::getInstance())
 {
     if (!backgroundTexture.loadFromFile("../../../../assets/Maps/background1.png"))
     {
@@ -16,6 +16,7 @@ InGameScene::InGameScene(Engine& engine) :Scene(engine)
     //TODO : changer les valeurs en dur
     backgroundSprite.setScale({ (float)1920 / (float)backgroundSprite.getTexture()->getSize().x, (float)1080 / (float)backgroundSprite.getTexture()->getSize().y });
     ui = new UI();
+    collision = new Collision();
 
     ui->CreateText("Timer", sf::Color::White, " ", 100, sf::Vector2f(900, 100), *font);
 }
@@ -29,8 +30,6 @@ InGameScene::~InGameScene()
 
 void InGameScene::Start()
 {
-    m_manager = EntityManager::getInstance();
-
     AssetManager::get().loadTexture("Player", "../../../../assets/Dragon/dragon.png");
     /*AssetManager::get().loadTexture("Wall", "../../../../assets/Dragon/wall.png");
     AssetManager::get().loadTexture("Circle", "../../../../assets/Dragon/circle.png");
@@ -43,7 +42,7 @@ void InGameScene::Start()
     player1.addComponent<LifeBar>();*/
     m_manager->addEntity(&player1);
 
-    player1.connectInput(&engine->getInputHandler(), *m_manager, *worldptr);
+    player1.connectInput(&engine->getInputHandler());
 
     player2.getComponent<Transform>().setTransform(800.f, 0, 0, 0, 0.7f, 0.7f);
     /*player2.addComponent<SpriteRenderer>("Player");
@@ -57,7 +56,7 @@ void InGameScene::Start()
     circle2.addComponent<SpriteRenderer>("Circle");
     circle2.addComponent<Rigidbody>(1, false, 1, 1);
     circle2.addComponent<Collider2D>(SPHERE);
-    m_manager->addEntity(&circle2);
+    m_manager->addEntity(&circle2); */
 
     //Triangle.getComponent<Transform>().setTransform(800, 872, 90, 0, 1, 1);
     //Triangle.addComponent<SpriteRenderer>("Triangle");
@@ -93,14 +92,13 @@ void InGameScene::Start()
 
 void InGameScene::Update(const float& deltaTime)
 {
-    m_manager->refresh();
     m_manager->update(deltaTime);
     //worldptr->updatePhysics(deltaTime);
 
     /* update timer */
     timer -= deltaTime;
 
-    if (timer < 0)
+    if (timer < 0 || players[currentPlayer]->turnEnding)
         newTurn();
 
     ui->Text("Timer").setString(std::to_string(static_cast<int>(timer)));
@@ -116,17 +114,14 @@ void InGameScene::Render(sf::RenderTarget* renderTarget)
 
 void InGameScene::newTurn()
 {
+    players[currentPlayer]->turnEnding = false;
+    players[currentPlayer]->hasShoot = false;
     if (currentPlayer == WhosTurn::Player1)
-    {
-        player2.connectInput(&engine->getInputHandler(), *m_manager, *worldptr);
         currentPlayer = Player2;
-    }
     else
-    {
-        player1.connectInput(&engine->getInputHandler(), *m_manager, *worldptr);
         currentPlayer = Player1;
-    }
 
+    players[currentPlayer]->connectInput(&engine->getInputHandler());
     timer = 10;
 }
 

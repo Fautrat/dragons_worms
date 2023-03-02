@@ -9,23 +9,14 @@
 #include "../ECS/RigidBody.h"
 #include "../ECS/PolygonCollider2D.h"
 #include "../ECS/Collider2D.h"
-#include "../ECS/Input.h"
 #include "../UI/UI.hpp"
 #include "../ECS/LifeBar.h"
 #include "../ECS/Ground.h"
-
-#include <memory>
 
 enum WhosTurn
 {
 	Player1,
 	Player2,
-};
-
-enum StateTurn
-{
-	Running,
-	Processing,
 };
 
 class Engine;
@@ -38,9 +29,10 @@ private:
 	sf::Sprite backgroundSprite;
 
 	Dragon player1, player2;
+	Dragon* players[2] = {&player1, &player2};
 
 	UI* ui;
-	Collision* collision = new Collision();
+	Collision* collision;
 	Entity box1, box2, circle, circle2, circle3, Triangle, ground;
 
 	std::vector<Ground*> tileset;
@@ -59,6 +51,5 @@ public:
 	float timer = 10.f;
 	void newTurn();
 	WhosTurn currentPlayer = Player1;
-	StateTurn currentState = Running;
 	EntityManager* m_manager;
 };

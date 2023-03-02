@@ -3,13 +3,10 @@
 #include "SpriteRenderer.h"
 #include "Collider2D.h"
 
-
-
 struct Ground : public Entity
 {
 	Ground(float x, float y, std::string tile)
 	{
-		Entity();
 		getComponent<Transform>().setTransform(x + 66.f, y + 54.f, 0, 0, 0.6f, 0.5f);
 		addComponent<SpriteRenderer>(tile);
 		//getComponent<SpriteRenderer>().getSprite()->setOrigin(0, 0);
