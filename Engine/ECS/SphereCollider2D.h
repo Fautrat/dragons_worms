@@ -13,7 +13,7 @@ public:
 
 	SphereCollider2D(std::string tag){}
 
-	~SphereCollider2D(){delete transform;}
+	~SphereCollider2D() = default;
 
 	bool init() override final;
 
@@ -21,7 +21,7 @@ public:
 
 	void update(const float& deltaTime) override final
 	{
-		circle_position = transform->position;
+		circle_position = entity->getComponent<Transform>().position;
 	}
 
 	std::string getCollisionTag() const {
@@ -33,8 +33,6 @@ private:
 
 	sf::Vector2f circle_position = sf::Vector2f();
 	std::string collisionTag = "";
-	Transform* transform = nullptr;
-	Rigidbody* rb = nullptr;
 	float m_spriteWidth, m_radius, m_spriteHeight = 0.f;
 
 

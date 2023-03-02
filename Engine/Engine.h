@@ -7,7 +7,6 @@
 #include "../Game/InputHandler.hpp"
 
 
-
 enum EState {
 	STOP = 1,
 	RUNNING,
@@ -29,10 +28,10 @@ protected:
 	Engine();
 	~Engine();
 public:
-
 	void Run();
 	void ExitGame();
 	static Engine* getInstance();
+	static void killInstance();
 	const EState& getGameState() const;
 	Engine(Engine& other) = delete;
 	void operator=(const Engine&) = delete;

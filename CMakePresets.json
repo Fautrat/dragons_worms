@@ -2,7 +2,7 @@
   "version": 2,
   "configurePresets": [
     {
-      "name": "linux-default",
+      "name": "linux",
       "displayName": "Linux Debug",
       "description": "Ciblez WSL (Sous-système Windows pour Linux) ou un système Linux distant.",
       "generator": "Ninja",

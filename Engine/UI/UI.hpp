@@ -1,5 +1,8 @@
+#pragma once
+
 #include <mutex>
 #include "SFML/Graphics.hpp"
+#include <iostream>
 
 enum EShape
 {
@@ -27,6 +30,8 @@ public:
 	bool InteractionButton(std::string name, sf::Vector2i mouseposition);
     void RemoveText(std::string name);
     void RemoveZone(std::string name);
+
+	sf::Font& getFont();
 
 private:
 

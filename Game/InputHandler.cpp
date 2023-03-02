@@ -1,19 +1,14 @@
-#include <functional>
-#include <map>
-#include <vector>
-#include <SFML/Window.hpp>
 #include "InputHandler.hpp"
-#include <iostream>
 
 
 
-void InputHandler::connect(Action action, sf::Keyboard::Key key, InputHandler::Slot slot) {
+void InputHandler::connect(EInput action, sf::Keyboard::Key key, InputHandler::Slot slot) {
     m_actions[key] = action;
     m_slots[action] = slot;
 
 }
 
-void InputHandler::remapAction(Action action, sf::Keyboard::Key key)
+void InputHandler::remapAction(EInput action, sf::Keyboard::Key key)
 {
     for(auto it = m_actions.begin(); it != m_actions.end(); ++it)
     {
@@ -26,7 +21,7 @@ void InputHandler::remapAction(Action action, sf::Keyboard::Key key)
     m_actions[key] = action;
 }
 
-void InputHandler::connect(Action action, InputHandler::Slot slot) {
+void InputHandler::connect(EInput action, InputHandler::Slot slot) {
     m_slots[action] = slot;
 
 }
@@ -34,11 +29,11 @@ void InputHandler::connect(Action action, InputHandler::Slot slot) {
 void InputHandler::handleInput()
 {
     sf::Event event;
-    while (m_window->pollEvent(event))
+    while (m_window.pollEvent(event))
     {
         if (event.type == sf::Event::Closed)
         {
-            m_window->close();
+            m_window.close();
         }
         else if (event.type == sf::Event::KeyPressed)
         {
@@ -52,9 +47,6 @@ void InputHandler::handleInput()
                 m_using_keys.erase(it);
             }
         }
-        //if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Right)
-            //m_fireball.shoot(sf::Vector2f {0., 0.}, (sf::Vector2f)sf::Mouse::getPosition(m_window));
-
     }
     for (auto& keys : m_using_keys)
     {
@@ -66,7 +58,7 @@ void InputHandler::handleInput()
     }
 }
 
-sf::Keyboard::Key InputHandler::getActionKey(Action action)
+sf::Keyboard::Key InputHandler::getActionKey(EInput action)
 {
     for (auto it = m_actions.begin(); it != m_actions.end(); ++it) {
         if (it->second == action) {

@@ -1,10 +1,8 @@
 set(GAME_HEADERS
-        Dragons.hpp
         InputHandler.hpp
 )
 
 set(GAME_SOURCES
-        Dragons.cpp
         InputHandler.cpp
         main.cpp)
 

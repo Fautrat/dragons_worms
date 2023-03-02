@@ -5,7 +5,6 @@ MainMenuScene::MainMenuScene(Engine& engine) :Scene(engine)
 {
 
     ui = std::make_shared<UI>();
-//    music = new sf::Music();
     m_input = &engine.getInputHandler();
 
     if (!videoTexture.loadFromFile("../../../../assets/wallpaper.jpg"))
@@ -68,12 +67,12 @@ void MainMenuScene::Update(const float& deltaTime)
                 if (sf::Mouse::isButtonPressed(sf::Mouse::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) || sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) CancelRemap();
                 else Remap();
             }
-            if (ui->InteractionButton("MOVEUP", mousepos)) UpdateInput(Action::MoveUp, "MOVEUP");
-            if (ui->InteractionButton("MOVEDOWN", mousepos)) UpdateInput(Action::MoveDown, "MOVEDOWN");
-            if (ui->InteractionButton("MOVELEFT", mousepos)) UpdateInput(Action::MoveLeft, "MOVELEFT");
-            if (ui->InteractionButton("MOVERIGHT", mousepos)) UpdateInput(Action::MoveRight, "MOVERIGHT");
-            if (ui->InteractionButton("ACTION", mousepos)) UpdateInput(Action::Action, "ACTION");
-            if (ui->InteractionButton("JUMP", mousepos)) UpdateInput(Action::Jump, "JUMP");
+            if (ui->InteractionButton("MOVEUP", mousepos)) UpdateInput(EInput::MoveUp, "MOVEUP");
+            if (ui->InteractionButton("MOVEDOWN", mousepos)) UpdateInput(EInput::MoveDown, "MOVEDOWN");
+            if (ui->InteractionButton("MOVELEFT", mousepos)) UpdateInput(EInput::MoveLeft, "MOVELEFT");
+            if (ui->InteractionButton("MOVERIGHT", mousepos)) UpdateInput(EInput::MoveRight, "MOVERIGHT");
+            if (ui->InteractionButton("ACTION", mousepos)) UpdateInput(EInput::Action, "ACTION");
+            if (ui->InteractionButton("JUMP", mousepos)) UpdateInput(EInput::Jump, "JUMP");
             if (ui->InteractionButton("BackControlsButton", mousepos)) Back();
         }
         else menuManager->Update(deltaTime, mousepos);
@@ -125,19 +124,19 @@ void MainMenuScene::Controls()
     menuManager->AddMenu(controlsMenu);
     menuManager->SetCurrentMenu("Controls");
 
-    menuManager->AddText("MOVEUP", sf::Color::White, "UP : " + m_input->fromKtoS(m_input->getActionKey(Action::MoveUp)), 100, sf::Vector2f(400, 300), [&]{ UpdateInput(Action::MoveUp, "MOVEUP"); });
-    menuManager->AddText("MOVEDOWN", sf::Color::White, "DOWN : " + m_input->fromKtoS(m_input->getActionKey(Action::MoveDown)), 100, sf::Vector2f(400, 400), [&]{ UpdateInput(Action::MoveDown, "MOVEDOWN"); });
-    menuManager->AddText("MOVELEFT", sf::Color::White, "LEFT : " + m_input->fromKtoS(m_input->getActionKey(Action::MoveLeft)), 100, sf::Vector2f(400, 500), [&]{ UpdateInput(Action::MoveLeft, "MOVELEFT"); });
-    menuManager->AddText("MOVERIGHT", sf::Color::White, "RIGHT : " + m_input->fromKtoS(m_input->getActionKey(Action::MoveRight)), 100, sf::Vector2f(400, 600), [&]{ UpdateInput(Action::MoveRight, "MOVERIGHT"); });
-    menuManager->AddText("ACTION", sf::Color::White, "ACTION : " + m_input->fromKtoS(m_input->getActionKey(Action::Action)), 100, sf::Vector2f(400, 700), [&]{ UpdateInput(Action::Action, "ACTION"); });
-    menuManager->AddText("JUMP", sf::Color::White, "JUMP : " + m_input->fromKtoS(m_input->getActionKey(Action::Jump)), 100, sf::Vector2f(400, 800), [&]{ UpdateInput(Action::Jump, "JUMP"); });
+    menuManager->AddText("MOVEUP", sf::Color::White, "UP : " + m_input->fromKtoS(m_input->getActionKey(EInput::MoveUp)), 100, sf::Vector2f(400, 300), [&]{ UpdateInput(EInput::MoveUp, "MOVEUP"); });
+    menuManager->AddText("MOVEDOWN", sf::Color::White, "DOWN : " + m_input->fromKtoS(m_input->getActionKey(EInput::MoveDown)), 100, sf::Vector2f(400, 400), [&]{ UpdateInput(EInput::MoveDown, "MOVEDOWN"); });
+    menuManager->AddText("MOVELEFT", sf::Color::White, "LEFT : " + m_input->fromKtoS(m_input->getActionKey(EInput::MoveLeft)), 100, sf::Vector2f(400, 500), [&]{ UpdateInput(EInput::MoveLeft, "MOVELEFT"); });
+    menuManager->AddText("MOVERIGHT", sf::Color::White, "RIGHT : " + m_input->fromKtoS(m_input->getActionKey(EInput::MoveRight)), 100, sf::Vector2f(400, 600), [&]{ UpdateInput(EInput::MoveRight, "MOVERIGHT"); });
+    menuManager->AddText("ACTION", sf::Color::White, "ACTION : " + m_input->fromKtoS(m_input->getActionKey(EInput::Action)), 100, sf::Vector2f(400, 700), [&]{ UpdateInput(EInput::Action, "ACTION"); });
+    menuManager->AddText("JUMP", sf::Color::White, "JUMP : " + m_input->fromKtoS(m_input->getActionKey(EInput::Jump)), 100, sf::Vector2f(400, 800), [&]{ UpdateInput(EInput::Jump, "JUMP"); });
     menuManager->AddText("BackControlsButton", sf::Color::White, "BACK", 200, sf::Vector2f(400, 900), [&]{ Back(); });
 
 }
 
 
 
-void MainMenuScene::UpdateInput(Action action, std::string buttonName)
+void MainMenuScene::UpdateInput(EInput action, std::string buttonName)
 {
     std::cout << "UpdateInput" << std::endl;
     std::string text = buttonName + " : ";
@@ -163,22 +162,22 @@ void MainMenuScene::Remap()
             m_input->remapAction(m_actionToRemap, key);
 
             switch (m_actionToRemap) {
-                case Action::MoveUp:
+                case EInput::MoveUp:
                     menuManager->UpdateText("MOVEUP", "UP : " + m_input->fromKtoS(key));
                     break;
-                case Action::MoveDown:
+                case EInput::MoveDown:
                     menuManager->UpdateText("MOVEDOWN", "DOWN : " + m_input->fromKtoS(key));
                     break;
-                case Action::MoveLeft:
+                case EInput::MoveLeft:
                     menuManager->UpdateText("MOVELEFT", "LEFT : " + m_input->fromKtoS(key));
                     break;
-                case Action::MoveRight:
+                case EInput::MoveRight:
                     menuManager->UpdateText("MOVERIGHT", "RIGHT : " + m_input->fromKtoS(key));
                     break;
-                case Action::Action:
+                case EInput::Action:
                     menuManager->UpdateText("ACTION", "ACTION : " + m_input->fromKtoS(key));
                     break;
-                case Action::Jump:
+                case EInput::Jump:
                     menuManager->UpdateText("Jump", "JUMP : " + m_input->fromKtoS(key));
                     break;
                 default:

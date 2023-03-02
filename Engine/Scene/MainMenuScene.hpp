@@ -3,7 +3,7 @@
 #include "Scene.hpp"
 #include <SFML/Audio.hpp>
 #include <SFML/System.hpp>
-#include "../../Game/dragons.hpp"
+#include "../AssetManager/AssetManager.h"
 #include "../UI/UI.hpp"
 #include "./Menu/MenuManager.hpp"
 #include "../AssetManager/AssetManager.h"
@@ -35,7 +35,7 @@ private :
     void Resolution();
     void SetResolution(int width, int height);
     void Controls();
-    void UpdateInput(Action action, std::string buttonName);
+    void UpdateInput(EInput action, std::string buttonName);
     void Remap();
     void CancelRemap();
     void Volume();
@@ -46,5 +46,5 @@ private :
     float delay = 0.0f;
     bool m_isclicked = false;
     bool m_is_remap = false;
-    Action m_actionToRemap = Action::MoveUp;
+    EInput m_actionToRemap = EInput::MoveUp;
 };

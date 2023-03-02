@@ -46,6 +46,16 @@ public:
         this->rotation = rotation;
     }*/
 
+    Transform(float x, float y, float rotation, float angle, float scalex, float scaley)
+    {
+        position.x = x;
+        position.y = y;
+        this->Sin = std::sin(angle);
+        this->Cos = std::cos(angle);
+        scale.x = scalex;
+        scale.y = scaley;
+        this->rotation = rotation;
+    }
 
     void setTransform(float x, float y,float rotation,  float angle , float scalex, float scaley)
     {
