@@ -68,7 +68,11 @@ public:
         direction /= length;
         direction *= 10.f;
 
-        sf::Vector2f newPos (getComponent<Transform>()->position.x, getComponent<Transform>()->position.y);
+        sf::Vector2f newPos (getComponent<Transform>()->position.x, getComponent<Transform>()->position.y );
+        if (direction.x <= 0)
+            newPos.x -= getComponent<SpriteRenderer>()->getSprite()->getGlobalBounds().width - 1.f;
+        else
+            newPos.x += getComponent<SpriteRenderer>()->getSprite()->getGlobalBounds().width + 1.f;
         std::function<void()> callback = [this] {endTurn();};
         Fireball* fireball = new Fireball(callback, true);
         if (direction.x <= 0)

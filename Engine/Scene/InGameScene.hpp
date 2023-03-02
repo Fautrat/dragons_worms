@@ -12,6 +12,7 @@
 #include "../UI/UI.hpp"
 #include "../ECS/LifeBar.h"
 #include "../ECS/Ground.h"
+#include "../ECS/MapBoundaries.h"
 
 enum WhosTurn
 {
@@ -35,8 +36,6 @@ private:
 	Collision* collision;
 	Entity box1, box2, circle, circle2, circle3, Triangle, ground;
 
-	std::vector<Ground*> tileset;
-
 public:
 	InGameScene(Engine& engine);
 	~InGameScene();
@@ -48,7 +47,7 @@ public:
 	void Update(const float& deltaTime) final;
 	void Render(sf::RenderTarget* renderTarget) final;
 
-	float timer = 10.f;
+	float timer = 60.f;
 	void newTurn();
 	WhosTurn currentPlayer = Player1;
 	EntityManager* m_manager;

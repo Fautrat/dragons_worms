@@ -79,7 +79,7 @@ public:
     }
 
 protected:
-    bool active = false;
+    bool active = true;
     ComponentArray compArray;
     ComponentBitset compBitset;
     std::vector<Component*> components;

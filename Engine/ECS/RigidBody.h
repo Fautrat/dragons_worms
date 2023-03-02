@@ -103,6 +103,7 @@ public:
 	bool transformUpdateRequired;
 	float density;
 	bool isStatic = true;
+	sf::Vector2f normal = sf::Vector2f();
 	float restitution;
 	float getMass() { return mass; };
 	float getRestitution() { return restitution;};
