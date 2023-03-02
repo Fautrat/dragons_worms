@@ -14,7 +14,6 @@ class MainMenuScene : public Scene
 {
 public:
     sf::Sprite videoSprite;
-    sf::Music* music;
     sf::Font font;
     sf::Texture videoTexture;
 

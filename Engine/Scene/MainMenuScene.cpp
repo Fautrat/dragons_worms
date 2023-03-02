@@ -95,8 +95,7 @@ void MainMenuScene::Update(const float& deltaTime)
                 else Remap();
             }
             if (ui->InteractionButton("BackButton", mousepos)) Back();
-            if (ui->InteractionButton("MOVEUP", mousepos)) 
-                UpdateInput(Action::MoveUp, "MOVEUP");
+            if (ui->InteractionButton("MOVEUP", mousepos)) UpdateInput(Action::MoveUp, "MOVEUP");
             if (ui->InteractionButton("MOVEDOWN", mousepos)) UpdateInput(Action::MoveDown, "MOVEDOWN");
             if (ui->InteractionButton("MOVELEFT", mousepos)) UpdateInput(Action::MoveLeft, "MOVELEFT");
             if (ui->InteractionButton("MOVERIGHT", mousepos)) UpdateInput(Action::MoveRight, "MOVERIGHT");
@@ -111,10 +110,23 @@ void MainMenuScene::Update(const float& deltaTime)
 void MainMenuScene::Render(sf::RenderTarget* renderTarget)
 {
     renderTarget->draw(videoSprite);
-    for(auto& button : menuManager->GetCurrentMenu()->GetButtons())
+    for(auto& element : menuManager->GetCurrentMenu()->GetElements())
     {
-        int i = ui->TextExist(button);
-        if (i > -1) renderTarget->draw(ui->Text(i));
+        if (element->Type == EElementType::Button) {
+            int i = ui->TextExist(element->Name);
+            if (i > -1) renderTarget->draw(ui->Text(i));
+        }
+        else if (element->Type == EElementType::Text) {
+            int i = ui->TextExist(element->Name);
+            if (i > -1) renderTarget->draw(ui->Text(i));
+        }
+        else if(element->Type == EElementType::Zone)
+        {
+//            int i = ui->ImageExist(element->Name);
+            renderTarget->draw(ui->Zone(element->Name));
+        }
+//        int i = ui->TextExist(button);
+//        if (i > -1) renderTarget->draw(ui->Text(i));
     }
 }
 
@@ -173,7 +185,12 @@ void MainMenuScene::UpdateInput(Action action, std::string buttonName)
 {
     std::cout << "UpdateInput" << std::endl;
     std::string text = buttonName + " : ";
+    // orange
+    sf::Color orangeColor = sf::Color(169, 134, 104);
+    ui->CreateZone("UpdateZone", sf::Vector2f(400, 400), sf::Vector2f(400, 400), orangeColor);
     ui->CreateText("UpdateText", sf::Color::White, "Update", 100, sf::Vector2f(400, 400), *assetManager->getFont("shanghai"));
+
+    menuManager->GetCurrentMenu()->AddZone("UpdateZone");
     menuManager->GetCurrentMenu()->AddButton("UpdateText");
     m_isclicked = true;
     m_is_remap = true;

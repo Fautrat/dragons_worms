@@ -126,6 +126,7 @@ void UI::CreateShape(std::string name, EShape shape, sf::Vector2f position, sf::
             zone[name].setFillColor(color);
             zone[name].setFillColor(color);
             zone[name].setOrigin(zone[name].getGlobalBounds().width / 2, zone[name].getGlobalBounds().height / 2);
+            // set anchor point to center
             zone[name].setPosition(position);
             zone[name].setOutlineThickness(2);
             zone[name].setOutlineColor(sf::Color::Black);
@@ -133,6 +134,11 @@ void UI::CreateShape(std::string name, EShape shape, sf::Vector2f position, sf::
         default:
             break;
     }
+
+}
+
+void UI::CreateZone(std::string name, sf::Vector2f position, sf::Vector2f size, sf::Color color) {
+    CreateShape(name, EShape::Rectangle, position, size, color);
 
 }
 
