@@ -2,8 +2,7 @@
 
 bool Rigidbody::init()
 {
-	transform = entity->getComponent<Transform>();
-	if (nullptr != transform)
+	if (nullptr != entity->getComponent<Transform>())
 	{
 		transformUpdateRequired = true;
 		return true;
@@ -12,12 +11,10 @@ bool Rigidbody::init()
 }
 void Rigidbody::InitValues(sf::Vector2f position, float mass,float restitution, float area)
 {
-	this->force = sf::Vector2f(0, 0);
 	this->position = position;
 	this->m_velocity = sf::Vector2f(0, 0);
 	this->mass = mass;
 	this->restitution = restitution;
-	this->area = area;
 
 	if (!isStatic)
 	{
@@ -27,7 +24,5 @@ void Rigidbody::InitValues(sf::Vector2f position, float mass,float restitution, 
 	{
 		invMass = 0;
 	}
-
-
 }
 

@@ -12,12 +12,7 @@ bool PolygonCollider2D::init()
 
 
 		float area = width * height;
-
-		/*if (area < world.getMinBodySize()) { std::cout << "Area is too small. Min  area is " << world.getMinBodySize() << std::endl; }
-		if (area > world.getMaxBodySize()) { std::cout << "Area is too large. Max  area is " << world.getMinBodySize() << std::endl; }
-		if (density < world.getMinDensity()) { std::cout << "Density is too small. Min density is " << world.getMinDensity() << std::endl; }
-		if (density > world.getMaxDensity()) { std::cout << "Density is too big. Max density is " << world.getMaxDensity() << std::endl; }*/
-
+		
 		float restitution = vecMath.Clamp(rb.restitution, 0.f, 1.f);
 		float mass =(area * rb.density)/1000;
 

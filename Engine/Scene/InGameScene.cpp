@@ -128,7 +128,7 @@ void InGameScene::newTurn()
 
 void InGameScene::readMap()
 {
-    char map_50[] = {
+    char map_[] = {
                 ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',
                 ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',
                 ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',
@@ -154,17 +154,17 @@ void InGameScene::readMap()
     {
         for (int x = 0; x < col; x++)
         {
-            if (map_50[x + y * col] == '-')
+            if (map_[x + y * col] == '-')
             {
                 Ground* ground = new Ground(static_cast<float>(tile_size.x * x), static_cast<float>(y * tile_size.y), std::string("Dirt"));
                 tileset.push_back(ground);
             }
-            else if (map_50[x + y * col] == '/')
+            else if (map_[x + y * col] == '/')
             {
                 Ground* ground = new Ground(static_cast<float>(tile_size.x * x), static_cast<float>(y * tile_size.y), std::string("Left_Diag"));
                 tileset.push_back(ground);
             }
-            else if (map_50[x + y * col] == '\\')
+            else if (map_[x + y * col] == '\\')
             {
                 Ground* ground = new Ground(static_cast<float>(tile_size.x * x), static_cast<float>(y * tile_size.y), std::string("Right_Diag"));
                 tileset.push_back(ground);

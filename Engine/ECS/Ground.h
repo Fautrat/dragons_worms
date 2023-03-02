@@ -9,11 +9,8 @@ struct Ground : public Entity
 	{
 		getComponent<Transform>()->setTransform(x + 66.f, y + 54.f, 0, 0, 0.6f, 0.5f);
 		addComponent<SpriteRenderer>(tile);
-		//getComponent<SpriteRenderer>().getSprite()->setOrigin(0, 0);
-			
-		//getComponent<SpriteRenderer>().getSprite()->setScale(sf::Vector2f(3.3f, 2.7f));
 
-		addComponent<Rigidbody>(1, true, 0.7, 0);
+		addComponent<Rigidbody>(1, true, 0.7, 1.f);
 		if(tile == std::string("Left_Diag"))
 			addComponent<Collider2D>(TRIANGLE, UPLEFT);
 		else if(tile == std::string("Right_Diag"))

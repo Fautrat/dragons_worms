@@ -66,20 +66,10 @@ void World::updatePhysics(std::vector<Entity*>& entities)
 					if (entityA.getComponent<Collider2D>()->getCollisionTag() == std::string("Player"))
 					{
 						Dragon dragon = dynamic_cast<Dragon&>(entityA);
-						if (!dragon.hasShoot)
-						{
-							EntityManager::getInstance()->eraseEntity(&entityB);
-							dragon.takeDamage(10);
-						}
-						continue;
-					}
-					else
-					{
-						EntityManager::getInstance()->eraseEntity(&entityB);
-
-						continue;
+						if (dragon.hasShoot) continue;
 					}
 				}
+
 				depth = collision->getDepth();
 				normal = collision->getNormal();
 
@@ -98,6 +88,26 @@ void World::updatePhysics(std::vector<Entity*>& entities)
 				}
 
 				resolveCollision(entityA, entityB);
+
+				if (entityB.getComponent<Collider2D>()->getCollisionTag() == std::string("Fireball"))
+				{
+					if (entityA.getComponent<Collider2D>()->getCollisionTag() == std::string("Player"))
+					{
+						Dragon dragon = dynamic_cast<Dragon&>(entityA);
+						if (!dragon.hasShoot)
+						{
+							EntityManager::getInstance()->eraseEntity(&entityB);
+							dragon.takeDamage(10);
+						}
+						continue;
+					}
+					else
+					{
+						EntityManager::getInstance()->eraseEntity(&entityB);
+
+						continue;
+					}
+				}
 			}
 		}
 	}
