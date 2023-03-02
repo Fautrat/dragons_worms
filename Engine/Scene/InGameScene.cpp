@@ -35,7 +35,7 @@ void InGameScene::Start()
     AssetManager::get().loadTexture("Circle", "../../../../assets/Dragon/circle.png");
     AssetManager::get().loadTexture("Triangle", "../../../../assets/Dragon/triangle.png");*/
 
-    player1.getComponent<Transform>().setTransform(300.f, 0, 0, 0, 0.7f, 0.7f);
+    player1.getComponent<Transform>()->setTransform(300.f, 0, 0, 0, 0.7f, 0.7f);
     /*player1.addComponent<SpriteRenderer>("Player");
     player1.addComponent<Rigidbody>(1, false, 0, 2);
     player1.addComponent<Collider2D>(BOX);
@@ -44,7 +44,7 @@ void InGameScene::Start()
 
     player1.connectInput(&engine->getInputHandler());
 
-    player2.getComponent<Transform>().setTransform(800.f, 0, 0, 0, 0.7f, 0.7f);
+    player2.getComponent<Transform>()->setTransform(800.f, 0, 0, 0, 0.7f, 0.7f);
     /*player2.addComponent<SpriteRenderer>("Player");
     player2.addComponent<Rigidbody>(1, false, 0, 2);
     player2.addComponent<Collider2D>(BOX);
@@ -52,11 +52,12 @@ void InGameScene::Start()
     m_manager->addEntity(&player2);
 
 
-    /*circle2.getComponent<Transform>().setTransform(0,300,0,0,0.5f,0.5f);
+  /*  circle2.getComponent<Transform>()->setTransform(0,300,0,0,0.5f,0.5f);
+    circle2.getComponent<SpriteRenderer>()->flipTextureLeft();
     circle2.addComponent<SpriteRenderer>("Circle");
     circle2.addComponent<Rigidbody>(1, false, 1, 1);
     circle2.addComponent<Collider2D>(SPHERE);
-    m_manager->addEntity(&circle2); */
+    m_manager->addEntity(&circle2);*/ 
 
     //Triangle.getComponent<Transform>().setTransform(800, 872, 90, 0, 1, 1);
     //Triangle.addComponent<SpriteRenderer>("Triangle");
@@ -127,7 +128,7 @@ void InGameScene::newTurn()
 
 void InGameScene::readMap()
 {
-    char map_50[] = {
+    char map_[] = {
                 ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',
                 ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',
                 ' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',
@@ -153,17 +154,17 @@ void InGameScene::readMap()
     {
         for (int x = 0; x < col; x++)
         {
-            if (map_50[x + y * col] == '-')
+            if (map_[x + y * col] == '-')
             {
                 Ground* ground = new Ground(static_cast<float>(tile_size.x * x), static_cast<float>(y * tile_size.y), std::string("Dirt"));
                 tileset.push_back(ground);
             }
-            else if (map_50[x + y * col] == '/')
+            else if (map_[x + y * col] == '/')
             {
                 Ground* ground = new Ground(static_cast<float>(tile_size.x * x), static_cast<float>(y * tile_size.y), std::string("Left_Diag"));
                 tileset.push_back(ground);
             }
-            else if (map_50[x + y * col] == '\\')
+            else if (map_[x + y * col] == '\\')
             {
                 Ground* ground = new Ground(static_cast<float>(tile_size.x * x), static_cast<float>(y * tile_size.y), std::string("Right_Diag"));
                 tileset.push_back(ground);

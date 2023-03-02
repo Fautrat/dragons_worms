@@ -36,12 +36,14 @@ public:
     }
 
     template<typename T>
-    inline T& getComponent() 
+    inline T* getComponent() 
     {
-        auto test = getComponentTypeId<T>();
-        auto test2 = compArray.at(test);
-        auto ptr(test2);
-        return *static_cast<T*>(ptr);
+        auto comp = compArray.at(getComponentTypeId<T>());
+        if (!hasComponent<T>())
+        {
+            throw std::runtime_error("Add component before getting it");
+        }
+        return static_cast<T*>(comp);
     }
 
     template<typename T>

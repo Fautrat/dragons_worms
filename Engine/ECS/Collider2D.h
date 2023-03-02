@@ -36,6 +36,7 @@ public:
 			break;
 		case TRIANGLE:
 			entity->addComponent<PolygonCollider2D>(colliderType, direction);
+			return true;
 			break;
 		default:
 			return false;
@@ -57,6 +58,4 @@ private:
 	ColliderType colliderType;
 	Direction direction;
 	std::string collisionTag;
-	// Only for triangle 
-
 };

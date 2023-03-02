@@ -13,17 +13,17 @@ public:
 
     Fireball(std::function<void()>& callback) : m_callback(callback)
     {
-        AssetManager::get().loadTexture("Fireball", "../../../../assets/Dragon/fireball2.png");
+        AssetManager::get().loadTexture("Fireball", "../../../../assets/Dragon/fireball.png");
         addComponent<Transform>().setTransform(0.f, 0.f, 0.f, 0.f, 0.5f, 0.5f);
         addComponent<SpriteRenderer>("Fireball");
-        addComponent<Rigidbody>(1.f, false, 0, 0.5f);
+        addComponent<Rigidbody>(1.f, false, 1.f, 0.5f);
         addComponent<Collider2D>(SPHERE, std::string("Fireball"));
     }
 
     Fireball(float x, float y)
     {
-        AssetManager::get().loadTexture("Fireball", "../../../../assets/Dragon/fireball2.png");
-        getComponent<Transform>().setTransform(x, y, 0, 0, 1.f, 1.f);
+        AssetManager::get().loadTexture("Fireball", "../../../../assets/Dragon/fireball.png");
+        getComponent<Transform>()->setTransform(x, y, 0, 0, 1.f, 1.f);
         addComponent<SpriteRenderer>("Fireball");
         addComponent<Rigidbody>(1.f, false, 0, 0.5f);
         addComponent<Collider2D>(SPHERE, std::string("Fireball"));

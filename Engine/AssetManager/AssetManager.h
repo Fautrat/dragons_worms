@@ -8,9 +8,6 @@
 class AssetManager
 {
 public:
-	AssetManager();
-	~AssetManager() = default;
-
 	void clean();
 
 	sf::Texture* getTexture(std::string id);
@@ -52,4 +49,8 @@ private:
 
     unsigned int m_musicVolume = 10;
     bool m_isMusicMuted = false;
+protected:
+	AssetManager();
+	~AssetManager() = default;
+
 };

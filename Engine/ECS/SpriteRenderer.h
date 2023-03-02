@@ -31,8 +31,8 @@ public:
 			const auto& transform = entity->getComponent<Transform>();
 			texture = AssetManager::get().getTexture(textureID);
 			sprite->setTexture(*texture);
-			sprite->setScale(transform.scale);
-			sprite->setPosition(transform.position);
+			sprite->setScale(transform->scale);
+			sprite->setPosition(transform->position);
 			sprite->setOrigin(sf::Vector2f(texture->getSize().x / 2, texture->getSize().y / 2));
 			return true;
 		}
@@ -45,8 +45,8 @@ public:
 
 	void update(const float& deltaTime) override final {
 		const auto& transform = entity->getComponent<Transform>();
-		sprite->setPosition(transform.position);
-		sprite->setRotation(transform.rotation);
+		sprite->setPosition(transform->position);
+		sprite->setRotation(transform->rotation);
 	}
 
 	sf::Texture* getTexture(){return texture;}

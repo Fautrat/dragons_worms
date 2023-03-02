@@ -17,7 +17,7 @@ public:
     Dragon()
     {
         AssetManager::get().loadTexture("Player", "../../../../assets/Dragon/dragon.png");
-        getComponent<Transform>().scale = sf::Vector2f(0.7f, 0.7f);
+        getComponent<Transform>()->scale = sf::Vector2f(0.7f, 0.7f);
         addComponent<SpriteRenderer>("Player");
         addComponent<Rigidbody>(1, false, 0, 2);
         addComponent<Collider2D>(BOX, std::string("Player"));
@@ -30,12 +30,12 @@ public:
 
     const int getLife()
     {
-        return getComponent<LifeBar>().life;
+        return getComponent<LifeBar>()->life;
     }
 
     void takeDamage(int damage)
     {
-        getComponent<LifeBar>().life -= damage;
+        getComponent<LifeBar>()->life -= damage;
         //life -= damage;
 
         /* if (life <= 0) is dead */
@@ -43,8 +43,8 @@ public:
 
     void connectInput(InputHandler* input)
     {
-        input->connect(EInput::MoveRight, [this] {getComponent<Rigidbody>().moveHorizontal(1); getComponent<SpriteRenderer>().flipTextureRight(); });
-        input->connect(EInput::MoveLeft, [this] {getComponent<Rigidbody>().moveHorizontal(-1); getComponent<SpriteRenderer>().flipTextureLeft(); });
+        input->connect(EInput::MoveRight, [this] {getComponent<Rigidbody>()->moveHorizontal(1); getComponent<SpriteRenderer>()->flipTextureRight(); });
+        input->connect(EInput::MoveLeft, [this] {getComponent<Rigidbody>()->moveHorizontal(-1); getComponent<SpriteRenderer>()->flipTextureLeft(); });
         input->connect(EInput::Action, [this]
             {
                 const auto fireball = shoot();
@@ -54,7 +54,7 @@ public:
                     EntityManager::getInstance()->addEntity(entity);
                 }
             });
-        input->connect(EInput::Jump, [this] {getComponent<Rigidbody>().Jump(); });
+        input->connect(EInput::Jump, [this] {getComponent<Rigidbody>()->Jump(); });
     }
 
     Fireball* shoot()
@@ -63,21 +63,21 @@ public:
             return nullptr;
 
         /* calcul de direction */
-        sf::Vector2f direction = static_cast<sf::Vector2f>(sf::Mouse::getPosition()) - getComponent<Transform>().position;
+        sf::Vector2f direction = static_cast<sf::Vector2f>(sf::Mouse::getPosition()) - getComponent<Transform>()->position;
         float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
         direction /= length;
         direction *= 10.f;
 
-        sf::Vector2f newPos (getComponent<Transform>().position.x, getComponent<Transform>().position.y);
+        sf::Vector2f newPos (getComponent<Transform>()->position.x, getComponent<Transform>()->position.y);
         std::function<void()> callback = [this] {endTurn();};
         Fireball* fireball = new Fireball(callback);
         if (direction.x <= 0)
         {
-            fireball->getComponent<SpriteRenderer>().flipTextureLeft();
+            fireball->getComponent<SpriteRenderer>()->flipTextureLeft();
         }
 
-        fireball->getComponent<Transform>().moveTo(newPos);
-        fireball->getComponent<Rigidbody>().setVelocity(direction);
+        fireball->getComponent<Transform>()->moveTo(newPos);
+        fireball->getComponent<Rigidbody>()->setVelocity(direction);
         hasShoot = true;
 
         return fireball;

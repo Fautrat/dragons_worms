@@ -11,17 +11,17 @@ bool Collision::IntersectCirclePolygon(Entity& objA, Entity& objB)
 
 	if (objA.hasComponent<SphereCollider2D>())
 	{
-		center = objA.getComponent<SphereCollider2D>().circle_position;
-		radius = objA.getComponent<SphereCollider2D>().m_radius;
-		vertices = objB.getComponent<PolygonCollider2D>().transformedVertices;
-		polygonCenter = objB.getComponent<Transform>().position;
+		center = objA.getComponent<SphereCollider2D>()->circle_position;
+		radius = objA.getComponent<SphereCollider2D>()->m_radius;
+		vertices = objB.getComponent<PolygonCollider2D>()->transformedVertices;
+		polygonCenter = objB.getComponent<Transform>()->position;
 	}
 	else
 	{
-		center = objB.getComponent<SphereCollider2D>().circle_position;
-		radius = objB.getComponent<SphereCollider2D>().m_radius;
-		vertices = objA.getComponent<PolygonCollider2D>().transformedVertices;
-		polygonCenter = objA.getComponent<Transform>().position;
+		center = objB.getComponent<SphereCollider2D>()->circle_position;
+		radius = objB.getComponent<SphereCollider2D>()->m_radius;
+		vertices = objA.getComponent<PolygonCollider2D>()->transformedVertices;
+		polygonCenter = objA.getComponent<Transform>()->position;
 	}
 
 	normal = sf::Vector2f(0, 0);
@@ -101,8 +101,8 @@ bool Collision::IntersectPolygons(Entity& objA, Entity& objB)
 	normal = sf::Vector2f(0, 0);
 	depth = std::numeric_limits<float>::max();
 
-	std::vector<sf::Vector2f> verticesA = objA.getComponent<PolygonCollider2D>().transformedVertices;
-	std::vector<sf::Vector2f> verticesB = objB.getComponent<PolygonCollider2D>().transformedVertices;
+	std::vector<sf::Vector2f> verticesA = objA.getComponent<PolygonCollider2D>()->transformedVertices;
+	std::vector<sf::Vector2f> verticesB = objB.getComponent<PolygonCollider2D>()->transformedVertices;
 
 	for (int i = 0; i < verticesA.size(); i++)
 	{
@@ -244,10 +244,10 @@ int Collision::FindClosestPointOnPolygons(sf::Vector2f center, std::vector<sf::V
 
 bool Collision::IntersectCircles(Entity& objA, Entity& objB)
 {
-	sf::Vector2f centerA = objA.getComponent<SphereCollider2D>().circle_position;
-	sf::Vector2f centerB = objB.getComponent<SphereCollider2D>().circle_position;
-	float radiusA = objA.getComponent<SphereCollider2D>().m_radius;
-	float radiusB = objB.getComponent<SphereCollider2D>().m_radius;
+	sf::Vector2f centerA = objA.getComponent<SphereCollider2D>()->circle_position;
+	sf::Vector2f centerB = objB.getComponent<SphereCollider2D>()->circle_position;
+	float radiusA = objA.getComponent<SphereCollider2D>()->m_radius;
+	float radiusB = objB.getComponent<SphereCollider2D>()->m_radius;
 
 	float distance = vecMath.Distance(centerA, centerB);
 	float radii = radiusA + radiusB;
@@ -266,8 +266,8 @@ bool Collision::detectCollision(Entity& objA, Entity& objB)
 	if (!objA.hasComponent<Collider2D>() || !objB.hasComponent<Collider2D>()) return false;
 	normal = sf::Vector2f(0, 0);
 	depth = 0;
-	ColliderType colTypeA = objA.getComponent<Collider2D>().getColliderType();
-	ColliderType colTypeB = objB.getComponent<Collider2D>().getColliderType();
+	ColliderType colTypeA = objA.getComponent<Collider2D>()->getColliderType();
+	ColliderType colTypeB = objB.getComponent<Collider2D>()->getColliderType();
 	// Je sais c'est pas beau mais manque de temps pour faire mieux
 	if (colTypeA == BOX)
 	{
