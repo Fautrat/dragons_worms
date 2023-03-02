@@ -4,8 +4,8 @@ bool PolygonCollider2D::init()
 {
 	if (entity->hasComponent<Transform>() && entity->hasComponent<Rigidbody>() && entity->hasComponent<SpriteRenderer>())
 	{
-		transform = &entity->getComponent<Transform>();
-		rb = &entity->getComponent<Rigidbody>();
+		const auto& transform = entity->getComponent<Transform>();
+		auto& rb = entity->getComponent<Rigidbody>();
 
 		width = entity->getComponent<SpriteRenderer>().getSprite()->getGlobalBounds().width;
 		height = entity->getComponent<SpriteRenderer>().getSprite()->getGlobalBounds().height;
@@ -18,10 +18,10 @@ bool PolygonCollider2D::init()
 		if (density < world.getMinDensity()) { std::cout << "Density is too small. Min density is " << world.getMinDensity() << std::endl; }
 		if (density > world.getMaxDensity()) { std::cout << "Density is too big. Max density is " << world.getMaxDensity() << std::endl; }*/
 
-		float restitution = vecMath.Clamp(rb->restitution, 0.f, 1.f);
-		float mass =(area * rb->density)/1000;
+		float restitution = vecMath.Clamp(rb.restitution, 0.f, 1.f);
+		float mass =(area * rb.density)/1000;
 
-		rb->InitValues(transform->position, mass, restitution, area);
+		rb.InitValues(transform.position, mass, restitution, area);
 		switch (colType)
 		{
 		case BOX:
@@ -66,7 +66,7 @@ void PolygonCollider2D::CreateTriangleVertices(float width, float height)
 	float top = -height / 2;
 	float rotation = entity->getComponent<Transform>().rotation;
 
-	if (rotation == 0)
+	/*if (rotation == 0)
 	{
 		vertices.push_back(sf::Vector2f(left, top));
 		vertices.push_back(sf::Vector2f(0, 0));
@@ -94,24 +94,43 @@ void PolygonCollider2D::CreateTriangleVertices(float width, float height)
 		vertices.push_back(sf::Vector2f(right, top));
 		vertices.push_back(sf::Vector2f(right, bottom));
 		vertices.push_back(sf::Vector2f(left, bottom));
-	}
+	}*/
 	
+	switch (directionTriangle)
+	{
+	case UPLEFT:
+		vertices.push_back(sf::Vector2f(right, top));
+		vertices.push_back(sf::Vector2f(right, bottom));
+		vertices.push_back(sf::Vector2f(left, bottom));
+		break;
+	case UPRIGHT:
+		vertices.push_back(sf::Vector2f(left, top));
+		vertices.push_back(sf::Vector2f(left, bottom));
+		vertices.push_back(sf::Vector2f(right, bottom));
+		
+		break;
+	default:
+		break;
+	}
 }
 
 
 std::vector<sf::Vector2f> PolygonCollider2D::SetTransformedVertices()
 {
-	if (nullptr != rb && nullptr != transform)
+	if (entity->hasComponent<Transform>() && entity->hasComponent<Rigidbody>())
 	{
+		auto& rb = entity->getComponent<Rigidbody>();
+		const auto& transform = entity->getComponent<Transform>();
 		transformedVertices.clear();
-		if (rb->transformUpdateRequired)
+		if (rb.transformUpdateRequired)
 		{
 			for (auto v : vertices)
 			{
-				transformedVertices.push_back(vecMath.Transform(v, transform->Sin, transform->Cos, transform->position));
+				transformedVertices.push_back(vecMath.Transform(v, transform.Sin, transform.Cos, transform.position));
 			}
 		}
-		rb->transformUpdateRequired = false;
+		rb.transformUpdateRequired = false;
 		return transformedVertices;
 	}
+	return {};
 }

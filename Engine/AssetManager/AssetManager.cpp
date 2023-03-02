@@ -32,7 +32,7 @@ sf::Font* AssetManager::getFont(std::string id) {
 	return (fonts.count(id) > 0) ? fonts[id] : nullptr;
 }
 
-void AssetManager::loadFont(std::string id, std::string path, int size) {
+void AssetManager::loadFont(std::string id, std::string path) {
 	if (fonts.count(id) <= 0)
 	{
 		sf::Font* font = new sf::Font();

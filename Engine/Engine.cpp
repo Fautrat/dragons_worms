@@ -1,13 +1,7 @@
 #include "Engine.h"
-
 #include <iostream>
-
 #include "../Engine/Scene/MainMenuScene.hpp"
 #include "../Engine/Scene/InGameScene.hpp"
-
-
-
-
 
 
 Engine* Engine::m_instance = nullptr;
@@ -16,15 +10,13 @@ std::mutex Engine::m_mutex;
 Engine::Engine()
 {
     gameState = RUNNING;
-    m_instance = this;
     m_renderWindow = new sf::RenderWindow(
         sf::VideoMode(1920, 1080),
         "Dragons with engine",
-        sf::Style::Resize
+        sf::Style::Fullscreen
     );
     m_renderWindow->setFramerateLimit(60);
-    m_input = new InputHandler(m_renderWindow);
-
+    m_input = new InputHandler(*m_renderWindow);
 
 }
 
@@ -42,14 +34,13 @@ void Engine::Run()
 {
     while (m_renderWindow->isOpen())
     {
-        
         if (gameState == RUNNING)
         {
+            HandleEvent();
+
             sf::Time _deltaTime = m_deltaClock.restart();
             m_deltaTime = _deltaTime.asSeconds();
-           
-            HandleEvent();
-            
+
             if (nullptr != m_currScene)
             {
                 m_mousePosition = sf::Mouse::getPosition();
@@ -61,7 +52,7 @@ void Engine::Run()
             
             if (m_sceneToLoad != ESceneType::NONE)
                 LoadScene(m_sceneToLoad);
-            
+
         }
     }
 }
@@ -69,8 +60,7 @@ void Engine::Run()
 void Engine::ExitGame()
 {
     gameState = STOP;
-    if(m_renderWindow)
-    m_renderWindow->close();
+    if (m_renderWindow) m_renderWindow->close();
 }
 
 void Engine::LoadScene(ESceneType scene)
@@ -130,6 +120,14 @@ Engine* Engine::getInstance() {
         m_instance = new Engine();
     }
     return m_instance;
+}
+
+void Engine::killInstance() {
+    if (m_instance != nullptr)
+    {
+        delete m_instance;
+        m_instance = nullptr;
+    }
 }
 
 sf::RenderWindow& Engine::getRenderWindow()

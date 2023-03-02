@@ -6,6 +6,7 @@ int main()
 {
     Engine* engine = Engine::getInstance();
     engine->Run();
+    engine->killInstance();
 
     return 0;
 }

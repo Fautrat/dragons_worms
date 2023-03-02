@@ -11,15 +11,11 @@
 //constexpr float GRAVITY = 9.81f;
 constexpr float PI = 3.14f;
 
-enum ShapeType
-{
-	Circle = 0,
-	Box = 1
-};
 
 class Rigidbody : public Component
 {
 public:
+
 	Rigidbody() = default;
 	Rigidbody(float density, bool isStatic, float restitution, float gravity_scale) : restitution(restitution), density(density), isStatic(isStatic), m_gravity_scale(gravity_scale) {};
 	~Rigidbody() { delete transform; }
@@ -36,8 +32,8 @@ public:
 		{
 			m_velocity += (m_gravity_scale * gravity * deltaTime);
 			m_velocity += force * deltaTime;
+			force = sf::Vector2f(0, 0);
 		}
-		force = sf::Vector2f(0, 0);
 		
 		translate(m_velocity, m_rotation);
 	}
@@ -54,9 +50,7 @@ public:
 	void moveHorizontal(int direction) 
 	{
 		isInputMovement = true;
-		//if (m_velocity.y == 0)
 		m_velocity.x =+ m_speed * direction;
-		force = sf::Vector2f(0, 0);
 	}
 	void setVelocityY(const float newVelocityY) { m_velocity.y = newVelocityY; }
 	void setVelocityX(const float newVelocityX) { m_velocity.x = newVelocityX; }
@@ -88,9 +82,6 @@ public:
 	{
 		if (m_velocity.y == 0)
 			m_velocity.y = -m_jumpForce;
-
-		//AddForce(sf::Vector2f(0,-600));
-		//AddForce(sf::Vector2f(600,0));
 	}
 
 	void landing() { isOnGround = true; }

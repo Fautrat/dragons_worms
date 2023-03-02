@@ -10,8 +10,9 @@
 class Entity
 {
 public:
-    Entity() {
-        this->addComponent<Transform>(0, 0);
+    Entity() 
+    {
+       addComponent<Transform>(0, 0);
     };
     virtual ~Entity() = default;
 
@@ -21,10 +22,11 @@ public:
         T* comp(new T(std::forward<Args>(arguments)...));
         comp->entity = this;
         //{comp} convertis comp en  unique ptr stockable
-        std::unique_ptr<Component> uptr{ comp };
-        components.emplace_back(std::move(uptr));
+        //std::unique_ptr<Component> uptr{ comp };
+        components.emplace_back(std::move(comp));
 
-        if (comp->init()) {
+        if (comp->init()) 
+        {
             compArray[getComponentTypeId<T>()] = comp;
             compBitset[getComponentTypeId<T>()] = true;
             return *comp;
@@ -34,7 +36,8 @@ public:
     }
 
     template<typename T>
-    inline T& getComponent() const {
+    inline T& getComponent() 
+    {
         auto test = getComponentTypeId<T>();
         auto test2 = compArray.at(test);
         auto ptr(test2);
@@ -47,38 +50,35 @@ public:
         return compBitset[getComponentTypeId<T>()];
     }
 
-    inline bool isActive() const {
+    inline bool isActive() const 
+    {
         return active;
     }
 
-    inline void destroy() {
+    inline void destroy() 
+    {
         active = false;
     }
 
-    inline void draw(sf::RenderTarget* renderwindow) {
+    inline void draw(sf::RenderTarget* renderwindow) 
+    {
         for (auto& comp : components)
         {
             comp->draw(renderwindow);
         }
     }
 
-    inline void update(const float& deltaTime) {
+    inline void update(const float& deltaTime) 
+    {
         for (auto& comp : components)
         {
             comp->update(deltaTime);
         }
     }
 
-    inline void shoot(sf::Vector2i mousePosition)
-    {
-        //Entity* fireball = new Entity();
-    }
-
-
-
 private:
     bool active = false;
     ComponentArray compArray;
     ComponentBitset compBitset;
-    std::vector<std::unique_ptr<Component>> components;
+    std::vector<Component*> components;
 };

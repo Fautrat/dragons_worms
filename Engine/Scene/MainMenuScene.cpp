@@ -3,18 +3,14 @@
 
 MainMenuScene::MainMenuScene(Engine& engine) :Scene(engine)
 {
-
     ui = new UI();
     music = new sf::Music();
+    AssetManager::get().loadFont("Shangai", "../../../../assets/font/shanghai.ttf");
+    font = AssetManager::get().getFont("Shangai");
 
     if (!videoTexture.loadFromFile("../../../../assets/wallpaper.jpg"))
     {
         std::cout << "Failed to load video" << std::endl;
-        return;
-    }
-    if (!font.loadFromFile("../../../../assets/font/shanghai.ttf"))
-    {
-        std::cout << "Failed to load font" << std::endl;
         return;
     }
     if (!music->openFromFile("../../../../assets/sound/Dragon.ogg"))
@@ -23,13 +19,12 @@ MainMenuScene::MainMenuScene(Engine& engine) :Scene(engine)
         return;
     }
 
-
     videoSprite.setTexture(videoTexture);
     videoSprite.setScale({ (float)1920 / (float)videoSprite.getTexture()->getSize().x, (float)1080 / (float)videoSprite.getTexture()->getSize().y });
    
-    ui->CreateText("PlayButton", sf::Color::White, "PLAY", 300, sf::Vector2f(400, 200), font);
-    ui->CreateText("OptionsButton", sf::Color::White, "OPTIONS", 200, sf::Vector2f(400, 525), font);
-    ui->CreateText("QuitButton", sf::Color::White, "QUIT", 200, sf::Vector2f(400, 800), font);
+    ui->CreateText("PlayButton", sf::Color::White, "PLAY", 300, sf::Vector2f(400, 200), *font);
+    ui->CreateText("OptionsButton", sf::Color::White, "OPTIONS", 200, sf::Vector2f(400, 525), *font);
+    ui->CreateText("QuitButton", sf::Color::White, "QUIT", 200, sf::Vector2f(400, 800), *font);
 
     music->setVolume(20);
 

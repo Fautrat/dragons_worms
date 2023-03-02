@@ -3,7 +3,7 @@
 #include "Scene.hpp"
 #include <SFML/Audio.hpp>
 #include <SFML/System.hpp>
-#include "../../Game/dragons.hpp"
+#include "../AssetManager/AssetManager.h"
 #include "../UI/UI.hpp"
 
 class Engine;
@@ -13,10 +13,8 @@ class MainMenuScene : public Scene
 public:
     sf::Sprite videoSprite;
     sf::Music* music;
-    sf::Font font;
     sf::Texture videoTexture;
 
-    InputHandler* m_input;
     UI* ui;
 
 	MainMenuScene(Engine& engine);
@@ -27,6 +25,7 @@ public:
 	void Render(sf::RenderTarget* renderTarget) final;
 
 private :
+    sf::Font* font;
     void Play();
     void Quit();
     void Options();
