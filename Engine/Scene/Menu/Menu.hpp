@@ -1,6 +1,9 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <memory>
+#include <functional>
+
 
 enum EElementType {
     Button = 1,
@@ -8,62 +11,56 @@ enum EElementType {
     Zone,
 };
 
+enum EStateMenu {
+    Active = 1,
+    Inactive,
+    ToDelete,
+};
+
 struct UiElement {
     EElementType Type;
     std::string Name;
+    std::function<void(void)> Callback;
 
     UiElement() = default;
-    UiElement(EElementType type, std::string name): Type(type), Name(name){};
+    UiElement(EElementType type, std::string name, std::function<void(void)> callback): Type(type), Name(name), Callback(callback){};
+
+    ~UiElement(){
+        Callback = nullptr;
+    }
 };
 
 class Menu {
 public:
-    Menu(std::string name): _Name(name){};
+    explicit Menu(std::string name);
     virtual ~Menu(){
-        _Elements.clear();
+        GetElements().clear();
     };
 
-    void AddButton(std::string buttonName){
-        std::unique_ptr<UiElement> element = std::make_unique<UiElement>(EElementType::Button, buttonName);
-        _Elements.push_back(std::move(element));
-    };
+    void AddButton(std::string buttonName, std::function<void(void)> callback);
 
-    void AddButton(std::vector<std::string> buttonNames){
-        for (auto buttonName : buttonNames) {
-            std::unique_ptr<UiElement> element = std::make_unique<UiElement>(EElementType::Button, buttonName);
-            _Elements.push_back(std::move(element));
-        }
-    };
+//    void AddButton(std::vector<std::string> buttonNames);
 
-    void AddZone(std::string shapeName){
-        std::unique_ptr<UiElement> element = std::make_unique<UiElement>(EElementType::Zone, shapeName);
-        _Elements.push_back(std::move(element));
-    };
+    void RemoveButton(std::string buttonName);
 
-    std::string GetName() {
-        return _Name;
-    }
+    void AddZone(std::string shapeName, std::function<void(void)> callback);
+    void RemoveZone(std::string shapeName);
 
-    std::vector<std::string> GetButtons(){
-        std::vector<std::string> _Buttons;
-        for (int i = 0; i < _Elements.size(); i++) {
-            if (_Elements[i]->Type == EElementType::Button) {
-                _Buttons.push_back(_Elements[i]->Name);
-            }
-        }
-        return _Buttons;
-    }
+    [[nodiscard]] std::string const GetName() const;
 
-    std::vector<std::unique_ptr<UiElement>>& GetElements() {
-        return _Elements;
-    }
+    [[nodiscard]] std::vector<std::string> GetButtons() const;
+
+    [[nodiscard]] std::vector<std::unique_ptr<UiElement>>& GetElements();
+
+    void SetState(EStateMenu state);
+    [[nodiscard]] EStateMenu GetState() const;
 
 
 
 private:
-
 //    std::vector<std::string> _Buttons;
     std::vector<std::unique_ptr<UiElement>> _Elements;
     std::string _Name;
+    EStateMenu _State;
 };
 

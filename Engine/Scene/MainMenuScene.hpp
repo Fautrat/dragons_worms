@@ -17,10 +17,8 @@ public:
     sf::Font font;
     sf::Texture videoTexture;
 
-    AssetManager* assetManager;
-
     InputHandler* m_input;
-    UI* ui;
+    std::shared_ptr<UI> ui;
     MenuManager* menuManager;
 
 	MainMenuScene(Engine& engine);
@@ -35,6 +33,7 @@ private :
     void Quit();
     void Options();
     void Resolution();
+    void SetResolution(int width, int height);
     void Controls();
     void UpdateInput(Action action, std::string buttonName);
     void Remap();
@@ -44,7 +43,6 @@ private :
     void IncreaseVolume();
     void Mute();
     void Back();
-    void SetResolution(int width, int height);
     float delay = 0.0f;
     bool m_isclicked = false;
     bool m_is_remap = false;

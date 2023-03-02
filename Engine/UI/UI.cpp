@@ -62,6 +62,8 @@ int UI::TextExist(std::string name)
 
 sf::RectangleShape& UI::Zone(const std::string& name)
 {
+    std::lock_guard guard(_mutex);
+
 	for (auto& [key, value] : zone)
     {
         if (key == name)
@@ -71,8 +73,20 @@ sf::RectangleShape& UI::Zone(const std::string& name)
     }
 }
 
+int UI::ZoneExist(std::string name) {
+    for (auto& [key, value] : zone)
+    {
+        if (key == name)
+        {
+            return 1;
+        }
+    }
+    return -1;
+}
+
 bool UI::InteractionButton(std::string name, sf::Vector2i mouseposition)
 {
+    std::lock_guard guard(_mutex);
     int i = TextExist(name);
     if(i == -1)
     {
@@ -98,6 +112,7 @@ bool UI::InteractionButton(std::string name, sf::Vector2i mouseposition)
 }
 
 void UI::RemoveText(std::string name) {
+    std::lock_guard guard(_mutex);
     for (int i = 0; i < nameButton.size(); i++)
     {
         if (nameButton[i] == name)
@@ -110,6 +125,7 @@ void UI::RemoveText(std::string name) {
 }
 
 void UI::UpdateText(std::string name, std::string text) {
+    std::lock_guard guard(_mutex);
     for (int i = 0; i < nameButton.size(); i++)
     {
         if (nameButton[i] == name)
@@ -139,6 +155,12 @@ void UI::CreateShape(std::string name, EShape shape, sf::Vector2f position, sf::
 
 void UI::CreateZone(std::string name, sf::Vector2f position, sf::Vector2f size, sf::Color color) {
     CreateShape(name, EShape::Rectangle, position, size, color);
+
+}
+
+void UI::RemoveZone(std::string name) {
+    std::lock_guard guard(_mutex);
+    zone.erase(name);
 
 }
 
