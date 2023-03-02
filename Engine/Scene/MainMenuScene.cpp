@@ -5,32 +5,26 @@ MainMenuScene::MainMenuScene(Engine& engine) :Scene(engine)
 {
 
     ui = new UI();
-    music = new sf::Music();
+//    music = new sf::Music();
     menuManager = new MenuManager();
+    assetManager = new AssetManager();
+    m_input = &engine.getInputHandler();
 
     if (!videoTexture.loadFromFile("../../../../assets/wallpaper.jpg"))
     {
         std::cout << "Failed to load video" << std::endl;
         return;
     }
-    if (!font.loadFromFile("../../../../assets/font/shanghai.ttf"))
-    {
-        std::cout << "Failed to load font" << std::endl;
-        return;
-    }
-    if (!music->openFromFile("../../../../assets/sound/Dragon.ogg"))
-    {
-        std::cout << "Failed to load music" << std::endl;
-        return;
-    }
+    assetManager->loadFont("shanghai", "../../../../assets/font/shanghai.ttf");
 
+    assetManager->loadMusic("music", "../../../../assets/sound/Dragon.ogg");
 
     videoSprite.setTexture(videoTexture);
     videoSprite.setScale({ (float)2560 / (float)videoSprite.getTexture()->getSize().x, (float)1600 / (float)videoSprite.getTexture()->getSize().y });
    
-    ui->CreateText("PlayButton", sf::Color::White, "PLAY", 300, sf::Vector2f(400, 200), font);
-    ui->CreateText("OptionsButton", sf::Color::White, "OPTIONS", 200, sf::Vector2f(400, 525), font);
-    ui->CreateText("QuitButton", sf::Color::White, "QUIT", 200, sf::Vector2f(400, 800), font);
+    ui->CreateText("PlayButton", sf::Color::White, "PLAY", 300, sf::Vector2f(400, 200), *assetManager->getFont("shanghai"));
+    ui->CreateText("OptionsButton", sf::Color::White, "OPTIONS", 200, sf::Vector2f(400, 525), *assetManager->getFont("shanghai"));
+    ui->CreateText("QuitButton", sf::Color::White, "QUIT", 200, sf::Vector2f(400, 800), *assetManager->getFont("shanghai"));
 
     // create mainmenu menu shared pointer
     std::shared_ptr<Menu> mainMenu = std::make_shared<Menu>("MainMenu");
@@ -39,10 +33,6 @@ MainMenuScene::MainMenuScene(Engine& engine) :Scene(engine)
     mainMenu->AddButton("QuitButton");
     menuManager->AddMenu(mainMenu);
     menuManager->SetCurrentMenu("MainMenu");
-
-
-    music->setVolume(20);
-
 
 }
 
@@ -58,7 +48,8 @@ MainMenuScene::~MainMenuScene()
 
 void MainMenuScene::Start()
 {
-    music->play();
+    assetManager->setSoundVolume(2);
+    assetManager->playMusic("music");
 }
 
 void MainMenuScene::Update(const float& deltaTime)
@@ -102,7 +93,8 @@ void MainMenuScene::Update(const float& deltaTime)
                 else Remap();
             }
             if (ui->InteractionButton("BackButton", mousepos)) Back();
-            if (ui->InteractionButton("MOVEUP", mousepos)) UpdateInput(Action::MoveUp, "MOVEUP");
+            if (ui->InteractionButton("MOVEUP", mousepos)) 
+                UpdateInput(Action::MoveUp, "MOVEUP");
             if (ui->InteractionButton("MOVEDOWN", mousepos)) UpdateInput(Action::MoveDown, "MOVEDOWN");
             if (ui->InteractionButton("MOVELEFT", mousepos)) UpdateInput(Action::MoveLeft, "MOVELEFT");
             if (ui->InteractionButton("MOVERIGHT", mousepos)) UpdateInput(Action::MoveRight, "MOVERIGHT");
@@ -139,10 +131,10 @@ void MainMenuScene::Quit()
 void MainMenuScene::Options()
 {
     std::cout << "Options pressed" << std::endl;
-    ui->CreateText("BackButton", sf::Color::White, "BACK", 200, sf::Vector2f(400, 900), font);
-    ui->CreateText("ResolutionButton", sf::Color::White, "RESOLUTION", 200, sf::Vector2f(400, 525), font);
-    ui->CreateText("ControlsButton", sf::Color::White, "CONTROLS", 200, sf::Vector2f(400, 300), font);
-    ui->CreateText("VolumeButton", sf::Color::White, "VOLUME", 200, sf::Vector2f(400, 750), font);
+    ui->CreateText("BackButton", sf::Color::White, "BACK", 200, sf::Vector2f(400, 900), *assetManager->getFont("shanghai"));
+    ui->CreateText("ResolutionButton", sf::Color::White, "RESOLUTION", 200, sf::Vector2f(400, 525), *assetManager->getFont("shanghai"));
+    ui->CreateText("ControlsButton", sf::Color::White, "CONTROLS", 200, sf::Vector2f(400, 300), *assetManager->getFont("shanghai"));
+    ui->CreateText("VolumeButton", sf::Color::White, "VOLUME", 200, sf::Vector2f(400, 750), *assetManager->getFont("shanghai"));
 
     std::shared_ptr<Menu> optionsMenu = std::make_shared<Menu>("Options");
     optionsMenu->AddButton("BackButton");
@@ -160,12 +152,12 @@ void MainMenuScene::Controls()
     std::cout << "Controls pressed" << std::endl;
     m_isclicked = true;
 
-    ui->CreateText("MOVEUP", sf::Color::White, "UP : Z", 100, sf::Vector2f(400, 300), font);
-    ui->CreateText("MOVEDOWN", sf::Color::White, "DOWN : S", 100, sf::Vector2f(400, 400), font);
-    ui->CreateText("MOVELEFT", sf::Color::White, "LEFT : Q", 100, sf::Vector2f(400, 500), font);
-    ui->CreateText("MOVERIGHT", sf::Color::White, "RIGHT : D", 100, sf::Vector2f(400, 600), font);
-    ui->CreateText("ACTION", sf::Color::White, "ACTION : CTRL", 100, sf::Vector2f(400, 700), font);
-    ui->CreateText("JUMP", sf::Color::White, "JUMP : SPACE", 100, sf::Vector2f(400, 800), font);
+    ui->CreateText("MOVEUP", sf::Color::White, "UP : " + m_input->fromKtoS(m_input->getActionKey(Action::MoveUp)), 100, sf::Vector2f(400, 300), *assetManager->getFont("shanghai"));
+    ui->CreateText("MOVEDOWN", sf::Color::White, "DOWN : " + m_input->fromKtoS(m_input->getActionKey(Action::MoveDown)), 100, sf::Vector2f(400, 400), *assetManager->getFont("shanghai"));
+    ui->CreateText("MOVELEFT", sf::Color::White, "LEFT : " + m_input->fromKtoS(m_input->getActionKey(Action::MoveLeft)), 100, sf::Vector2f(400, 500), *assetManager->getFont("shanghai"));
+    ui->CreateText("MOVERIGHT", sf::Color::White, "RIGHT : " + m_input->fromKtoS(m_input->getActionKey(Action::MoveRight)), 100, sf::Vector2f(400, 600), *assetManager->getFont("shanghai"));
+    ui->CreateText("ACTION", sf::Color::White, "ACTION : " + m_input->fromKtoS(m_input->getActionKey(Action::Action)), 100, sf::Vector2f(400, 700), *assetManager->getFont("shanghai"));
+    ui->CreateText("JUMP", sf::Color::White, "JUMP : " + m_input->fromKtoS(m_input->getActionKey(Action::Jump)), 100, sf::Vector2f(400, 800), *assetManager->getFont("shanghai"));
 
     std::shared_ptr<Menu> controlsMenu = std::make_shared<Menu>("Controls");
     controlsMenu->AddButton({"MOVEUP", "MOVEDOWN", "MOVELEFT", "MOVERIGHT", "ACTION", "JUMP", "BackButton"});
@@ -179,7 +171,7 @@ void MainMenuScene::UpdateInput(Action action, std::string buttonName)
 {
     std::cout << "UpdateInput" << std::endl;
     std::string text = buttonName + " : ";
-    ui->CreateText("UpdateText", sf::Color::White, "Update", 100, sf::Vector2f(400, 400), font);
+    ui->CreateText("UpdateText", sf::Color::White, "Update", 100, sf::Vector2f(400, 400), *assetManager->getFont("shanghai"));
     menuManager->GetCurrentMenu()->AddButton("UpdateText");
     m_isclicked = true;
     m_is_remap = true;
@@ -196,7 +188,7 @@ void MainMenuScene::Remap()
             m_is_remap = false;
             m_isclicked = false;
             std::cout << "Remap : "<< m_input->fromKtoS(key) << std::endl;
-            engine->getInputHandler().remapAction(m_actionToRemap, key);
+            m_input->remapAction(m_actionToRemap, key);
 
             switch (m_actionToRemap) {
                 case Action::MoveUp:
@@ -266,9 +258,9 @@ void MainMenuScene::Resolution()
     std::cout << "Resolution pressed" << std::endl;
     m_isclicked = true;
 
-    ui->CreateText("2560x1600", sf::Color::White, "2560x1600", 100, sf::Vector2f(400, 750), font);
-    ui->CreateText("1920x1080", sf::Color::White, "1920x1080", 100, sf::Vector2f(400, 525), font);
-    ui->CreateText("1280x720", sf::Color::White, "1280x720", 100, sf::Vector2f(400, 300), font);
+    ui->CreateText("2560x1600", sf::Color::White, "2560x1600", 100, sf::Vector2f(400, 750), *assetManager->getFont("shanghai"));
+    ui->CreateText("1920x1080", sf::Color::White, "1920x1080", 100, sf::Vector2f(400, 525), *assetManager->getFont("shanghai"));
+    ui->CreateText("1280x720", sf::Color::White, "1280x720", 100, sf::Vector2f(400, 300), *assetManager->getFont("shanghai"));
 
     std::shared_ptr<Menu> resolutionMenu = std::make_shared<Menu>("Resolution");
     resolutionMenu->AddButton({"2560x1600", "1920x1080", "1280x720", "BackButton"});
@@ -287,10 +279,10 @@ void MainMenuScene::SetResolution(int width, int height)
 void MainMenuScene::Volume() {
     std::cout << "Volume pressed" << std::endl;
     m_isclicked = true;
-    ui->CreateText("ReduceVolume", sf::Color::White, "-", 100, sf::Vector2f(400, 300), font);
-    ui->CreateText("Volume", sf::Color::White, "VOLUME", 100, sf::Vector2f(400, 400), font);
-    ui->CreateText("IncreaseVolume", sf::Color::White, "+", 100, sf::Vector2f(400, 500), font);
-    ui->CreateText("Mute", sf::Color::White, "MUTE : Off", 100, sf::Vector2f(400, 600), font);
+    ui->CreateText("ReduceVolume", sf::Color::White, "-", 100, sf::Vector2f(400, 300), *assetManager->getFont("shanghai"));
+    ui->CreateText("Volume", sf::Color::White, "VOLUME", 100, sf::Vector2f(400, 400), *assetManager->getFont("shanghai"));
+    ui->CreateText("IncreaseVolume", sf::Color::White, "+", 100, sf::Vector2f(400, 500), *assetManager->getFont("shanghai"));
+    ui->CreateText("Mute", sf::Color::White, "MUTE : Off", 100, sf::Vector2f(400, 600), *assetManager->getFont("shanghai"));
 
     std::shared_ptr<Menu> volumeMenu = std::make_shared<Menu>("Volume");
     volumeMenu->AddButton({"ReduceVolume", "IncreaseVolume", "Mute", "BackButton"});

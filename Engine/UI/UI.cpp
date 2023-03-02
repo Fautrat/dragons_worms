@@ -26,7 +26,7 @@ sf::Text& UI::Text(const std::string& name)
     }
     else
     {
-        std::cout << "Error: Text not found" << std::endl;
+        std::cout << "Error: Text '" << name << "' not found" << std::endl;
     }
 
 	for (int i = 0; i < nameButton.size(); i++)
@@ -39,6 +39,11 @@ sf::Text& UI::Text(const std::string& name)
 }
 sf::Text& UI::Text(int i)
 {
+    if (i > listButtons.size())
+    {
+        std::cout << "Error: Text not found" << std::endl;
+        return buttonModel;
+    }
     return listButtons.at(i);
 }
 
@@ -57,13 +62,13 @@ int UI::TextExist(std::string name)
 
 sf::RectangleShape& UI::Zone(const std::string& name)
 {
-	for (int i = 0; i < nameTextBox.size(); i++)
-	{
-		if (nameTextBox[i] == name)
-		{
-			return zone.at(i);
-		}
-	}
+	for (auto& [key, value] : zone)
+    {
+        if (key == name)
+        {
+            return value;
+        }
+    }
 }
 
 bool UI::InteractionButton(std::string name, sf::Vector2i mouseposition)
@@ -71,7 +76,7 @@ bool UI::InteractionButton(std::string name, sf::Vector2i mouseposition)
     int i = TextExist(name);
     if(i == -1)
     {
-        std::cout << "Error: Text not found" << std::endl;
+        std::cout << "Error: Text '" << name << "' not found" << std::endl;
         return false;
     }
 	if (Text(i).getGlobalBounds().contains(mouseposition.x, mouseposition.y))
@@ -113,3 +118,21 @@ void UI::UpdateText(std::string name, std::string text) {
         }
     }
 }
+
+void UI::CreateShape(std::string name, EShape shape, sf::Vector2f position, sf::Vector2f size, sf::Color color) {
+    switch (shape) {
+        case EShape::Rectangle:
+            zone.emplace(name, sf::RectangleShape(size));
+            zone[name].setFillColor(color);
+            zone[name].setFillColor(color);
+            zone[name].setOrigin(zone[name].getGlobalBounds().width / 2, zone[name].getGlobalBounds().height / 2);
+            zone[name].setPosition(position);
+            zone[name].setOutlineThickness(2);
+            zone[name].setOutlineColor(sf::Color::Black);
+            break;
+        default:
+            break;
+    }
+
+}
+

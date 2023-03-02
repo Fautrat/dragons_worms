@@ -6,6 +6,7 @@
 #include "../../Game/dragons.hpp"
 #include "../UI/UI.hpp"
 #include "./Menu/MenuManager.hpp"
+#include "../AssetManager/AssetManager.h"
 
 class Engine;
 
@@ -16,6 +17,8 @@ public:
     sf::Music* music;
     sf::Font font;
     sf::Texture videoTexture;
+
+    AssetManager* assetManager;
 
     InputHandler* m_input;
     UI* ui;

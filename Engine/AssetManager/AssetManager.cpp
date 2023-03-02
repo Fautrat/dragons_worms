@@ -32,7 +32,7 @@ sf::Font* AssetManager::getFont(std::string id) {
 	return (fonts.count(id) > 0) ? fonts[id] : nullptr;
 }
 
-void AssetManager::loadFont(std::string id, std::string path, int size) {
+void AssetManager::loadFont(std::string id, std::string path) {
 	if (fonts.count(id) <= 0)
 	{
 		sf::Font* font = new sf::Font();
@@ -54,7 +54,7 @@ sf::Music* AssetManager::getMusic(std::string id) {
 	return (musics.count(id) > 0) ? musics[id] : nullptr;
 }
 
-void AssetManager::loadMusic(std::string id, std::string path, int volume) {
+void AssetManager::loadMusic(std::string id, std::string path) {
 	if (musics.count(id) <= 0)
 	{
 		sf::Music* music = new sf::Music();
@@ -68,9 +68,29 @@ void AssetManager::loadMusic(std::string id, std::string path, int volume) {
 			musics[id] = music;
 			std::cout << "Music: [" << path << "] loaded !" << std::endl;
 		}
-
 	}
 }
+
+void AssetManager::playMusic(std::string id, bool loop) {
+    if (musics.count(id) > 0) {
+        musics[id]->setLoop(loop);
+        musics[id]->setVolume(m_musicVolume*10);
+        musics[id]->play();
+    }
+}
+
+void AssetManager::setSoundVolume(unsigned int volume) {
+    m_musicVolume = volume;
+
+}
+
+unsigned int AssetManager::getSoundVolume() const {
+    return m_musicVolume;
+}
+
+
+
+
 
 void AssetManager::clean() {
 

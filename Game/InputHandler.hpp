@@ -44,6 +44,8 @@ public:
     void connect(Action action, Slot slot);
     std::string fromKtoS(const sf::Keyboard::Key& k);
 
+    sf::Keyboard::Key getActionKey(Action action);
+
     void handleInput();
     ~InputHandler()
     {

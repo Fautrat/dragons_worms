@@ -66,6 +66,17 @@ void InputHandler::handleInput()
     }
 }
 
+sf::Keyboard::Key InputHandler::getActionKey(Action action)
+{
+    for (auto it = m_actions.begin(); it != m_actions.end(); ++it) {
+        if (it->second == action) {
+            return it->first;
+        }
+    }
+    return sf::Keyboard::Unknown;
+}
+
+
 std::string InputHandler::fromKtoS(const sf::Keyboard::Key &k) // todo: install Thor library?
 {
     std::string ret;
