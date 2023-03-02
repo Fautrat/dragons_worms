@@ -43,7 +43,7 @@ public:
         {
             throw std::runtime_error("Add component before getting it");
         }
-        return  static_cast<T*>(comp);
+        return static_cast<T*>(comp);
     }
 
     template<typename T>
