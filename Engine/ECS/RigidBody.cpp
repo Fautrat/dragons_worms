@@ -2,7 +2,7 @@
 
 bool Rigidbody::init()
 {
-	transform = &entity->getComponent<Transform>();
+	transform = entity->getComponent<Transform>();
 	if (nullptr != transform)
 	{
 		transformUpdateRequired = true;

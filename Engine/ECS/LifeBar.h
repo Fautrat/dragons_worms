@@ -46,8 +46,9 @@ public:
 		{
 			setString(sf::String(std::to_string(life)));
 			const auto& transform = entity->getComponent<Transform>();
-			float posY = transform.position.y - entity->getComponent<SpriteRenderer>().getSprite()->getGlobalBounds().height / 2.f - getGlobalBounds().height - 5.f; // léger offset
-			setPosition(sf::Vector2f{ transform.position.x - getGlobalBounds().width / 2.f, posY});
+			const auto& spriterenderer = entity->getComponent<SpriteRenderer>();
+			float posY = transform->position.y - spriterenderer->getSprite()->getGlobalBounds().height / 2.f - getGlobalBounds().height - 5.f; // léger offset
+			setPosition(sf::Vector2f{ transform->position.x - getGlobalBounds().width / 2.f, posY});
 		}
 	}
 

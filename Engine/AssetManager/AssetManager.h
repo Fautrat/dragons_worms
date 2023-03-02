@@ -8,9 +8,6 @@
 class AssetManager
 {
 public:
-	AssetManager();
-	~AssetManager() = default;
-
 	void clean();
 
 	sf::Texture* getTexture(std::string id);
@@ -34,4 +31,8 @@ private:
 	std::map<std::string, sf::Font*> fonts;
 	std::map<std::string, sf::Texture*> textures;
 	std::map<std::string, sf::Music*> musics;
+protected:
+	AssetManager();
+	~AssetManager() = default;
+
 };

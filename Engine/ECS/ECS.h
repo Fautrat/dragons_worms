@@ -22,7 +22,7 @@ inline ComponentTypeID getComponentTypeId() noexcept
 }
 
 // A revoir combien de max on a besoin
-constexpr std::size_t MAX_ENTITIES = 1000;
+//constexpr std::size_t MAX_ENTITIES = 1000;
 constexpr std::size_t MAX_COMPONENTS = 32;
 
 using ComponentBitset = std::bitset<MAX_COMPONENTS>;

@@ -23,8 +23,8 @@ bool World::Collide(Entity& firstEntity, Entity& secondEntity)
 
 void World::resolveCollision(Entity& firstEntity, Entity& secondEntity)
 {
-	Rigidbody& rbA = firstEntity.getComponent<Rigidbody>();
-	Rigidbody& rbB = secondEntity.getComponent<Rigidbody>();
+	Rigidbody& rbA = *firstEntity.getComponent<Rigidbody>();
+	Rigidbody& rbB = *secondEntity.getComponent<Rigidbody>();
 	rbA.onCollision = true;
 	rbB.onCollision = true;
 	sf::Vector2f relativeVelocity = rbB.getVelocity() - rbA.getVelocity();
@@ -57,13 +57,13 @@ void World::updatePhysics(std::vector<Entity*>& entities)
 			Entity& entityB = *entities[j];
 			if (!entityB.hasComponent<Collider2D>()) continue;
 
-			if (entityA.getComponent<Rigidbody>().getIsStatic() && entityB.getComponent<Rigidbody>().getIsStatic()) continue;
+			if (entityA.getComponent<Rigidbody>()->getIsStatic() && entityB.getComponent<Rigidbody>()->getIsStatic()) continue;
 
 			if (Collide(entityA, entityB))
 			{
-				if (entityB.getComponent<Collider2D>().getCollisionTag() == std::string("Fireball"))
+				if (entityB.getComponent<Collider2D>()->getCollisionTag() == std::string("Fireball"))
 				{
-					if (entityA.getComponent<Collider2D>().getCollisionTag() == std::string("Player"))
+					if (entityA.getComponent<Collider2D>()->getCollisionTag() == std::string("Player"))
 					{
 						Dragon dragon = dynamic_cast<Dragon&>(entityA);
 						if (!dragon.hasShoot)
@@ -83,18 +83,18 @@ void World::updatePhysics(std::vector<Entity*>& entities)
 				depth = collision->getDepth();
 				normal = collision->getNormal();
 
-				if (entityB.getComponent<Rigidbody>().getIsStatic())
+				if (entityB.getComponent<Rigidbody>()->getIsStatic())
 				{
-					entityA.getComponent<Rigidbody>().translate(-normal * depth, 0);
+					entityA.getComponent<Rigidbody>()->translate(-normal * depth, 0);
 				}
-				else if(entityA.getComponent<Rigidbody>().getIsStatic())
+				else if(entityA.getComponent<Rigidbody>()->getIsStatic())
 				{
-					entityB.getComponent<Rigidbody>().translate(normal * depth, 0);
+					entityB.getComponent<Rigidbody>()->translate(normal * depth, 0);
 				}
 				else
 				{
-					entityA.getComponent<Rigidbody>().translate(-normal * depth / 2.0f, 0);
-					entityB.getComponent<Rigidbody>().translate(normal * depth / 2.0f, 0);
+					entityA.getComponent<Rigidbody>()->translate(-normal * depth / 2.0f, 0);
+					entityB.getComponent<Rigidbody>()->translate(normal * depth / 2.0f, 0);
 				}
 
 				resolveCollision(entityA, entityB);

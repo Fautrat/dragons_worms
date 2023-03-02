@@ -5,10 +5,11 @@ bool SphereCollider2D::init()
 	if (entity->hasComponent<Transform>() && entity->hasComponent<Rigidbody>() && entity->hasComponent<SpriteRenderer>())
 	{
 		const auto& transform = entity->getComponent<Transform>();
-		auto& rb = entity->getComponent<Rigidbody>();
-		m_radius = entity->getComponent<Rigidbody>().getRadius();
+		auto& rb = *entity->getComponent<Rigidbody>();
+		auto& sr = *entity->getComponent<SpriteRenderer>();
+		m_radius = rb.getRadius();
 
-		m_radius = entity->getComponent<SpriteRenderer>().getSprite()->getGlobalBounds().width / 2;
+		m_radius = sr.getSprite()->getGlobalBounds().width / 2;
 		float area = m_radius * m_radius * PI;
 
 		/*if (area < world.getMinBodySize()) { std::cout << "Circle radius is too small. Min circle area is " << world.getMinBodySize() << std::endl; }
@@ -20,7 +21,7 @@ bool SphereCollider2D::init()
 		restitution = vecMath.Clamp(restitution, 0.f, 1.f);
 		float mass = (area * rb.density) / 1000;
 
-		rb.InitValues(transform.position, mass, restitution, area);
+		rb.InitValues(transform->position, mass, restitution, area);
 
 		return true;
 	}

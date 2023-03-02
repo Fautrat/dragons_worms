@@ -21,7 +21,7 @@ public:
 
 	void update(const float& deltaTime) override final
 	{
-		circle_position = entity->getComponent<Transform>().position;
+		circle_position = entity->getComponent<Transform>()->position;
 	}
 
 	std::string getCollisionTag() const {
