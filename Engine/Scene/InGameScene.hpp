@@ -10,7 +10,7 @@
 #include "../ECS/PolygonCollider2D.h"
 #include "../ECS/Collider2D.h"
 #include "../UI/UI.hpp"
-#include "../ECS/LifeBar.h"
+#include "../ECS/PlayerInterface.h"
 #include "../ECS/Ground.h"
 #include "../ECS/MapBoundaries.h"
 
