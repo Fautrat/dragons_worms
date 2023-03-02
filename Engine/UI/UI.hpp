@@ -9,6 +9,19 @@ enum EShape
     Rectangle=1,
 };
 
+/*
+enum EOrigin
+{
+    Center=1,
+    TopLeft=2,
+    TopRight=3,
+    BottomLeft=4,
+    BottomRight=5,
+    MiddleLeft=6,
+    MiddleRight=7,
+};
+*/
+
 class UI
 {
 public:
@@ -19,6 +32,7 @@ public:
         zone.clear();
     };
 	void CreateText(std::string name, sf::Color colorText, std::string text, int characterSize, sf::Vector2f position, sf::Font& font);
+//    void CreateText(std::string name, sf::Color colorText, std::string text, int characterSize, sf::Vector2f position, sf::Font& font, EOrigin origin);
     sf::Text& Text(const std::string& name);
     sf::Text& Text(int i);
     int TextExist(std::string name);
@@ -30,6 +44,7 @@ public:
 	bool InteractionButton(std::string name, sf::Vector2i mouseposition);
     void RemoveText(std::string name);
     void RemoveZone(std::string name);
+//    void setOrigin(sf::Text text, EOrigin origin);
 
 //	sf::Font& getFont();
 

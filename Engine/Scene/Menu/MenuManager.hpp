@@ -23,6 +23,10 @@ public:
     void CheckEachMenuState();
 
     void AddText(std::string name, sf::Color colorText, std::string text, int characterSize, sf::Vector2f position, std::function<void(void)> callback);
+/*
+    void AddText(std::string name, sf::Color colorText, std::string text, int characterSize,
+                 sf::Vector2f position, EOrigin origin, std::function<void(void)> callback);
+*/
     void UpdateText(std::string name, std::string text);
     void RemoveText(std::string name);
 

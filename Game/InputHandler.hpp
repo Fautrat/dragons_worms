@@ -8,6 +8,7 @@
 
 enum class EInput
 {
+    NONE = -1,
     MoveUp = 0,
     MoveDown,
     MoveLeft,

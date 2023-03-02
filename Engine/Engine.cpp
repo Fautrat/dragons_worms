@@ -10,7 +10,7 @@ std::mutex Engine::m_mutex;
 Engine::Engine()
 {
     gameState = RUNNING;
-    m_resolution = sf::Vector2<int>(2650, 1600);
+    m_resolution = sf::Vector2<int>(1920, 1080);
     m_renderWindow = new sf::RenderWindow(
         sf::VideoMode(m_resolution.x, m_resolution.y),
         "Dragons with engine",

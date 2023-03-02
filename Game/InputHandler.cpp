@@ -5,11 +5,19 @@
 void InputHandler::connect(EInput action, sf::Keyboard::Key key, InputHandler::Slot slot) {
     m_actions[key] = action;
     m_slots[action] = slot;
-
 }
+
+/*
+ *     x = 1
+ *     y = 2
+ *
+ *
+ */
 
 void InputHandler::remapAction(EInput action, sf::Keyboard::Key key)
 {
+    if (m_actions.find(key) != m_actions.end())
+        return;
     for(auto it = m_actions.begin(); it != m_actions.end(); ++it)
     {
         if (it->second == action)

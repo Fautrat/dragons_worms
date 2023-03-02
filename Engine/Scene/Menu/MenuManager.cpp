@@ -59,6 +59,17 @@ void MenuManager::AddText(std::string name, sf::Color colorText, std::string tex
     _CurrentMenu->AddButton(name, callback);
 }
 
+/*
+void MenuManager::AddText(std::string name, sf::Color colorText, std::string text, int characterSize,
+                          sf::Vector2f position, EOrigin origin, std::function<void(void)> callback) {
+    _ui->CreateText(name, colorText, text, characterSize, position, _font);
+    _ui->SetTextOrigin(name, origin);
+    _ui->Text(name).setPosition(position);
+
+    _CurrentMenu->AddButton(name, callback);
+}
+*/
+
 
 std::shared_ptr<Menu> MenuManager::GetMenu(std::string menuName) {
     for (auto it = _Menus.begin(); it != _Menus.end(); ++it) {

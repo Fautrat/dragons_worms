@@ -15,6 +15,21 @@ void UI::CreateText(std::string name, sf::Color colorText, std::string text, int
 	nameButton.emplace_back(name);
 }
 
+/*
+void UI::CreateText(std::string name, sf::Color colorText, std::string text, int characterSize, sf::Vector2f position, sf::Font& font, EOrigin origin)
+{
+    buttonModel.setFont(font);
+    buttonModel.setFillColor(colorText);
+    buttonModel.setString(text);
+    buttonModel.setCharacterSize(characterSize);
+    setOrigin(buttonModel, origin);
+    buttonModel.setPosition(position);
+    listButtons.push_back(buttonModel);
+    nameButton.emplace_back(name);
+}
+*/
+
+
 sf::Text& UI::Text(const std::string& name)
 {
 	std::lock_guard guard(_mutex);
@@ -180,3 +195,29 @@ void UI::AddTextToZone(std::string TextName, std::string ZoneName) {
     }
     listButtons[i].setOrigin(listButtons[i].getGlobalBounds().width / 2, listButtons[i].getGlobalBounds().height / 2);
 }
+
+/*
+void UI::setOrigin(sf::Text text, EOrigin origin)
+{
+    switch (origin)
+    {
+        case EOrigin::Center:
+            text.setOrigin(text.getGlobalBounds().width / 2, text.getGlobalBounds().height / 2);
+            break;
+        case EOrigin::TopLeft:
+            text.setOrigin(0, 0);
+            break;
+        case EOrigin::TopRight:
+            text.setOrigin(text.getGlobalBounds().width, 0);
+            break;
+        case EOrigin::BottomLeft:
+            text.setOrigin(0, text.getGlobalBounds().height);
+            break;
+        case EOrigin::BottomRight:
+            text.setOrigin(text.getGlobalBounds().width, text.getGlobalBounds().height);
+            break;
+        default:
+            break;
+    }
+}
+*/

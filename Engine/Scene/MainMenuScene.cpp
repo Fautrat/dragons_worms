@@ -1,6 +1,30 @@
 #include "MainMenuScene.hpp"
 #include <iostream>
 
+
+void resizeButton( std::shared_ptr<UI> ui, std::string buttonName, float x, float y)
+{
+    ui->Text(buttonName).setOrigin(0, ui->Text(buttonName).getGlobalBounds().height / 2);
+    ui->Text(buttonName).setPosition(x - ui->Text(buttonName).getGlobalBounds().width / 2, y);
+}
+
+std::vector<float> getArrayOfFloatFromWidth(int width, int size)
+{
+    std::vector<float> array;
+    float x = 0;
+    for (int i = 0; i < size; i++)
+    {
+        x += width / size+1;
+        array.push_back(x);
+    }
+    for (int i = 0; i < size; i++)
+    {
+        std::cout << array[i] << std::endl;
+    }
+    return array;
+}
+
+
 MainMenuScene::MainMenuScene(Engine& engine) :Scene(engine)
 {
     AssetManager::get().loadFont("Shangai", "assets/font/shanghai.ttf");
@@ -109,10 +133,24 @@ void MainMenuScene::Options()
     menuManager->AddMenu(optionsMenu);
     menuManager->SetCurrentMenu("Options");
 
-    menuManager->AddText("BackOptionsButton", sf::Color::White, "BACK", 200, sf::Vector2f(400, 900), [&]{ Back(); });
-    menuManager->AddText("ResolutionButton", sf::Color::White, "RESOLUTION", 200, sf::Vector2f(400, 525), [&]{ Resolution(); });
-    menuManager->AddText("ControlsButton", sf::Color::White, "CONTROLS", 200, sf::Vector2f(400, 300), [&]{ Controls(); });
-    menuManager->AddText("VolumeButton", sf::Color::White, "VOLUME", 200, sf::Vector2f(400, 750), [&]{ Volume(); });
+    // get resolution
+    sf::Vector2<int> res = engine->getResolution();
+    int backSize = 150,
+        controlsSize = 100,
+        volumeSize = 100;
+
+
+    float   BackOptionsButton_y = ((float)res.y / 4.f) - ((float)backSize / 2.f),
+            ControlsButton_y    = ((float)res.y - BackOptionsButton_y) / 3.f - ((float)controlsSize / 2.f),
+            VolumeButton_y      = ((float)res.y - BackOptionsButton_y) / 3.f * 2.f - ((float)volumeSize / 2.f);
+
+    BackOptionsButton_y = ((float)res.y / 4.f * 3.f) - ((float)backSize / 2.f);
+
+
+    menuManager->AddText("BackOptionsButton", sf::Color::White, "BACK", backSize, sf::Vector2f(400, BackOptionsButton_y), [&]{ Back(); });
+//    menuManager->AddText("ResolutionButton", sf::Color::White, "RESOLUTION", 100, sf::Vector2f(400, 525), [&]{ Resolution(); });
+    menuManager->AddText("ControlsButton", sf::Color::White, "CONTROLS", controlsSize, sf::Vector2f(400, ControlsButton_y), [&]{ Controls(); });
+    menuManager->AddText("VolumeButton", sf::Color::White, "VOLUME", volumeSize, sf::Vector2f(400, VolumeButton_y), [&]{ Volume(); });
 
     m_isclicked = true;
 }
@@ -125,14 +163,31 @@ void MainMenuScene::Controls()
     menuManager->AddMenu(controlsMenu);
     menuManager->SetCurrentMenu("Controls");
 
-    menuManager->AddText("MOVEUP", sf::Color::White, "UP : " + m_input->fromKtoS(m_input->getActionKey(EInput::MoveUp)), 100, sf::Vector2f(400, 300), [&]{ UpdateInput(EInput::MoveUp, "MOVEUP"); });
-    menuManager->AddText("MOVEDOWN", sf::Color::White, "DOWN : " + m_input->fromKtoS(m_input->getActionKey(EInput::MoveDown)), 100, sf::Vector2f(400, 400), [&]{ UpdateInput(EInput::MoveDown, "MOVEDOWN"); });
-    menuManager->AddText("MOVELEFT", sf::Color::White, "LEFT : " + m_input->fromKtoS(m_input->getActionKey(EInput::MoveLeft)), 100, sf::Vector2f(400, 500), [&]{ UpdateInput(EInput::MoveLeft, "MOVELEFT"); });
-    menuManager->AddText("MOVERIGHT", sf::Color::White, "RIGHT : " + m_input->fromKtoS(m_input->getActionKey(EInput::MoveRight)), 100, sf::Vector2f(400, 600), [&]{ UpdateInput(EInput::MoveRight, "MOVERIGHT"); });
-    menuManager->AddText("ACTION", sf::Color::White, "ACTION : " + m_input->fromKtoS(m_input->getActionKey(EInput::Action)), 100, sf::Vector2f(400, 700), [&]{ UpdateInput(EInput::Action, "ACTION"); });
-    menuManager->AddText("JUMP", sf::Color::White, "JUMP : " + m_input->fromKtoS(m_input->getActionKey(EInput::Jump)), 100, sf::Vector2f(400, 800), [&]{ UpdateInput(EInput::Jump, "JUMP"); });
-    menuManager->AddText("BackControlsButton", sf::Color::White, "BACK", 200, sf::Vector2f(400, 900), [&]{ Back(); });
+    sf::Vector2<int> res = engine->getResolution();
 
+    float MoveUp_y = (float)res.y / 8 * 1,
+          MoveDown_y = (float)res.y / 8 * 2,
+          MoveLeft_y = (float)res.y / 8 * 3,
+          MoveRight_y = (float)res.y / 8 * 4,
+          Action_y = (float)res.y / 8 * 5,
+          Jump_y = (float)res.y / 8 * 6,
+          back_y = (float)res.y / 5.f * 4.5f;
+
+
+    menuManager->AddText("MOVEUP", sf::Color::White, "UP : " + m_input->fromKtoS(m_input->getActionKey(EInput::MoveUp)), 100, sf::Vector2f(400, 300), [&]{ UpdateInput(EInput::MoveUp, "MOVEUP"); });
+    resizeButton(ui, "MOVEUP", 400, MoveUp_y);
+    menuManager->AddText("MOVEDOWN", sf::Color::White, "DOWN : " + m_input->fromKtoS(m_input->getActionKey(EInput::MoveDown)), 100, sf::Vector2f(400, 400), [&]{ UpdateInput(EInput::MoveDown, "MOVEDOWN"); });
+    resizeButton(ui, "MOVEDOWN", 400, MoveDown_y);
+    menuManager->AddText("MOVELEFT", sf::Color::White, "LEFT : " + m_input->fromKtoS(m_input->getActionKey(EInput::MoveLeft)), 100, sf::Vector2f(400, 500), [&]{ UpdateInput(EInput::MoveLeft, "MOVELEFT"); });
+    resizeButton(ui, "MOVELEFT", 400, MoveLeft_y);
+    menuManager->AddText("MOVERIGHT", sf::Color::White, "RIGHT : " + m_input->fromKtoS(m_input->getActionKey(EInput::MoveRight)), 100, sf::Vector2f(400, 600), [&]{ UpdateInput(EInput::MoveRight, "MOVERIGHT"); });
+    resizeButton(ui, "MOVERIGHT", 400, MoveRight_y);
+    menuManager->AddText("ACTION", sf::Color::White, "ACTION : " + m_input->fromKtoS(m_input->getActionKey(EInput::Action)), 100, sf::Vector2f(400, 700), [&]{ UpdateInput(EInput::Action, "ACTION"); });
+    resizeButton(ui, "ACTION", 400, Action_y);
+    menuManager->AddText("JUMP", sf::Color::White, "JUMP : " + m_input->fromKtoS(m_input->getActionKey(EInput::Jump)), 100, sf::Vector2f(400, 800), [&]{ UpdateInput(EInput::Jump, "JUMP"); });
+    resizeButton(ui, "JUMP", 400, Jump_y);
+    menuManager->AddText("BackControlsButton", sf::Color::White, "BACK", 150, sf::Vector2f(400, 900), [&]{ Back(); });
+    resizeButton(ui, "BackControlsButton", 400, back_y);
 }
 
 
@@ -152,35 +207,47 @@ void MainMenuScene::UpdateInput(EInput action, std::string buttonName)
     m_actionToRemap = action;
 }
 
-void MainMenuScene::Remap()
-{
-    for(sf::Keyboard::Key key = sf::Keyboard::A; key <= sf::Keyboard::KeyCount; key = sf::Keyboard::Key(key + 1))
-    {
-        if(sf::Keyboard::isKeyPressed(key))
-        {
+
+
+void MainMenuScene::Remap() {
+    for (sf::Keyboard::Key key = sf::Keyboard::A; key <= sf::Keyboard::KeyCount; key = sf::Keyboard::Key(key + 1)) {
+        if (sf::Keyboard::isKeyPressed(key)) {
             m_is_remap = false;
             m_isclicked = false;
-            std::cout << "Remap : "<< m_input->fromKtoS(key) << std::endl;
+            std::cout << "Remap : " << m_input->fromKtoS(key) << std::endl;
             m_input->remapAction(m_actionToRemap, key);
+            sf::Vector2<int> res = engine->getResolution();
+            float MoveUp_y = (float) res.y / 8 * 1,
+                    MoveDown_y = (float) res.y / 8 * 2,
+                    MoveLeft_y = (float) res.y / 8 * 3,
+                    MoveRight_y = (float) res.y / 8 * 4,
+                    Action_y = (float) res.y / 8 * 5,
+                    Jump_y = (float) res.y / 8 * 6;
 
             switch (m_actionToRemap) {
                 case EInput::MoveUp:
-                    menuManager->UpdateText("MOVEUP", "UP : " + m_input->fromKtoS(key));
+                    menuManager->UpdateText("MOVEUP", "UP : " + m_input->fromKtoS(m_input->getActionKey(EInput::MoveUp)));
+                    resizeButton(ui, "MOVEUP", 400, MoveUp_y);
                     break;
                 case EInput::MoveDown:
-                    menuManager->UpdateText("MOVEDOWN", "DOWN : " + m_input->fromKtoS(key));
+                    menuManager->UpdateText("MOVEDOWN", "DOWN : " + m_input->fromKtoS(m_input->getActionKey(EInput::MoveDown)));
+                    resizeButton(ui, "MOVEDOWN", 400, MoveDown_y);
                     break;
                 case EInput::MoveLeft:
-                    menuManager->UpdateText("MOVELEFT", "LEFT : " + m_input->fromKtoS(key));
+                    menuManager->UpdateText("MOVELEFT", "LEFT : " + m_input->fromKtoS(m_input->getActionKey(EInput::MoveLeft)));
+                    resizeButton(ui, "MOVELEFT", 400, MoveLeft_y);
                     break;
                 case EInput::MoveRight:
-                    menuManager->UpdateText("MOVERIGHT", "RIGHT : " + m_input->fromKtoS(key));
+                    menuManager->UpdateText("MOVERIGHT", "RIGHT : " + m_input->fromKtoS(m_input->getActionKey(EInput::MoveRight)));
+                    resizeButton(ui, "MOVERIGHT", 400, MoveRight_y);
                     break;
                 case EInput::Action:
-                    menuManager->UpdateText("ACTION", "ACTION : " + m_input->fromKtoS(key));
+                    menuManager->UpdateText("ACTION", "ACTION : " + m_input->fromKtoS(m_input->getActionKey(EInput::Action)));
+                    resizeButton(ui, "ACTION", 400, Action_y);
                     break;
                 case EInput::Jump:
-                    menuManager->UpdateText("Jump", "JUMP : " + m_input->fromKtoS(key));
+                    menuManager->UpdateText("JUMP", "JUMP : " + m_input->fromKtoS(m_input->getActionKey(EInput::Jump)));
+                    resizeButton(ui, "JUMP", 400, Jump_y);
                     break;
                 default:
                     break;
@@ -232,12 +299,18 @@ void MainMenuScene::Volume() {
     menuManager->AddMenu(volumeMenu);
     menuManager->SetCurrentMenu("Volume");
 
-    menuManager->AddText("ReduceVolume", sf::Color::White, "<-", 100, sf::Vector2f(200, 300), [&]{ ReduceVolume(); });
-    menuManager->AddText("Volume", sf::Color::White, "VOLUME : " + std::to_string(AssetManager::get().getSoundVolume()), 100, sf::Vector2f(600, 300), [&]{ });
-    menuManager->AddText("IncreaseVolume", sf::Color::White, "->", 100, sf::Vector2f(1000, 300), [&]{ IncreaseVolume(); });
+    sf::Vector2<int> res = engine->getResolution();
+
+    float volume_y = (float)res.y / 5.f * 1.f,
+        mute_y = (float)res.y / 5.f * 2.5f,
+        back_y = (float)res.y / 5.f * 4.f;
+
+    menuManager->AddText("ReduceVolume", sf::Color::White, "<-", 100, sf::Vector2f(100, volume_y), [&]{ ReduceVolume(); });
+    menuManager->AddText("Volume", sf::Color::White, "VOLUME : " + std::to_string(AssetManager::get().getSoundVolume()), 100, sf::Vector2f(450, volume_y), [&]{ });
+    menuManager->AddText("IncreaseVolume", sf::Color::White, "->", 100, sf::Vector2f(750, volume_y), [&]{ IncreaseVolume(); });
     std::string mute = AssetManager::get().isMusicMuted() ? "true" : "false";
-    menuManager->AddText("Mute", sf::Color::White, "MUTE : " + mute, 100, sf::Vector2f(600, 500), [&]{ Mute(); });
-    menuManager->AddText("BackVolumeButton", sf::Color::White, "BACK", 200, sf::Vector2f(400, 900), [&]{ Back(); });
+    menuManager->AddText("Mute", sf::Color::White, "MUTE : " + mute, 100, sf::Vector2f(400, mute_y), [&]{ Mute(); });
+    menuManager->AddText("BackVolumeButton", sf::Color::White, "BACK", 150, sf::Vector2f(400, back_y), [&]{ Back(); });
 
 }
 
