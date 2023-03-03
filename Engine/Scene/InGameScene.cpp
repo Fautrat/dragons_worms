@@ -104,7 +104,7 @@ void InGameScene::newTurn()
 
     players[currentPlayer]->connectInput(&engine->getInputHandler());
     players[currentPlayer]->startTurn();
-    timer = 60.f;
+    timer = 20.0f;
     srand(time(NULL));
     // G�n�re un nombre al�atoire entre 0 et 6
     random_number = rand() % 7;

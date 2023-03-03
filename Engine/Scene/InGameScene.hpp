@@ -57,7 +57,7 @@ public:
 	void Update(const float& deltaTime) final;
 	void Render(sf::RenderTarget* renderTarget) final;
 
-	float timer = 60.f;
+	float timer = 20.0f;
 	void newTurn();
 	WhosTurn currentPlayer = Player1;
 	EntityManager* m_manager;

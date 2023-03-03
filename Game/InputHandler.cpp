@@ -9,26 +9,28 @@ void InputHandler::connect(EInput action, sf::Keyboard::Key key, InputHandler::S
 
 void InputHandler::remapAction(EInput action, sf::Keyboard::Key key)
 {
-    if (m_actions.find(key) != m_actions.end())
-        return;
-    for(auto it = m_actions.begin(); it != m_actions.end(); ++it)
-    {
-        if (it->second == action)
+
+        if (m_actions.find(key) != m_actions.end())
+            return;
+        for (auto it = m_actions.begin(); it != m_actions.end(); ++it)
         {
-            m_actions.erase(it);
-            break;
+            if (it->second == action)
+            {
+                m_actions.erase(it);
+                break;
+            }
         }
-    }
-    m_actions[key] = action;
+        m_actions[key] = action;
+ 
 }
 
 void InputHandler::connect(EInput action, InputHandler::Slot slot) {
     m_slots[action] = slot;
-
 }
 
 void InputHandler::handleInput()
 {
+    m_window.setKeyRepeatEnabled(false);
     sf::Event event;
     while (m_window.pollEvent(event))
     {
@@ -47,6 +49,10 @@ void InputHandler::handleInput()
             {
                 m_using_keys.erase(it);
             }
+        }
+        else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
+        {
+            // La touche Escape a été pressée, ne rien faire
         }
     }
     for (auto& keys : m_using_keys)
