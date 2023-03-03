@@ -50,63 +50,55 @@ void World::updatePhysics(std::vector<Entity*>& entities)
 	for (int i = 0; i < entities.size() - 1; i++)
 	{
 		Entity& entityA = *entities[i];
-		if (!entityA.hasComponent<Collider2D>()) continue;
+		if (!entityA.hasComponent<Collider2D>() || !entityA.isActive()) continue;
 		
 		for (int j = i + 1; j < entities.size(); j++)
 		{
 			Entity& entityB = *entities[j];
-			if (!entityB.hasComponent<Collider2D>()) continue;
+			if (!entityB.hasComponent<Collider2D>() || !entityB.isActive()) continue;
 
 			if (entityA.getComponent<Rigidbody>()->getIsStatic() && entityB.getComponent<Rigidbody>()->getIsStatic()) continue;
 
+			if (entityA.getComponent<Collider2D>()->getCollisionTag() == std::string("Fireball")
+				&& entityB.getComponent<Collider2D>()->getCollisionTag() == std::string("Fireball"))
+				continue;
+
 			if (Collide(entityA, entityB))
 			{
-				if (dynamic_cast<Fireball*>(&entityB))
-				{
-					if (entityA.getComponent<Collider2D>()->getCollisionTag() == std::string("Player"))
-					{
-						Dragon dragon = dynamic_cast<Dragon&>(entityA);
-						if (dragon.hasShoot) continue;
-					}
-				}
-
 				depth = collision->getDepth();
 				normal = collision->getNormal();
 
 				if (entityB.getComponent<Rigidbody>()->getIsStatic())
 				{
 					entityA.getComponent<Rigidbody>()->translate(-normal * depth, 0);
+					entityA.getComponent<Rigidbody>()->normal = -normal;
 				}
 				else if(entityA.getComponent<Rigidbody>()->getIsStatic())
 				{
 					entityB.getComponent<Rigidbody>()->translate(normal * depth, 0);
+					entityB.getComponent<Rigidbody>()->normal = normal;
 				}
 				else
 				{
 					entityA.getComponent<Rigidbody>()->translate(-normal * depth / 2.0f, 0);
+					entityA.getComponent<Rigidbody>()->normal = -normal;
 					entityB.getComponent<Rigidbody>()->translate(normal * depth / 2.0f, 0);
+					entityB.getComponent<Rigidbody>()->normal = normal;
 				}
 
 				resolveCollision(entityA, entityB);
-
+				
+				//Not definitiv solution
 				if (entityB.getComponent<Collider2D>()->getCollisionTag() == std::string("Fireball"))
 				{
+					Fireball& fireball = dynamic_cast<Fireball&>(entityB);
 					if (entityA.getComponent<Collider2D>()->getCollisionTag() == std::string("Player"))
 					{
 						Dragon dragon = dynamic_cast<Dragon&>(entityA);
-						if (!dragon.hasShoot)
-						{
-							EntityManager::getInstance()->eraseEntity(&entityB);
-							dragon.takeDamage(10);
-						}
-						continue;
+						dragon.takeDamage(fireball.getDamageDealt());
 					}
-					else
-					{
-						EntityManager::getInstance()->eraseEntity(&entityB);
-
-						continue;
-					}
+					fireball.explode();
+					//EntityManager::getInstance()->eraseEntity(&entityB);
 				}
 			}
 		}

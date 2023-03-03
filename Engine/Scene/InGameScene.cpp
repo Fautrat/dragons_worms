@@ -38,24 +38,17 @@ InGameScene::~InGameScene()
 
 void InGameScene::Start()
 {
-    AssetManager::get().loadTexture("Player", "assets/Dragon/dragon.png");
-
-
     player1.getComponent<Transform>()->setTransform(300.f, 0, 0, 0, 0.7f, 0.7f);
-    m_manager->addEntity(&player1);
+    player1.initPlayer(FirstTeam);
     player1.connectInput(&engine->getInputHandler());
+    player1.startTurn();
+    m_manager->addEntity(&player1);
 
-    player2.getComponent<Transform>()->setTransform(800.f, 0, 0, 0, 0.7f, 0.7f);
+    player2.getComponent<Transform>()->setTransform(1400.f, 0, 0, 0, 0.7f, 0.7f);
+    player2.initPlayer(SecondTeam);
     m_manager->addEntity(&player2);
 
     readMap();
-
-    for (auto& tile : tileset)
-    {
-        auto entity = dynamic_cast<Entity*>(tile);
-        m_manager->addEntity(entity);
-
-    }
     engine->getInputHandler().connect(EInput::Pause, [&] { PauseScene(); });
 }
 
@@ -70,7 +63,6 @@ void InGameScene::Update(const float& deltaTime)
     if(stateScene == EStateScene::RunningScene)
     {
         m_manager->update(deltaTime);
-        //worldptr->updatePhysics(deltaTime);
 
         /* update timer */
         timer -= deltaTime;
@@ -101,6 +93,7 @@ void InGameScene::newTurn()
         currentPlayer = Player1;
 
     players[currentPlayer]->connectInput(&engine->getInputHandler());
+    players[currentPlayer]->startTurn();
     timer = 10;
 }
 
@@ -120,10 +113,10 @@ void InGameScene::readMap()
     };
 
 
-    //active = true;
     int row = 10, col = 15;
 
-    sf::Vector2f tile_size(1980.f / col, 1080.f / row);
+    sf::Vector2f tile_size(1920.f / col, 1080.f / row);
+    sf::Vector2f tile_scale(tile_size.x / 220.f, tile_size.y / 220.f);
     AssetManager::get().loadTexture("Dirt", "assets/dirt.png");
     AssetManager::get().loadTexture("Left_Diag", "assets/left_diag.png");
     AssetManager::get().loadTexture("Right_Diag", "assets/right_diag.png");
@@ -132,20 +125,27 @@ void InGameScene::readMap()
     {
         for (int x = 0; x < col; x++)
         {
+            if (x == 0)
+            {
+                MapBoundaries* boundariesLeft = new MapBoundaries(-tile_size.x, (float)y * tile_size.y, tile_scale.x, tile_scale.y);
+                MapBoundaries* boundariesRight = new MapBoundaries(tile_size.x * col, (float)y * tile_size.y, tile_scale.x, tile_scale.y);
+                EntityManager::getInstance()->addEntity(boundariesLeft);
+                EntityManager::getInstance()->addEntity(boundariesRight);
+            }
             if (map_[x + y * col] == '-')
             {
-                Ground* ground = new Ground(static_cast<float>(tile_size.x * x), static_cast<float>(y * tile_size.y), std::string("Dirt"));
-                tileset.push_back(ground);
+                Ground* ground = new Ground(tile_size.x * (float)x, (float)y * tile_size.y, tile_scale.x, tile_scale.y, std::string("Dirt"));
+                EntityManager::getInstance()->addEntity(ground);
             }
             else if (map_[x + y * col] == '/')
             {
-                Ground* ground = new Ground(static_cast<float>(tile_size.x * x), static_cast<float>(y * tile_size.y), std::string("Left_Diag"));
-                tileset.push_back(ground);
+                Ground* ground = new Ground(tile_size.x * (float)x, (float)y * tile_size.y, tile_scale.x, tile_scale.y, std::string("Left_Diag"));
+                EntityManager::getInstance()->addEntity(ground);
             }
             else if (map_[x + y * col] == '\\')
             {
-                Ground* ground = new Ground(static_cast<float>(tile_size.x * x), static_cast<float>(y * tile_size.y), std::string("Right_Diag"));
-                tileset.push_back(ground);
+                Ground* ground = new Ground(tile_size.x * (float)x, (float)y * tile_size.y, tile_scale.x, tile_scale.y, std::string("Right_Diag"));
+                EntityManager::getInstance()->addEntity(ground);
             }
         }
     }

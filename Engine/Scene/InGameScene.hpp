@@ -10,9 +10,10 @@
 #include "../ECS/PolygonCollider2D.h"
 #include "../ECS/Collider2D.h"
 #include "../UI/UI.hpp"
-#include "../ECS/LifeBar.h"
+#include "../ECS/PlayerInterface.h"
 #include "../ECS/Ground.h"
 #include "./Menu/MenuManager.hpp"
+#include "../ECS/MapBoundaries.h"
 
 enum WhosTurn
 {
@@ -55,7 +56,7 @@ public:
 	void Update(const float& deltaTime) final;
 	void Render(sf::RenderTarget* renderTarget) final;
 
-	float timer = 10.f;
+	float timer = 60.f;
 	void newTurn();
 	WhosTurn currentPlayer = Player1;
 	EntityManager* m_manager;
