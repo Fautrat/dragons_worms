@@ -43,7 +43,7 @@ void Engine::Run()
 
             if (nullptr != m_currScene)
             {
-                m_mousePosition = sf::Mouse::getPosition();
+                m_mousePosition = sf::Mouse::getPosition(*m_renderWindow);
                 m_currScene->Update(getDeltaTime());
                 m_renderWindow->clear();
                 m_currScene->Render(m_renderWindow);

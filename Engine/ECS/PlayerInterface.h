@@ -48,7 +48,10 @@ public:
 			spriteWhoPlay.setTexture(textureWhoPlay);
 			spriteWhoPlay.setScale(0.1f, 0.1f);
 			spriteWhoPlay.setOrigin(textureWhoPlay.getSize().x / 2, textureWhoPlay.getSize().y / 2);
-			
+
+    		// Arrow direction of cursor
+    		Arrow.setSize(sf::Vector2f(5.f, 150.f));
+    		Arrow.setFillColor(sf::Color::Red);
 
 			return true;
 		}
@@ -60,14 +63,23 @@ public:
 		this->isPlaying = isPlaying;
 	}
 
-	void draw(sf::RenderTarget* renderwindow) override final
-	{
-		
-		if(isPlaying)
-		renderwindow->draw(spriteWhoPlay);
-		renderwindow->draw(spriteLifeBar);
-		renderwindow->draw(*this);
-	}
+    void draw(sf::RenderTarget* renderwindow) override final
+    {
+
+        if(isPlaying) {
+            renderwindow->draw(spriteWhoPlay);
+
+            sf::Vector2f mousePos = renderwindow->mapPixelToCoords(sf::Mouse::getPosition());
+            const auto& transform = entity->getComponent<Transform>();
+            Arrow.setPosition(transform->position.x, transform->position.y);
+            float mouseAngle = -atan2(mousePos.x - transform->position.x, mousePos.y - transform->position.y) * 180 / 3.14159; //angle in degrees of rotation for sprite
+            Arrow.setRotation(mouseAngle);
+
+            renderwindow->draw(Arrow);
+        }
+        renderwindow->draw(spriteLifeBar);
+        renderwindow->draw(*this);
+    }
 
 	void update(const float& deltaTime) override final 
 	{
@@ -75,7 +87,7 @@ public:
 		{
 			setString(sf::String(std::to_string(life)));
 			const auto& transform = entity->getComponent<Transform>();
-			float posY = transform->position.y - entity->getComponent<SpriteRenderer>()->getSprite()->getGlobalBounds().height / 2.f - getGlobalBounds().height - 6.5f; // léger offset
+			float posY = transform->position.y - entity->getComponent<SpriteRenderer>()->getSprite()->getGlobalBounds().height / 2.f - getGlobalBounds().height - 6.5f; // lï¿½ger offset
 			setPosition(sf::Vector2f{ transform->position.x - getGlobalBounds().width / 2.f, posY});
 			spriteWhoPlay.setPosition(transform->position.x, transform->position.y - offsetYWhoPlay);
 			spriteLifeBar.setPosition(transform->position.x, transform->position.y - offsetYLifeBar);
@@ -99,6 +111,7 @@ private:
 	sf::Sprite spriteWhoPlay;
 	sf::Texture lifeBarTexture;
 	sf::Sprite spriteLifeBar;
+    sf::RectangleShape Arrow;
 	float offsetYWhoPlay = 100.f;
 	float offsetYLifeBar = 55.f;
 	float scaleXLifeBar = 0.7f;
