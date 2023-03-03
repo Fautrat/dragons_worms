@@ -6,6 +6,21 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
+enum class EInput
+{
+    NONE = -1,
+    MoveUp = 0,
+    MoveDown,
+    MoveLeft,
+    MoveRight,
+    Action,
+    Jump,
+    SelectWeapon1,
+    SelectWeapon2,
+    Pause,
+    Exit
+};
+
 class InputHandler
 {
 public:
@@ -13,36 +28,40 @@ public:
 
     InputHandler(sf::RenderWindow& window) : m_window(window)
     {
-        connect(sf::Keyboard::Escape, [this] {m_window.close();});
+        // set default keys azerty
+        m_actions[sf::Keyboard::Z] = EInput::MoveUp;
+        m_actions[sf::Keyboard::S] = EInput::MoveDown;
+        m_actions[sf::Keyboard::Q] = EInput::MoveLeft;
+        m_actions[sf::Keyboard::D] = EInput::MoveRight;
+        m_actions[sf::Keyboard::Num1] = EInput::SelectWeapon1;
+        m_actions[sf::Keyboard::Num2] = EInput::SelectWeapon2;
+        m_actions[sf::Keyboard::Space] = EInput::Jump;
+        m_actions[sf::Keyboard::T] = EInput::Action;
+        m_actions[sf::Keyboard::F4] = EInput::Exit;
+        m_actions[sf::Keyboard::Escape] = EInput::Pause;
+        connect(EInput::Exit, [this] { m_window.close(); });
     }
 
-    void connect(sf::Keyboard::Key key, Slot slot);
+    void remapAction(EInput action, sf::Keyboard::Key key);
 
-    /*size_t connect(const Slot& slot) const
-    {
-        m_slots.insert({ ++m_currentId, slot });
-        return m_currentId;
-    }*/
+    void connect(EInput action, sf::Keyboard::Key key, Slot slot);
 
-    /*template<typename ObjectType>
-    size_t connect(ObjectType* pInstance, void (ObjectType::* func)()) const
-    {
-        return connect([=]()
-        {
-            (pInstance->*func)();
-        });
-    }*/
+    void connect(EInput action, Slot slot);
+    std::string fromKtoS(const sf::Keyboard::Key& k);
 
-    /*void disconnectAll() const;
-
-    void disconnect(const size_t& id) const;*/
+    sf::Keyboard::Key getActionKey(EInput action);
 
     void handleInput();
-    ~InputHandler() = default;
+    ~InputHandler()
+    {
+        m_slots.clear();
+        m_actions.clear();
+    }
 
 private:
     sf::RenderWindow& m_window;
-    mutable std::map<sf::Keyboard::Key, std::function<void()>> m_slots;
-    //mutable size_t m_currentId;
+    std::map<EInput, std::function<void()>> m_slots;
     std::vector<sf::Keyboard::Key> m_using_keys;
+
+    std::map<sf::Keyboard::Key, EInput> m_actions;
 };

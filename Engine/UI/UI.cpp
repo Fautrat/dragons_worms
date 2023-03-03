@@ -15,9 +15,34 @@ void UI::CreateText(std::string name, sf::Color colorText, std::string text, int
 	nameButton.emplace_back(name);
 }
 
+/*
+void UI::CreateText(std::string name, sf::Color colorText, std::string text, int characterSize, sf::Vector2f position, sf::Font& font, EOrigin origin)
+{
+    buttonModel.setFont(font);
+    buttonModel.setFillColor(colorText);
+    buttonModel.setString(text);
+    buttonModel.setCharacterSize(characterSize);
+    setOrigin(buttonModel, origin);
+    buttonModel.setPosition(position);
+    listButtons.push_back(buttonModel);
+    nameButton.emplace_back(name);
+}
+*/
+
+
 sf::Text& UI::Text(const std::string& name)
 {
 	std::lock_guard guard(_mutex);
+
+    int i = TextExist(name);
+    if (i > -1)
+    {
+        return listButtons.at(i);
+    }
+    else
+    {
+        std::cout << "Error: Text '" << name << "' not found" << std::endl;
+    }
 
 	for (int i = 0; i < nameButton.size(); i++)
 	{
@@ -27,23 +52,65 @@ sf::Text& UI::Text(const std::string& name)
 		}
 	}
 }
+sf::Text& UI::Text(int i)
+{
+    if (i > listButtons.size())
+    {
+        std::cout << "Error: Text not found" << std::endl;
+        return buttonModel;
+    }
+    return listButtons.at(i);
+}
+
+
+int UI::TextExist(std::string name)
+{
+    for (int i = 0; i < nameButton.size(); i++)
+    {
+        if (nameButton[i] == name)
+        {
+            return i;
+        }
+    }
+    return -1;
+}
 
 sf::RectangleShape& UI::Zone(const std::string& name)
 {
-	for (int i = 0; i < nameTextBox.size(); i++)
-	{
-		if (nameTextBox[i] == name)
-		{
-			return zone.at(i);
-		}
-	}
+    std::lock_guard guard(_mutex);
+
+	for (auto& [key, value] : zone)
+    {
+        if (key == name)
+        {
+            return value;
+        }
+    }
+}
+
+int UI::ZoneExist(std::string name) {
+    for (auto& [key, value] : zone)
+    {
+        if (key == name)
+        {
+            return 1;
+        }
+    }
+    return -1;
 }
 
 bool UI::InteractionButton(std::string name, sf::Vector2i mouseposition)
 {
-	if (Text(name).getGlobalBounds().contains(mouseposition.x, mouseposition.y))
+    std::lock_guard guard(_mutex);
+    int i = TextExist(name);
+    if(i == -1)
+    {
+        std::cout << "Error: Text '" << name << "' not found" << std::endl;
+        return false;
+    }
+	if (Text(i).getGlobalBounds().contains(mouseposition.x, mouseposition.y))
 	{
-		Text(name).setColor(sf::Color::Red);
+		Text(i).setColor(sf::Color::Red);
 		if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
 			std::cout << name << " activated" << std::endl;
@@ -53,8 +120,104 @@ bool UI::InteractionButton(std::string name, sf::Vector2i mouseposition)
 	}
 	else
 	{
-		Text(name).setColor(sf::Color::White);
+		Text(i).setColor(sf::Color::White);
 		return false;
 	}
 
 }
+
+void UI::RemoveText(std::string name) {
+    std::lock_guard guard(_mutex);
+    for (int i = 0; i < nameButton.size(); i++)
+    {
+        if (nameButton[i] == name)
+        {
+            listButtons.erase(listButtons.begin() + i);
+            nameButton.erase(nameButton.begin() + i);
+        }
+    }
+
+}
+
+void UI::UpdateText(std::string name, std::string text) {
+    std::lock_guard guard(_mutex);
+    for (int i = 0; i < nameButton.size(); i++)
+    {
+        if (nameButton[i] == name)
+        {
+            listButtons[i].setString(text);
+        }
+    }
+}
+
+void UI::CreateShape(std::string name, EShape shape, sf::Vector2f position, sf::Vector2f size, sf::Color color) {
+    switch (shape) {
+        case EShape::Rectangle:
+            zone.emplace(name, sf::RectangleShape(size));
+            zone[name].setFillColor(color);
+            zone[name].setFillColor(color);
+            zone[name].setOrigin(zone[name].getGlobalBounds().width / 2, zone[name].getGlobalBounds().height / 2);
+            // set anchor point to center
+            zone[name].setPosition(position);
+            zone[name].setOutlineThickness(2);
+            zone[name].setOutlineColor(sf::Color::Black);
+            break;
+        default:
+            break;
+    }
+
+}
+
+void UI::CreateZone(std::string name, sf::Vector2f position, sf::Vector2f size, sf::Color color) {
+    CreateShape(name, EShape::Rectangle, position, size, color);
+
+}
+
+void UI::RemoveZone(std::string name) {
+    std::lock_guard guard(_mutex);
+    zone.erase(name);
+
+}
+
+void UI::AddTextToZone(std::string TextName, std::string ZoneName) {
+    std::lock_guard guard(_mutex);
+    int i = TextExist(TextName);
+    if (i == -1)
+    {
+        std::cout << "Error: Text '" << TextName << "' not found" << std::endl;
+        return;
+    }
+    int j = ZoneExist(ZoneName);
+    if (j == -1)
+    {
+        std::cout << "Error: Zone '" << ZoneName << "' not found" << std::endl;
+        return;
+    }
+    listButtons[i].setOrigin(listButtons[i].getGlobalBounds().width / 2, listButtons[i].getGlobalBounds().height / 2);
+}
+
+/*
+void UI::setOrigin(sf::Text text, EOrigin origin)
+{
+    switch (origin)
+    {
+        case EOrigin::Center:
+            text.setOrigin(text.getGlobalBounds().width / 2, text.getGlobalBounds().height / 2);
+            break;
+        case EOrigin::TopLeft:
+            text.setOrigin(0, 0);
+            break;
+        case EOrigin::TopRight:
+            text.setOrigin(text.getGlobalBounds().width, 0);
+            break;
+        case EOrigin::BottomLeft:
+            text.setOrigin(0, text.getGlobalBounds().height);
+            break;
+        case EOrigin::BottomRight:
+            text.setOrigin(text.getGlobalBounds().width, text.getGlobalBounds().height);
+            break;
+        default:
+            break;
+    }
+}
+*/

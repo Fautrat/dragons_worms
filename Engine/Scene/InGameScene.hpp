@@ -13,6 +13,8 @@
 #include "../UI/UI.hpp"
 #include "../ECS/PlayerInterface.h"
 #include "../ECS/Ground.h"
+#include "./Menu/MenuManager.hpp"
+#include "../ECS/MapBoundaries.h"
 
 enum WhosTurn
 {
@@ -39,21 +41,28 @@ private:
 	WindHandler windHandler;
 	int random_number;
 
-	std::vector<Ground*> tileset;
+    MenuManager* menuManager;
+
+    void PauseScene();
+    void ResumeScene();
+	void EndingScene(int);
+    void MainMenu();
 
 public:
 	InGameScene(Engine& engine);
 	~InGameScene();
-
-	sf::Font* font;
 
 	void readMap();
 	void Start() final;
 	void Update(const float& deltaTime) final;
 	void Render(sf::RenderTarget* renderTarget) final;
 
-	float timer = 10.f;
+	float timer = 60.f;
 	void newTurn();
 	WhosTurn currentPlayer = Player1;
 	EntityManager* m_manager;
+
+    EStateScene state = EStateScene::RunningScene;
+
+
 };

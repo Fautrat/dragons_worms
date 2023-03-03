@@ -32,7 +32,8 @@ public:
 	void ExitGame();
 	static Engine* getInstance();
 	static void killInstance();
-	const EState& getGameState() const;
+    const EState& getGameState() const;
+    void setGameState(EState state);
 	Engine(Engine& other) = delete;
 	void operator=(const Engine&) = delete;
 
@@ -40,10 +41,16 @@ public:
 	void LoadScene(ESceneType scene);
 	void setSceneToLoad(ESceneType scene);
 
-	sf::RenderWindow& getRenderWindow();
+    // Resolution
+    void setResolution(int width, int height);
+    void setResolution(sf::Vector2<int> resolution);
+    [[nodiscard]] sf::Vector2<int> getResolution() const;
+
+
+    sf::RenderWindow& getRenderWindow();
 	sf::Vector2<int> getMousePos();
 	InputHandler& getInputHandler();
-	
+
 private:
 	static std::mutex m_mutex;
 	static Engine* m_instance;
@@ -63,5 +70,5 @@ private:
 	
 	sf::Clock m_deltaClock;
 	sf::Vector2<int> m_mousePosition;
-
+    sf::Vector2<int> m_resolution = { 1280, 720 };
 };
