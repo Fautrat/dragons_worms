@@ -70,7 +70,7 @@ public:
 
 	void setVelocity(sf::Vector2f value)
 	{
-		m_velocity = value;
+ 		m_velocity = value;
 	}
 
 	void Jump()

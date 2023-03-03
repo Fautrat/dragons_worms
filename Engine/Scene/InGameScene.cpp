@@ -37,14 +37,18 @@ InGameScene::~InGameScene()
 
 void InGameScene::Start()
 {
+    windHandler.setLevel(0);
+    m_manager->addEntity(&windHandler);
     player1.getComponent<Transform>()->setTransform(300.f, 500.f, 0, 0, 0.7f, 0.7f);
     player1.initPlayer(FirstTeam);
     player1.connectInput(&engine->getInputHandler());
     player1.startTurn();
+    player1.setWindLevel(0);
     m_manager->addEntity(&player1);
 
     player2.getComponent<Transform>()->setTransform(1400.f, 500.f, 0, 0, 0.7f, 0.7f);
     player2.initPlayer(SecondTeam);
+    player2.setWindLevel(0);
     m_manager->addEntity(&player2);
 
     readMap();
@@ -81,6 +85,7 @@ void InGameScene::Update(const float& deltaTime)
 
 void InGameScene::Render(sf::RenderTarget* renderTarget)
 { 
+    
     renderTarget->draw(backgroundSprite);
     m_manager->draw(renderTarget);
 
@@ -99,7 +104,18 @@ void InGameScene::newTurn()
 
     players[currentPlayer]->connectInput(&engine->getInputHandler());
     players[currentPlayer]->startTurn();
-    timer = 60.f;
+    timer = 20.0f;
+    srand(time(NULL));
+    // G�n�re un nombre al�atoire entre 0 et 6
+    random_number = rand() % 7;
+    // Ajuste le nombre pour qu'il soit compris entre -3 et 3
+    random_number -= 3;
+
+    windHandler.setLevel(random_number);
+    players[currentPlayer]->setWindLevel(random_number);
+
+
+
 }
 
 void InGameScene::readMap()

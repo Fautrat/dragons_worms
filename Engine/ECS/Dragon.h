@@ -55,6 +55,8 @@ struct Dragon : public Entity
         return getComponent<PlayerInterface>()->life;
     }
 
+ 
+
     void takeDamage(int damage)
     {
         getComponent<PlayerInterface>()->applyDamageInterface(damage);
@@ -75,16 +77,23 @@ struct Dragon : public Entity
         input->connect(EInput::SelectWeapon2, [this] {selectWeapon2(); });
     }
 
+    void setWindLevel(int level)
+    {
+        windForce.x = level;
+    }
+
     Fireball* shoot()
     {
         if (hasShoot)
             return nullptr;
 
+        //Nique sa mère cpp
+
         /* calcul de direction */
         sf::Vector2f direction = static_cast<sf::Vector2f>(sf::Mouse::getPosition()) - getComponent<Transform>()->position;
         float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
         direction /= length;
-        direction *= 10.f;
+        direction *= 15.f;
 
         sf::Vector2f newPos (getComponent<Transform>()->position.x, getComponent<Transform>()->position.y );
         if (direction.x <= 0)
@@ -99,7 +108,7 @@ struct Dragon : public Entity
         }
 
         fireball->getComponent<Transform>()->moveTo(newPos);
-        fireball->getComponent<Rigidbody>()->setVelocity(direction);
+        fireball->getComponent<Rigidbody>()->setVelocity(direction + windForce);
         hasShoot = true;
 
         return fireball;
@@ -133,4 +142,5 @@ struct Dragon : public Entity
     sf::Color initialIndicatorColor;
     bool fragmentedShoot;
     bool hasShoot;
+    sf::Vector2f windForce = sf::Vector2f(1, 0);
 };

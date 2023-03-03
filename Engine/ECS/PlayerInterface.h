@@ -6,7 +6,6 @@
 #include "Component.h"
 #include "../AssetManager/AssetManager.h"
 #include <iostream>
-#include <filesystem>
 class Dragon;
 
 class PlayerInterface : public Component, public sf::Text

@@ -71,6 +71,7 @@ public:
         }
     }
 
+
     void fragmentation()
     {
         srand(time(NULL));
@@ -127,4 +128,5 @@ private :
     bool m_isFragmented;
     uint8_t max_fragmented_entities;
     int m_damageDealt;
+    sf::Vector2f windForce = sf::Vector2f(1,0);
 };

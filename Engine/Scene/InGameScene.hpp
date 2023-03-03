@@ -2,6 +2,7 @@
 
 #include "Scene.hpp"
 #include "../ECS/Dragon.h"
+#include "../ECS/WindHandler.h"
 #include "../ECS/EntityManager.h"
 #include "../ECS/Entity.h"
 #include "../ECS/SpriteRenderer.h"
@@ -31,11 +32,14 @@ private:
 	sf::Sprite backgroundSprite;
 
 	Dragon player1, player2;
+
 	Dragon* players[2] = {&player1, &player2};
 
 	UI* ui;
 	Collision* collision;
-	Entity box1, box2, circle, circle2, circle3, Triangle, ground;
+	Entity windLeft, windRight;
+	WindHandler windHandler;
+	int random_number;
 
     MenuManager* menuManager;
 
@@ -53,7 +57,7 @@ public:
 	void Update(const float& deltaTime) final;
 	void Render(sf::RenderTarget* renderTarget) final;
 
-	float timer = 60.f;
+	float timer = 20.0f;
 	void newTurn();
 	WhosTurn currentPlayer = Player1;
 	EntityManager* m_manager;
