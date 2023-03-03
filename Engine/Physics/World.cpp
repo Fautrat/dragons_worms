@@ -91,12 +91,12 @@ void World::updatePhysics(std::vector<Entity*>& entities)
 				//Not definitiv solution
 				if (entityB.getComponent<Collider2D>()->getCollisionTag() == std::string("Fireball"))
 				{
+					Fireball& fireball = dynamic_cast<Fireball&>(entityB);
 					if (entityA.getComponent<Collider2D>()->getCollisionTag() == std::string("Player"))
 					{
 						Dragon dragon = dynamic_cast<Dragon&>(entityA);
-						dragon.takeDamage(10);
+						dragon.takeDamage(fireball.getDamageDealt());
 					}
-					Fireball& fireball = dynamic_cast<Fireball&>(entityB);
 					fireball.explode();
 					//EntityManager::getInstance()->eraseEntity(&entityB);
 				}

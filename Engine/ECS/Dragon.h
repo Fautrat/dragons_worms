@@ -41,16 +41,13 @@ public:
         if (team == FirstTeam)
         {
             addComponent<SpriteRenderer>("Player");
-            addComponent<Rigidbody>(1, false, 0, 2);
-            addComponent<Collider2D>(BOX, std::string("Player"));
 		}
         else if(team == SecondTeam)
         {
             addComponent<SpriteRenderer>("Player2");
-            addComponent<Rigidbody>(1, false, 0, 2);
-            addComponent<Collider2D>(BOX, std::string("Player2"));
 		}
-        
+        addComponent<Rigidbody>(1, false, 0, 2);
+        addComponent<Collider2D>(BOX, std::string("Player"));
     }
 
     const int getLife()
@@ -100,7 +97,7 @@ public:
         else
             newPos.x += getComponent<SpriteRenderer>()->getSprite()->getGlobalBounds().width + 1.f;
         std::function<void()> callback = [this] {endTurn();};
-        Fireball* fireball = new Fireball(callback, false);
+        Fireball* fireball = new Fireball(callback, true, 20);
         if (direction.x <= 0)
         {
             fireball->getComponent<SpriteRenderer>()->flipTextureLeft();

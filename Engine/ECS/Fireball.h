@@ -7,15 +7,18 @@
 #include "../AssetManager/AssetManager.h"
 #include "Explosion.h"
 #include "SFML/Graphics.hpp"
+#include <random>
+#include <ctime>
 
 class Fireball : public Entity
 {
 public:
 
-    Fireball(std::function<void()>& callback, bool isFragmented) : m_callback(callback), m_isFragmented(isFragmented), m_timer(0.f), max_fragmented_entities(5)
+    Fireball(std::function<void()>& callback, bool isFragmented, int damageDealt) : m_callback(callback), m_isFragmented(isFragmented), 
+        m_timer(0.f), max_fragmented_entities(8), m_damageDealt(damageDealt)
     {
         AssetManager::get().loadTexture("Fireball", "assets/Dragon/fireball.png");
-        getComponent<Transform>()->setTransform(0.f, 0.f, 0.f, 0.f, 0.5f, 0.5f);
+        getComponent<Transform>()->setTransform(0.f, 0.f, 0.f, 0.f, 0.6f, 0.6f);
         addComponent<SpriteRenderer>("Fireball");
         addComponent<Rigidbody>(1.f , false, 1.f, 1.f);
         if(isFragmented)
@@ -24,12 +27,21 @@ public:
             addComponent<Collider2D>(SPHERE, std::string("Fireball"));
     }
 
+    Fireball(std::function<void()>& callback, bool isFragmented, sf::Vector2f scale, int damageDealt) : m_callback(callback), 
+        m_isFragmented(isFragmented), m_timer(0.f), max_fragmented_entities(8), m_damageDealt(damageDealt)
+    {
+        AssetManager::get().loadTexture("Fireball", "assets/Dragon/fireball.png");
+        getComponent<Transform>()->setTransform(0.f, 0.f, 0.f, 0.f, scale.x, scale.y);
+        addComponent<SpriteRenderer>("Fireball");
+        addComponent<Rigidbody>(1.f, false, 1.f, 1.f);
+        if (isFragmented)
+            addComponent<Collider2D>(SPHERE, std::string("Frag_fireball"));
+        else
+            addComponent<Collider2D>(SPHERE, std::string("Fireball"));
+    }
+
     ~Fireball()
     {
-        if (m_isFragmented)
-        {
-            fragmentation();
-        }
         m_callback();
     };
 
@@ -61,10 +73,14 @@ public:
 
     void fragmentation()
     {
+        srand(time(NULL));
         for(int i = 0; i < max_fragmented_entities; i++)
         {
+            float randX = ((static_cast<float>(rand()) / static_cast<float>(RAND_MAX)) * 1.0f) - 0.3f;
+            float randY = (static_cast<float>(rand()) / static_cast<float>(RAND_MAX)) * -0.5f;
             /* calcul de direction */
-            sf::Vector2f direction = getComponent<Rigidbody>()->normal;
+            //sf::Vector2f direction = getComponent<Rigidbody>()->normal;
+            sf::Vector2f direction(randX, randY);
             //sf::Vector2f direction = static_cast<sf::Vector2f>(sf::Mouse::getPosition()) - getComponent<Transform>()->position;
             //float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
             //direction /= length;
@@ -72,7 +88,8 @@ public:
 
             sf::Vector2f newPos(getComponent<Transform>()->position.x, getComponent<Transform>()->position.y);
             std::function<void()> callback = [] {};
-            Fireball* fireball = new Fireball(callback, false);
+            sf::Vector2f scale(0.2f, 0.2f);
+            Fireball* fireball = new Fireball(callback, false, scale, 5);
             if (direction.x <= 0)
             {
                 fireball->getComponent<SpriteRenderer>()->flipTextureLeft();
@@ -84,6 +101,11 @@ public:
             EntityManager::getInstance()->addEntity(fireball);
         }
     }
+
+    int getDamageDealt()
+    {
+        return m_damageDealt;
+    };
 
     void explode()
     {
@@ -104,5 +126,5 @@ private :
     float m_timer;
     bool m_isFragmented;
     uint8_t max_fragmented_entities;
-    std::vector<Fireball*> fragmented_entities;
+    int m_damageDealt;
 };

@@ -30,15 +30,11 @@ InGameScene::~InGameScene()
 
 void InGameScene::Start()
 {
-
-
     player1.getComponent<Transform>()->setTransform(300.f, 0, 0, 0, 0.7f, 0.7f);
     player1.initPlayer(FirstTeam);
     player1.connectInput(&engine->getInputHandler());
     player1.startTurn();
     m_manager->addEntity(&player1);
-
-
 
     player2.getComponent<Transform>()->setTransform(1400.f, 0, 0, 0, 0.7f, 0.7f);
     player2.initPlayer(SecondTeam);

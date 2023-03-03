@@ -28,7 +28,8 @@ void EntityManager::draw(sf::RenderTarget* renderwindow)
 
 void EntityManager::update(const float& deltaTime)
 {
-	for (auto& entity : entities) 
+	const auto cp_entities = entities;
+	for (auto& entity : cp_entities)
 		entity->update(deltaTime);
 	worldPtr->updatePhysics(entities);
 }
