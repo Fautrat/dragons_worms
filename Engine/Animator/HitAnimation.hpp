@@ -16,27 +16,9 @@ public:
     }
     virtual ~HitAnimation() = default;
 
-    virtual void update(float deltaTime, Entity* entity) override final{
+    virtual void update(const float& deltaTime, Entity* entity) override final{
 
         time += deltaTime;
-        if (time > duration/2.f) {
-            time = 0.f;
-            if (repeat > 0) {
-                if(isRed) {
-                    repeat--;
-                    entity->getComponent<SpriteRenderer>()->getSprite()->setColor(sf::Color(255, 255, 255));
-                }
-                else {
-                    entity->getComponent<SpriteRenderer>()->getSprite()->setColor(sf::Color(255, 0, 0));
-                }
-                isRed = !isRed;
-            }
-            else {
-                entity->getComponent<SpriteRenderer>()->getSprite()->setColor(sf::Color(255, 255, 255));
-                parent->setActive(true);
-                setActive(false);
-            }
-        }
     }
 
     virtual void setActive(bool active) override final {

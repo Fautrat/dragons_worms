@@ -13,6 +13,17 @@ enum SpriteDirection
 	RIGHT = 1,
 };
 
+struct Spark
+{
+    float duration;
+    int repeat;
+    float speed;
+    float timer;
+    sf::Color color;
+    bool isColored = false;
+    bool isActive = false;
+};
+
 class SpriteRenderer : public Component
 {
 public:
@@ -48,6 +59,11 @@ public:
 		const auto& transform = entity->getComponent<Transform>();
 		sprite->setPosition(transform->position);
 		sprite->setRotation(transform->rotation);
+
+        if(_spark->isActive)
+        {
+            SparkUpdate(deltaTime);
+        }
 	}
 
 
@@ -75,9 +91,46 @@ public:
 		}
 	}
 
+    void ActiveSparks(int repeat, float speed, sf::Color color)
+    {
+        _spark = new Spark();
+        _spark->repeat = repeat;
+        _spark->speed = speed;
+        _spark->color = color;
+        _spark->isActive = true;
+        _spark->timer = 0;
+        _spark->isColored = false;
+		sprite->setColor(_spark->color);
+    }
+
+    void SparkUpdate(const float& deltaTime)
+    {
+        if (_spark->isActive)
+        {
+            if (_spark->isColored)
+            {
+                sprite->setColor(_spark->color);
+            } else
+            {
+                sprite->setColor(sf::Color::White);
+            }
+            _spark->timer += deltaTime;
+            if (_spark->timer >= _spark->speed)
+            {
+                _spark->isColored = !_spark->isColored;
+                _spark->timer = 0;
+				if (_spark->isColored)_spark->repeat--;
+                if (_spark->repeat <= 0)
+                {
+                    _spark->isActive = false;
+                }
+            }
+        }
+    }
 private:
 	sf::Sprite* sprite = nullptr;
 	std::string textureID = "";
 	sf::Texture* texture = nullptr;
 	SpriteDirection sprite_dir = RIGHT;
+    Spark* _spark = new Spark();
 };

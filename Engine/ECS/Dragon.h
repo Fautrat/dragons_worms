@@ -72,6 +72,7 @@ struct Dragon : public Entity
     {
         getComponent<PlayerInterface>()->applyDamageInterface(damage);
         getComponent<Animator>()->setAnimation(EAnimationType::HIT);
+        getComponent<SpriteRenderer>()->ActiveSparks(3, 0.5f, sf::Color::Red);
     }
 
     void connectInput(InputHandler* input)
@@ -154,5 +155,6 @@ struct Dragon : public Entity
     sf::Color initialIndicatorColor;
     bool fragmentedShoot;
     bool hasShoot;
+    bool isHit = false;
     sf::Vector2f windForce = sf::Vector2f(1, 0);
 };

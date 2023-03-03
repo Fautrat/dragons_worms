@@ -11,7 +11,7 @@ public:
     }
     ~IdleAnimation() = default;
 
-    void update(float deltaTime, Entity* entity) override final {
+    void update(const float& deltaTime, Entity* entity) override final {
         if (!isActive) {
             return;
         }

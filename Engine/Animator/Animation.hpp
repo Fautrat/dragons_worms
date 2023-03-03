@@ -26,7 +26,7 @@ public:
     }
     virtual ~Animation() = default;
 
-    virtual void update(float deltaTime, Entity* entity) = 0;
+    virtual void update(const float& deltaTime, Entity* entity) = 0;
     virtual void addTransition(std::shared_ptr<Animation> animation) {
         next.push_back(std::move(animation));
     }

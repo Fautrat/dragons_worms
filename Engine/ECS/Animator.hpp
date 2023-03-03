@@ -1,40 +1,68 @@
 #pragma once
 
 #include "Component.h"
-#include "../Animator/AnimatorController.hpp"
+#include "../Animator/Animation.hpp"
 
 
 class Animator: public Component
 {
 public:
     Animator(){
-        _animatorController = new AnimatorController();
-    }
-    Animator(AnimatorController* animatorController) : _animatorController(animatorController) {
-        _animatorController->setEntity(entity);
     };
     virtual ~Animator() = default;
-    Entity* entity;
     VectorMath<float> vecMath;
 
     virtual bool init() { return true;};
     virtual void draw(sf::RenderTarget* renderwindow) {};
-    virtual void update(const float& deltaTime) {
-        _animatorController->update(deltaTime);
-    };
-
-    void AddAnimation(std::shared_ptr<Animation> animation) {
-        _animatorController->AddAnimation(animation);
+    virtual void update(const float& deltaTime){
+        if (!currentAnimation->getActive()) {
+            getActiveAnimation();
+        }
+        currentAnimation->update(deltaTime, entity);
+    }
+    void setEntity(Entity* entity) {
+        this->entity = entity;
     }
 
-    void setEntity(Entity* entity) {
-        _animatorController->setEntity(entity);
+    void AddAnimation(std::shared_ptr<Animation> animation) {
+        if (animationRoot == nullptr) {
+            animationRoot = std::move(animation);
+            currentAnimation = animationRoot;
+            _typeState = animationRoot->getType();
+        }
+        else {
+            animationRoot->addTransition(animation);
+        }
+    }
+
+    void getActiveAnimation() {
+        for (auto& animation : currentAnimation->getNext()) {
+            if (animation->getActive()) {
+                currentAnimation = animation;
+                break;
+            }
+        }
     }
 
     void setAnimation(EAnimationType type) {
-        _animatorController->setAnimation(type);
+        if (_typeState == type) {
+            return;
+        }
+        _typeState = type;
+        currentAnimation->setActive(false);
+        currentAnimation = animationRoot;
+        for (auto& animation : currentAnimation->getNext()) {
+            if (animation->getType() == type) {
+                currentAnimation = animation;
+                break;
+            }
+        }
+        currentAnimation->setActive(true);
     }
 
-private:
-    AnimatorController* _animatorController;
+
+    EAnimationType _typeState = EAnimationType::NONE;
+    Entity* entity = nullptr;
+    std::shared_ptr<Animation> animationRoot = nullptr;
+    std::shared_ptr<Animation> currentAnimation = nullptr;
 };
