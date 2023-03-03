@@ -13,6 +13,9 @@ public:
 	sf::Texture* getTexture(std::string id);
 	void loadTexture(std::string id, std::string path);
 
+	sf::Image* getImage(std::string id);
+	void loadImage(std::string id, std::string path);
+
 	sf::Font* getFont(std::string id);
 	void loadFont(std::string id, std::string path);
 
@@ -31,6 +34,7 @@ private:
 	std::map<std::string, sf::Font*> fonts;
 	std::map<std::string, sf::Texture*> textures;
 	std::map<std::string, sf::Music*> musics;
+	std::map<std::string, sf::Image*> images;
 protected:
 	AssetManager();
 	~AssetManager() = default;

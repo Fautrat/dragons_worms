@@ -58,6 +58,8 @@ public:
         return getComponent<PlayerInterface>()->life;
     }
 
+ 
+
     void takeDamage(int damage)
     {
         getComponent<PlayerInterface>()->applyDamageInterface(damage);
@@ -83,6 +85,11 @@ public:
         input->connect(sf::Keyboard::Space, [this] {getComponent<Rigidbody>()->Jump(); });
     }
 
+    void setWindLevel(int level)
+    {
+        windForce.x = level;
+    }
+
     Fireball* shoot()
     {
         if (hasShoot)
@@ -92,7 +99,7 @@ public:
         sf::Vector2f direction = static_cast<sf::Vector2f>(sf::Mouse::getPosition()) - getComponent<Transform>()->position;
         float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
         direction /= length;
-        direction *= 10.f;
+        direction *= 15.f;
 
         sf::Vector2f newPos (getComponent<Transform>()->position.x, getComponent<Transform>()->position.y);
         std::function<void()> callback = [this] {endTurn();};
@@ -103,7 +110,7 @@ public:
         }
 
         fireball->getComponent<Transform>()->moveTo(newPos);
-        fireball->getComponent<Rigidbody>()->setVelocity(direction);
+        fireball->getComponent<Rigidbody>()->setVelocity(direction + windForce);
         hasShoot = true;
 
         return fireball;
@@ -123,4 +130,5 @@ public:
 
     bool turnEnding;
     bool hasShoot;
+    sf::Vector2f windForce = sf::Vector2f(1, 0);
 };

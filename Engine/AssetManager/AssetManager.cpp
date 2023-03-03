@@ -28,6 +28,30 @@ void AssetManager::loadTexture(std::string id, std::string path) {
 	}
 }
 
+
+sf::Image* AssetManager::getImage(std::string id) {
+	return (images.count(id) > 0) ? images[id] : nullptr;
+}
+
+void AssetManager::loadImage(std::string id, std::string path) {
+	if (images.count(id) <= 0)
+	{
+		sf::Image* image = new sf::Image();
+		if (!image->loadFromFile(path.c_str()))
+		{
+			std::cout << "Failed to load Image : [" << path << "]" << std::endl;
+			return;
+		}
+		else
+		{
+			images[id] = image;
+			std::cout << "Image: [" << path << "] loaded !" << std::endl;
+		}
+
+	}
+}
+
+
 sf::Font* AssetManager::getFont(std::string id) {
 	return (fonts.count(id) > 0) ? fonts[id] : nullptr;
 }

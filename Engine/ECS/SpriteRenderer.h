@@ -24,6 +24,7 @@ public:
 
 	SpriteRenderer(std::string textureid) :textureID(textureid){}
 
+
 	bool init() override final{
 		sprite = new sf::Sprite();
 		if (nullptr != entity && nullptr != AssetManager::get().getTexture(textureID) && nullptr != sprite)
@@ -48,6 +49,7 @@ public:
 		sprite->setPosition(transform->position);
 		sprite->setRotation(transform->rotation);
 	}
+
 
 	sf::Texture* getTexture(){return texture;}
 

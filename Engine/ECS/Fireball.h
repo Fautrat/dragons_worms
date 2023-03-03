@@ -57,6 +57,7 @@ public:
         }
     }
 
+
     void fragmentation()
     {
         /* calcul de direction */
@@ -83,4 +84,5 @@ private :
     std::function<void()> m_callback;
     float m_timer = 0.f;
     bool m_isFragmented;
+    sf::Vector2f windForce = sf::Vector2f(1,0);
 };
