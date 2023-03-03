@@ -12,7 +12,6 @@ public:
     ~IdleAnimation() = default;
 
     void update(float deltaTime, Entity* entity) override final {
-        std::cout << "IdleAnimation" << std::endl;
         if (!isActive) {
             return;
         }
@@ -20,6 +19,10 @@ public:
 
     virtual void AddTransition(std::shared_ptr<Animation> animation) {
         next.push_back(std::move(animation));
+    }
+
+    virtual void setActive(bool active) {
+        isActive = active;
     }
 
 

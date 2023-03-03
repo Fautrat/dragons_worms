@@ -29,7 +29,6 @@ struct Dragon : public Entity
 
         turnEnding = false;
         hasShoot = false;
-        state = EDragonState::Idle;
         fragmentedShoot = false;
     }
 

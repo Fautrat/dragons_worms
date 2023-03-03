@@ -9,7 +9,7 @@
 
 class HitAnimation : public Animation {
 public:
-    HitAnimation() : Animation(),  duration(0.5f), repeat(5), isRed(false) {
+    HitAnimation() : Animation(),  duration(0.5f), repeat(3), isRed(false) {
         type = EAnimationType::HIT;
 
         parent = std::make_shared<IdleAnimation>();
@@ -27,7 +27,6 @@ public:
                     entity->getComponent<SpriteRenderer>()->getSprite()->setColor(sf::Color(255, 255, 255));
                 }
                 else {
-//                    entity->getComponent<SpriteRenderer>()->getSprite()
                     entity->getComponent<SpriteRenderer>()->getSprite()->setColor(sf::Color(255, 0, 0));
                 }
                 isRed = !isRed;
@@ -38,6 +37,13 @@ public:
                 setActive(false);
             }
         }
+    }
+
+    virtual void setActive(bool active) override final {
+        if (active){
+            repeat = 3;
+        }
+        isActive = active;
     }
 
 protected:
