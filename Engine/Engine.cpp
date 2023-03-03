@@ -14,7 +14,7 @@ Engine::Engine()
     m_renderWindow = new sf::RenderWindow(
         sf::VideoMode(m_resolution.x, m_resolution.y),
         "Dragons with engine",
-        sf::Style::Resize
+        sf::Style::Fullscreen
     );
     
     m_renderWindow->setFramerateLimit(60);

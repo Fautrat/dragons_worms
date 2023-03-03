@@ -90,6 +90,11 @@ public:
 
 	}
 
+	sf::Sprite* getSpriteIndicator()
+	{
+		return &spriteWhoPlay;
+	}
+
 	
 	int life;
 private:

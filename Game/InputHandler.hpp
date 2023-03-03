@@ -15,6 +15,8 @@ enum class EInput
     MoveRight,
     Action,
     Jump,
+    SelectWeapon1,
+    SelectWeapon2,
     Pause,
     Exit
 };
@@ -31,8 +33,10 @@ public:
         m_actions[sf::Keyboard::S] = EInput::MoveDown;
         m_actions[sf::Keyboard::Q] = EInput::MoveLeft;
         m_actions[sf::Keyboard::D] = EInput::MoveRight;
-        m_actions[sf::Keyboard::LControl] = EInput::Jump;
-        m_actions[sf::Keyboard::Space] = EInput::Action;
+        m_actions[sf::Keyboard::Num1] = EInput::SelectWeapon1;
+        m_actions[sf::Keyboard::Num2] = EInput::SelectWeapon2;
+        m_actions[sf::Keyboard::Space] = EInput::Jump;
+        m_actions[sf::Keyboard::T] = EInput::Action;
         m_actions[sf::Keyboard::F4] = EInput::Exit;
         m_actions[sf::Keyboard::Escape] = EInput::Pause;
         connect(EInput::Exit, [this] { m_window.close(); });
@@ -53,19 +57,6 @@ public:
         m_slots.clear();
         m_actions.clear();
     }
-
-    /*template<typename ObjectType>
-    size_t connect(ObjectType* pInstance, void (ObjectType::* func)()) const
-    {
-        return connect([=]()
-        {
-            (pInstance->*func)();
-        });
-    }*/
-
-    /*void disconnectAll() const;
-
-    void disconnect(const size_t& id) const;*/
 
 private:
     sf::RenderWindow& m_window;

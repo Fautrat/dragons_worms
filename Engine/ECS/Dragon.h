@@ -16,10 +16,8 @@ enum Team
     SecondTeam
 };
 
-class Dragon : public Entity
-{
-public:
-    
+struct Dragon : public Entity
+{    
     Dragon()
     {
         AssetManager::get().loadTexture("Player", "assets/Dragon/dragon.png");
@@ -28,6 +26,7 @@ public:
 
         turnEnding = false;
         hasShoot = false;
+        fragmentedShoot = false;
     }
 
     ~Dragon() = default;
@@ -48,6 +47,7 @@ public:
 		}
         addComponent<Rigidbody>(1, false, 0, 2);
         addComponent<Collider2D>(BOX, std::string("Player"));
+        initialIndicatorColor = getComponent<SpriteRenderer>()->getSprite()->getColor();
     }
 
     const int getLife()
@@ -58,10 +58,6 @@ public:
     void takeDamage(int damage)
     {
         getComponent<PlayerInterface>()->applyDamageInterface(damage);
-
-        //life -= damage;
-
-        /* if (life <= 0) is dead */
     }
 
     void connectInput(InputHandler* input)
@@ -72,12 +68,11 @@ public:
             {
                 const auto fireball = shoot();
                 if (fireball)
-                {
-                    //auto entity = static_cast<Entity*>(fireball);
                     EntityManager::getInstance()->addEntity(fireball);
-                }
             });
         input->connect(EInput::Jump, [this] {getComponent<Rigidbody>()->Jump(); });
+        input->connect(EInput::SelectWeapon1, [this] {selectWeapon1(); });
+        input->connect(EInput::SelectWeapon2, [this] {selectWeapon2(); });
     }
 
     Fireball* shoot()
@@ -97,7 +92,7 @@ public:
         else
             newPos.x += getComponent<SpriteRenderer>()->getSprite()->getGlobalBounds().width + 1.f;
         std::function<void()> callback = [this] {endTurn();};
-        Fireball* fireball = new Fireball(callback, true, 20);
+        Fireball* fireball = new Fireball(callback, fragmentedShoot, 20);
         if (direction.x <= 0)
         {
             fireball->getComponent<SpriteRenderer>()->flipTextureLeft();
@@ -122,6 +117,20 @@ public:
        
     }
 
+    void selectWeapon1()
+    {
+        getComponent<PlayerInterface>()->getSpriteIndicator()->setColor(initialIndicatorColor);
+        fragmentedShoot = false;
+    }
+
+    void selectWeapon2()
+    {
+        getComponent<PlayerInterface>()->getSpriteIndicator()->setColor(sf::Color::Blue);
+        fragmentedShoot = true;
+    }
+
     bool turnEnding;
+    sf::Color initialIndicatorColor;
+    bool fragmentedShoot;
     bool hasShoot;
 };

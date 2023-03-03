@@ -7,13 +7,6 @@ void InputHandler::connect(EInput action, sf::Keyboard::Key key, InputHandler::S
     m_slots[action] = slot;
 }
 
-/*
- *     x = 1
- *     y = 2
- *
- *
- */
-
 void InputHandler::remapAction(EInput action, sf::Keyboard::Key key)
 {
     if (m_actions.find(key) != m_actions.end())

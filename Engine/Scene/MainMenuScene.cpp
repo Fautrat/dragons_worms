@@ -31,12 +31,12 @@ MainMenuScene::MainMenuScene(Engine& engine) :Scene(engine)
 
     ui = std::make_shared<UI>();
     m_input = &engine.getInputHandler();
-    if (!videoTexture.loadFromFile("assets/wallpaper.jpg"))
+    if (!videoTexture.loadFromFile("assets/Maps/wallpaper.jpg"))
     {
         std::cout << "Failed to load video" << std::endl;
         return;
     }
-    AssetManager::get().loadFont("Shangai", "assets/font/shanghai.ttf");
+ 
     menuManager = new MenuManager(ui, *AssetManager::get().getFont("Shangai"));
 
     AssetManager::get().loadMusic("music", "assets/sound/Dragon.ogg");
@@ -98,6 +98,8 @@ void MainMenuScene::Update(const float& deltaTime)
             if (ui->InteractionButton("MOVERIGHT", mousepos)) UpdateInput(EInput::MoveRight, "MOVERIGHT");
             if (ui->InteractionButton("ACTION", mousepos)) UpdateInput(EInput::Action, "ACTION");
             if (ui->InteractionButton("JUMP", mousepos)) UpdateInput(EInput::Jump, "JUMP");
+            if (ui->InteractionButton("SELECTWEAPON1", mousepos)) UpdateInput(EInput::SelectWeapon1, "SELECTWEAPON1");
+            if (ui->InteractionButton("SELECTWEAPON2", mousepos)) UpdateInput(EInput::SelectWeapon2, "SELECTWEAPON2");
             if (ui->InteractionButton("BackControlsButton", mousepos)) Back();
         }
         else menuManager->Update(deltaTime, mousepos);
@@ -165,12 +167,14 @@ void MainMenuScene::Controls()
 
     sf::Vector2<int> res = engine->getResolution();
 
-    float MoveUp_y = (float)res.y / 8 * 1,
-          MoveDown_y = (float)res.y / 8 * 2,
-          MoveLeft_y = (float)res.y / 8 * 3,
-          MoveRight_y = (float)res.y / 8 * 4,
-          Action_y = (float)res.y / 8 * 5,
-          Jump_y = (float)res.y / 8 * 6,
+    float MoveUp_y = (float)res.y / 10 * 1,
+          MoveDown_y = (float)res.y / 10 * 2,
+          MoveLeft_y = (float)res.y / 10 * 3,
+          MoveRight_y = (float)res.y / 10 * 4,
+          Action_y = (float)res.y / 10 * 5,
+          Jump_y = (float)res.y / 10 * 6,
+          Select1_y = (float)res.y / 10 * 7,
+          Select2_y = (float)res.y / 10 * 8,
           back_y = (float)res.y / 5.f * 4.5f;
 
 
@@ -186,6 +190,10 @@ void MainMenuScene::Controls()
     resizeButton(ui, "ACTION", 400, Action_y);
     menuManager->AddText("JUMP", sf::Color::White, "JUMP : " + m_input->fromKtoS(m_input->getActionKey(EInput::Jump)), 100, sf::Vector2f(400, 800), [&]{ UpdateInput(EInput::Jump, "JUMP"); });
     resizeButton(ui, "JUMP", 400, Jump_y);
+    menuManager->AddText("SELECTWEAPON1", sf::Color::White, "WEAPON 1 : " + m_input->fromKtoS(m_input->getActionKey(EInput::SelectWeapon1)), 100, sf::Vector2f(400, 800), [&] { UpdateInput(EInput::SelectWeapon1, "SELECTWEAPON1"); });
+    resizeButton(ui, "SELECTWEAPON1", 400, Select1_y);
+    menuManager->AddText("SELECTWEAPON2", sf::Color::White, "WEAPON 2 : " + m_input->fromKtoS(m_input->getActionKey(EInput::SelectWeapon2)), 100, sf::Vector2f(400, 800), [&] { UpdateInput(EInput::SelectWeapon2, "SELECTWEAPON2"); });
+    resizeButton(ui, "SELECTWEAPON2", 400, Select2_y);
     menuManager->AddText("BackControlsButton", sf::Color::White, "BACK", 150, sf::Vector2f(400, 900), [&]{ Back(); });
     resizeButton(ui, "BackControlsButton", 400, back_y);
 }
@@ -217,12 +225,14 @@ void MainMenuScene::Remap() {
             std::cout << "Remap : " << m_input->fromKtoS(key) << std::endl;
             m_input->remapAction(m_actionToRemap, key);
             sf::Vector2<int> res = engine->getResolution();
-            float MoveUp_y = (float) res.y / 8 * 1,
-                    MoveDown_y = (float) res.y / 8 * 2,
-                    MoveLeft_y = (float) res.y / 8 * 3,
-                    MoveRight_y = (float) res.y / 8 * 4,
-                    Action_y = (float) res.y / 8 * 5,
-                    Jump_y = (float) res.y / 8 * 6;
+            float MoveUp_y = (float)res.y / 10 * 1,
+                MoveDown_y = (float)res.y / 10 * 2,
+                MoveLeft_y = (float)res.y / 10 * 3,
+                MoveRight_y = (float)res.y / 10 * 4,
+                Action_y = (float)res.y / 10 * 5,
+                Jump_y = (float)res.y / 10 * 6,
+                Select1_y = (float)res.y / 10 * 7,
+                Select2_y = (float)res.y / 10 * 8;
 
             switch (m_actionToRemap) {
                 case EInput::MoveUp:
@@ -248,6 +258,14 @@ void MainMenuScene::Remap() {
                 case EInput::Jump:
                     menuManager->UpdateText("JUMP", "JUMP : " + m_input->fromKtoS(m_input->getActionKey(EInput::Jump)));
                     resizeButton(ui, "JUMP", 400, Jump_y);
+                    break;
+                case EInput::SelectWeapon1:
+                    menuManager->UpdateText("SELECTWEAPON1", "WEAPON 2 : " + m_input->fromKtoS(m_input->getActionKey(EInput::SelectWeapon1)));
+                    resizeButton(ui, "SELECTWEAPON1", 400, Select1_y);
+                    break;
+                case EInput::SelectWeapon2:
+                    menuManager->UpdateText("SELECTWEAPON2", "WEAPON 2 : " + m_input->fromKtoS(m_input->getActionKey(EInput::SelectWeapon2)));
+                    resizeButton(ui, "SELECTWEAPON2", 400, Select2_y);
                     break;
                 default:
                     break;

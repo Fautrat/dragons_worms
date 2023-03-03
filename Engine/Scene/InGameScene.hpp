@@ -37,19 +37,16 @@ private:
 	Collision* collision;
 	Entity box1, box2, circle, circle2, circle3, Triangle, ground;
 
-	std::vector<Ground*> tileset;
-
     MenuManager* menuManager;
 
     void PauseScene();
     void ResumeScene();
+	void EndingScene(int);
     void MainMenu();
 
 public:
 	InGameScene(Engine& engine);
 	~InGameScene();
-
-	sf::Font* font;
 
 	void readMap();
 	void Start() final;
