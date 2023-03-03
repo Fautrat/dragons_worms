@@ -87,8 +87,6 @@ struct Dragon : public Entity
         if (hasShoot)
             return nullptr;
 
-        //Nique sa mère cpp
-
         /* calcul de direction */
         sf::Vector2f direction = static_cast<sf::Vector2f>(sf::Mouse::getPosition()) - getComponent<Transform>()->position;
         float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
