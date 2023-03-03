@@ -260,7 +260,7 @@ void MainMenuScene::Remap() {
                     resizeButton(ui, "JUMP", 400, Jump_y);
                     break;
                 case EInput::SelectWeapon1:
-                    menuManager->UpdateText("SELECTWEAPON1", "WEAPON 2 : " + m_input->fromKtoS(m_input->getActionKey(EInput::SelectWeapon1)));
+                    menuManager->UpdateText("SELECTWEAPON1", "WEAPON 1 : " + m_input->fromKtoS(m_input->getActionKey(EInput::SelectWeapon1)));
                     resizeButton(ui, "SELECTWEAPON1", 400, Select1_y);
                     break;
                 case EInput::SelectWeapon2:
