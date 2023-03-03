@@ -3,6 +3,7 @@ set(ENGINE_HEADERS
         "ECS/Component.h" "ECS/Entity.h"  "ECS/Transform.h" "ECS/EntityManager.h" "ECS/SpriteRenderer.h" "ECS/Ground.h" "ECS/Dragon.h"
         "Scene/Menu/MenuManager.hpp" "Scene/Menu/Menu.hpp"
         "AssetManager/AssetManager.h"  "ECS/RigidBody.h" "Physics/Collision.h" "ECS/PolygonCollider2D.h"  "ECS/SphereCollider2D.h"  "Utils/Vectormath.h" "Physics/World.h"  "ECS/Collider2D.h" "Physics/ECollisionType.h" "ECS/PlayerInterface.h"
+        "Animator/Animation.hpp" "Animator/AnimatorController.hpp" "Animator/HitAnimation.hpp" "Animator/IdleAnimation.hpp" "ECS/Animator.hpp"
         "ECS/WindHandler.h" )
 
 set(ENGINE_SOURCES

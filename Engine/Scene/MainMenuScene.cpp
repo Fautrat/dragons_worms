@@ -273,6 +273,7 @@ void MainMenuScene::Remap() {
 
             menuManager->RemoveText("UpdateText");
             menuManager->RemoveZone("UpdateZone");
+            break;
         }
     }
 }

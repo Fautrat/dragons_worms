@@ -5,10 +5,13 @@
 #include "../../Game/InputHandler.hpp"
 #include "SpriteRenderer.h"
 #include "Rigidbody.h"
+#include "Animator.hpp"
 #include "Fireball.h"
 #include "PlayerInterface.h"
 #include "SFML/Graphics.hpp"
 #include <functional>
+#include "../Animator/IdleAnimation.hpp"
+#include "../Animator/HitAnimation.hpp"
 
 enum Team
 {
@@ -26,6 +29,7 @@ struct Dragon : public Entity
 
         turnEnding = false;
         hasShoot = false;
+        state = EDragonState::Idle;
         fragmentedShoot = false;
     }
 
@@ -40,14 +44,22 @@ struct Dragon : public Entity
         if (team == FirstTeam)
         {
             addComponent<SpriteRenderer>("Player");
-		}
+        }
         else if(team == SecondTeam)
         {
             addComponent<SpriteRenderer>("Player2");
-		}
+        }
         addComponent<Rigidbody>(1, false, 0, 2);
         addComponent<Collider2D>(BOX, std::string("Player"));
         initialIndicatorColor = getComponent<SpriteRenderer>()->getSprite()->getColor();
+
+        // Animations
+        addComponent<Animator>();
+        std::shared_ptr<IdleAnimation> idle = std::make_shared<IdleAnimation>();
+        std::shared_ptr<HitAnimation> hit = std::make_shared<HitAnimation>();
+        idle->AddTransition(hit);
+        getComponent<Animator>()->setEntity(this);
+        getComponent<Animator>()->AddAnimation(idle);
     }
 
     const int getLife()
@@ -60,6 +72,7 @@ struct Dragon : public Entity
     void takeDamage(int damage)
     {
         getComponent<PlayerInterface>()->applyDamageInterface(damage);
+        getComponent<Animator>()->setAnimation(EAnimationType::HIT);
     }
 
     void connectInput(InputHandler* input)
@@ -87,7 +100,7 @@ struct Dragon : public Entity
         if (hasShoot)
             return nullptr;
 
-        //Nique sa mère cpp
+        //Nique sa mï¿½re cpp
 
         /* calcul de direction */
         sf::Vector2f direction = static_cast<sf::Vector2f>(sf::Mouse::getPosition()) - getComponent<Transform>()->position;
